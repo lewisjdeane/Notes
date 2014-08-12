@@ -1,1 +1,1 @@
-include ':app', ':LDialog', ':L Dialogs', ':dialogs'
+include ':app'

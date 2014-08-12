@@ -35,6 +35,11 @@ public class FABFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 CustomDialog customDialog = new CustomDialog(getActivity(), getString(R.string.dialog_delete_title), getString(R.string.dialog_delete_content), getString(R.string.dialog_delete_confirm), getString(R.string.dialog_delete_cancel));
+                customDialog.setTitle("Permissions");
+                customDialog.setContent("This app determines your phone's location and shares it with Google in order to serve personalised alerts to you. This allows for a better overall experience.");
+                customDialog.setConfirm("ACCEPT");
+                customDialog.setCancel("DECLINE");
+                customDialog.setConfirmColour("#5677fc");
                 customDialog.show();
             }
         });
