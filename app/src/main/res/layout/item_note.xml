@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="#FFF">
+
+    <Button
+        android:id="@+id/item_note_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="#FFF"
+        android:background="@drawable/background_circle"/>
+
+    <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
+        android:id="@+id/item_note_title"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/aqua_primary"
+        android:textSize="16sp"
+        app:font="Roboto-Regular.ttf"/>
+
+    <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
+        android:id="@+id/item_note_time"
+        android:layout_width="fill_parent"
+        android:layout_height="56dp"
+        android:gravity="right|top"
+        android:paddingRight="16dp"
+        android:text="19m"
+        android:textColor="@color/grey"
+        android:textSize="10sp"
+        app:font="Roboto-Regular.ttf"/>
+
+</LinearLayout>
