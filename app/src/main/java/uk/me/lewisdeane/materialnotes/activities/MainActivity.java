@@ -5,11 +5,12 @@ import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements CustomDialog.ClickListener{
 
     public static ActionBarFragment mActionBarFragment;
     public static MainFragment mMainFragment;
@@ -29,5 +30,14 @@ public class MainActivity extends Activity {
         mActionBarFragment = (ActionBarFragment) getFragmentManager().findFragmentById(R.id.fragment_action_bar);
         mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
         mContainer = (FrameLayout) findViewById(R.id.container);
+    }
+
+
+    public void onConfirmClick(){
+
+    }
+
+    public void onCancelClick(){
+
     }
 }

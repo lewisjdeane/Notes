@@ -5,7 +5,18 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string name="dialog_add_title_hint">Enter something.</string>
+    <string name="dialog_add_title_hint">Title</string>
     <string name="dialog_add_list_hint">Item</string>
+    <string name="dialog_add_title_empty">No title present.</string>
+    <string name="dialog_add_item_hint">Content</string>
+
+    <string name="dialog_button_cancel">CANCEL</string>
+    <string name="dialog_button_create">CREATE</string>
+    <string name="dialog_button_delete">DELETE</string>
+
+    <string name="dialog_delete_title">Confirm Delete</string>
+    <string name="dialog_delete_content">You will not be able to undo this process.</string>
+    <string name="dialog_delete_confirm">DELETE</string>
+    <string name="dialog_delete_cancel">CANCEL</string>
 
 </resources>

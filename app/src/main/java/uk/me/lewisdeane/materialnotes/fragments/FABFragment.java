@@ -1,25 +1,18 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-
-import java.util.Random;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.dialogs.AddNoteDialog;
-import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 /**
  * Created by Lewis on 05/08/2014.
  */
-public class FABFragment extends Fragment {
+public class FABFragment extends Fragment{
 
     private View mRootView;
     private Button mFAB;
@@ -41,7 +34,8 @@ public class FABFragment extends Fragment {
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AddNoteDialog(getActivity());
+                CustomDialog customDialog = new CustomDialog(getActivity(), getString(R.string.dialog_delete_title), getString(R.string.dialog_delete_content), getString(R.string.dialog_delete_confirm), getString(R.string.dialog_delete_cancel));
+                customDialog.show();
             }
         });
     }

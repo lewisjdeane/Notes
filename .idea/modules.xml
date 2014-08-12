@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/L Dialogs/L Dialogs.iml" filepath="$PROJECT_DIR$/L Dialogs/L Dialogs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LDialog/LDialog.iml" filepath="$PROJECT_DIR$/LDialog/LDialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LDialog/LDialog.iml" filepath="$PROJECT_DIR$/LDialog/LDialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/MaterialNotes.iml" filepath="$PROJECT_DIR$/MaterialNotes.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dialogs/dialogs.iml" filepath="$PROJECT_DIR$/dialogs/dialogs.iml" />
     </modules>
   </component>
 </project>

@@ -21,14 +21,15 @@ import android.widget.Toast;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
+import uk.me.lewisdeane.materialnotes.customviews.CustomEditText;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
-import uk.me.lewisdeane.materialnotes.dialogs.AddNoteDialog;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 
 public class DialogAdapter extends ArrayAdapter<String> {
 
     private ArrayList<String> mItems = new ArrayList<String>();
     private Context mContext;
+    private static int PREV_POSITION = -1;
 
     public DialogAdapter(Context context, int resource,
                        ArrayList<String> _items) {
@@ -46,35 +47,13 @@ public class DialogAdapter extends ArrayAdapter<String> {
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_dialog, null);
         }
 
-        final EditText mText = (EditText) v.findViewById(R.id.item_dialog_text);
+        EditText mText = (EditText) v.findViewById(R.id.item_dialog_text);
         mText.setText(mItems.get(position));
 
-
-        mText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        mText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(!b && mText.getText().toString().trim().length() == 0) {
-                    mItems.remove(position);
-                    AddNoteDialog.mDialogAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+        /*
+        When someone begins typing in an item, make another one visible.
+        When that final item - 1 goes to 0 length remove final item.
+         */
 
         return v;
     }

@@ -45,6 +45,14 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         CustomTextView mText = (CustomTextView) v.findViewById(R.id.item_note_title);
         mText.setText(mNoteItems.get(position).getTitle());
 
+        CustomTextView mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
+
+        mItem.setVisibility(View.VISIBLE);
+        if(mNoteItems.get(position).getItem().length() == 0 && !mNoteItems.get(position).getIsFolder())
+            mItem.setText(mNoteItems.get(position).getItem());
+        else
+            mItem.setVisibility(View.GONE);
+
         Button mImg = (Button) v.findViewById(R.id.item_note_img);
 
         if(mNoteItems.get(position).getIsFolder()){

@@ -5,31 +5,59 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="150dp">
+    android:padding="16dp"
+    android:minHeight="150dp"
+    android:background="#FFF">
 
     <EditText
         android:id="@+id/dialog_add_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dialog_add_title_hint"/>
+        android:hint="@string/dialog_add_title_hint"
+        android:background="#FFF" />
 
     <ListView
         android:id="@+id/dialog_add_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:descendantFocusability="beforeDescendants"/>
+        android:paddingTop="16dp"
+        android:descendantFocusability="beforeDescendants" />
 
     <CheckBox
         android:id="@+id/dialog_add_folder_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Folder"/>
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="16dp"
+        android:text="Folder" />
 
-    <Button
-        android:id="@+id/dialog_add_confirm"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"/>
+        android:layout_gravity="right|center_vertical"
+        android:paddingTop="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_delete_cancel"
+            android:layout_width="88dp"
+            android:layout_height="36dp"
+            android:background="#FFF"
+            android:text="@string/dialog_button_cancel"
+            android:textSize="14sp"
+            android:textColor="#212121"/>
+
+        <Button
+            android:id="@+id/dialog_delete_confirm"
+            android:layout_width="88dp"
+            android:layout_height="36dp"
+            android:background="#FFF"
+            android:text="@string/dialog_button_delete"
+            android:textColor="@color/aqua_primary"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
