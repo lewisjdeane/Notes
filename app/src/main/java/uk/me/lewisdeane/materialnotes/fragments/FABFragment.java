@@ -41,8 +41,11 @@ public class FABFragment extends Fragment{
                 Random random = new Random();
                 int i = random.nextInt(3);
                 if(i == 0) {
-                    CustomDialog customDialog = new CustomDialog(getActivity(), "Thanks", "", "KK", "NP");
-
+                    CustomDialog customDialog = new CustomDialog(getActivity());
+                    customDialog.setTitle("L Dialogs");
+                    customDialog.setContent("This is a small library to replicate L dialogs.");
+                    customDialog.setConfirm("Got it");
+                    customDialog.setConfirmColour("#ff9800");
                     customDialog.show();
                 }
 
@@ -57,7 +60,12 @@ public class FABFragment extends Fragment{
                 }
 
                 if(i == 2){
-                    CustomDialog customDialog = new CustomDialog(getActivity(), "Wanker", "Yes you.", "SORRY");
+                    CustomDialog customDialog = new CustomDialog(getActivity());
+                    customDialog.setTitle("Delete");
+                    customDialog.setContent("Deleting this file cannot be undone, proceed?");
+                    customDialog.setConfirm("Yes");
+                    customDialog.setCancel("Cancel");
+                    customDialog.setConfirmColour("#009688");
                     customDialog.show();
                 }
             }
