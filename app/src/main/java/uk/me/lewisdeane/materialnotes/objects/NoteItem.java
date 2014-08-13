@@ -10,14 +10,13 @@ import java.util.ArrayList;
 public class NoteItem {
 
     private Context mContext;
-    private String mTitle;
+    private String mTitle, mItem;
     private boolean isFolder;
-    private ArrayList<String> mItems = new ArrayList<String>();
 
-    public NoteItem(Context _context, String _title, ArrayList<String> _items, boolean _isFolder) {
+    public NoteItem(Context _context, String _title, String _item, boolean _isFolder) {
         mContext = _context;
         setTitle(_title);
-        setItems(_items);
+        setItems(_item);
         setIsFolder(_isFolder);
     }
 
@@ -29,8 +28,8 @@ public class NoteItem {
         isFolder = _isFolder;
     }
 
-    public void setItems(ArrayList<String> _items){
-        mItems = _items;
+    public void setItems(String _item){
+        mItem = _item;
     }
 
     public String getTitle(){
@@ -42,9 +41,6 @@ public class NoteItem {
     }
 
     public String getItem(){
-        if(mItems != null)
-            return mItems.get(0);
-
-        return "";
+        return mItem;
     }
 }

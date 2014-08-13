@@ -19,4 +19,6 @@
     <string name="dialog_delete_confirm">DELETE</string>
     <string name="dialog_delete_cancel">CANCEL</string>
 
+    <string name="add_title_hint">Title</string>
+
 </resources>

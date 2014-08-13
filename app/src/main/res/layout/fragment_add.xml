@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_add_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/fragment_add_title"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="72dp"
+        android:gravity="left|center_vertical"
+        android:textSize="24sp"
+        android:background="#009688"
+        android:hint="@string/add_title_hint"/>
+
+</LinearLayout>

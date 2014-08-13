@@ -18,12 +18,28 @@
             android:layout_height="56dp"
             tools:layout="@layout/fragment_action_bar" />
 
-        <fragment
-            android:id="@+id/fragment_main"
-            android:name="uk.me.lewisdeane.materialnotes.fragments.MainFragment"
+        <LinearLayout
+            android:id="@+id/main_container"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            tools:layout="@layout/fragment_main" />
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/fragment_main"
+                android:name="uk.me.lewisdeane.materialnotes.fragments.MainFragment"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                tools:layout="@layout/fragment_main" />
+
+            <fragment
+                android:id="@+id/fragment_add"
+                android:name="uk.me.lewisdeane.materialnotes.fragments.AddFragment"
+                android:layout_width="fill_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="0dp"
+                tools:layout="@layout/fragment_add"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -35,6 +51,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:layout_gravity="bottom|right"
-        tools:layout="@layout/fragment_fab"/>
+        tools:layout="@layout/fragment_fab" />
 
 </FrameLayout>
