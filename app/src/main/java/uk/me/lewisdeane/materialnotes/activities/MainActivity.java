@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
@@ -34,10 +35,8 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
 
 
     public void onConfirmClick(){
-
     }
 
     public void onCancelClick(){
-
     }
 }
