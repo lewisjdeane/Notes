@@ -11,19 +11,22 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
+import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 
 public class MainActivity extends Activity implements CustomDialog.ClickListener{
 
     public static ActionBarFragment mActionBarFragment;
     public static MainFragment mMainFragment;
+    public static AddFragment mAddFragment;
     public static FrameLayout mContainer;
-    public static LinearLayout mMainContainer;
+    public static RelativeLayout mMainContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,9 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
 
         mActionBarFragment = (ActionBarFragment) getFragmentManager().findFragmentById(R.id.fragment_action_bar);
         mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
+        mAddFragment = (AddFragment) getFragmentManager().findFragmentById(R.id.fragment_add);
         mContainer = (FrameLayout) findViewById(R.id.container);
-        mMainContainer = (LinearLayout) findViewById(R.id.main_container);
+        mMainContainer = (RelativeLayout) findViewById(R.id.main_container);
     }
 
 
@@ -47,9 +51,5 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
     }
 
     public void onCancelClick(){
-    }
-
-    private static float convertToPx(int _dp){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _dp, Resources.getSystem().getDisplayMetrics());
     }
 }

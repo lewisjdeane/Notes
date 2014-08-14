@@ -2,7 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_list"
     android:layout_width="match_parent"
-    android:layout_height="1812dp"
+    android:layout_height="fill_parent"
+    android:padding="8dp"
+    android:clipToPadding="false"
+    android:divider="#0000"
+    android:dividerHeight="8dp"
+    android:background="#E7E7E7"
     tools:context=".MainActivity$MainFragment">
 
 </ListView>

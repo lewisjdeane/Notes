@@ -22,7 +22,7 @@ import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 public class FABFragment extends Fragment{
 
     private View mRootView;
-    private Button mFAB;
+    public static Button mFAB;
     private MainFragment mMainFragment;
     private AddFragment mAddFragment;
     private MainActivity mMainActivity;
@@ -47,6 +47,10 @@ public class FABFragment extends Fragment{
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getFragmentManager().beginTransaction().hide(mMainFragment).commit();
+                MainActivity.mAddFragment.mTitle.setText("");
+                MainActivity.mAddFragment.mItem.setText("");
+                mFAB.setVisibility(View.GONE);
             }
         });
     }

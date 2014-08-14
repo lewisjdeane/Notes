@@ -35,10 +35,6 @@ public class MainFragment extends Fragment {
     private void init(){
         mList = (ListView) mRootView.findViewById(R.id.main_list);
 
-        for(int i = 0; i < 5; i++){
-            mNoteItems.add(new NoteItem(getActivity(), "Wow so " + i, "Doge", false));
-        }
-
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
         mList.setAdapter(mNoteAdapter);

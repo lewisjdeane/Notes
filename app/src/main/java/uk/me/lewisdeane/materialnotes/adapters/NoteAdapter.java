@@ -48,7 +48,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         CustomTextView mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
 
         mItem.setVisibility(View.VISIBLE);
-        if(mNoteItems.get(position).getItem().length() == 0 && !mNoteItems.get(position).getIsFolder())
+        if(mNoteItems.get(position).getItem().length() != 0 && !mNoteItems.get(position).getIsFolder())
             mItem.setText(mNoteItems.get(position).getItem());
         else
             mItem.setVisibility(View.GONE);

@@ -16,7 +16,7 @@ public class NoteItem {
     public NoteItem(Context _context, String _title, String _item, boolean _isFolder) {
         mContext = _context;
         setTitle(_title);
-        setItems(_item);
+        setItem(_item);
         setIsFolder(_isFolder);
     }
 
@@ -28,7 +28,7 @@ public class NoteItem {
         isFolder = _isFolder;
     }
 
-    public void setItems(String _item){
+    public void setItem(String _item){
         mItem = _item;
     }
 
