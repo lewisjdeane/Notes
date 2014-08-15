@@ -7,42 +7,65 @@
     android:layout_height="match_parent"
     android:background="#FFF">
 
-    <EditText
-        android:id="@+id/fragment_add_title"
+    <LinearLayout
+        android:id="@+id/fragment_add_primary_container"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:paddingLeft="72dp"
-        android:gravity="left|center_vertical"
-        android:textSize="24sp"
-        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:background="@color/aqua_primary"
-        android:textCursorDrawable="@null"
-        android:hint="@string/add_title_hint"
-        android:textColorHint="@color/white"/>
+        android:paddingLeft="16dp">
 
-    <EditText
-        android:id="@+id/fragment_add_item"
+        <ImageButton
+            android:id="@+id/fragment_add_folder"
+            android:layout_width="25dp"
+            android:layout_height="80dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_folder_white_not_selected"
+            android:background="@color/transparent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="31dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/fragment_add_title"
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:gravity="left|center_vertical"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@null"
+                android:background="@color/transparent"
+                android:hint="@string/add_title_hint"
+                android:textColorHint="@color/white" />
+
+            <EditText
+                android:id="@+id/fragment_add_item"
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:gravity="left|center_vertical"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@null"
+                android:background="@color/transparent"
+                android:hint="@string/add_item_hint"
+                android:textColorHint="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_add_secondary_container"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:paddingLeft="72dp"
-        android:gravity="left|center_vertical"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:background="@color/aqua_primary"
-        android:textCursorDrawable="@null"
-        android:hint="@string/add_item_hint"
-        android:textColorHint="@color/white"/>
+        android:layout_height="fill_parent"
+        android:background="#FFF"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/fragment_add_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="-28dp"
-        android:layout_gravity="right"
-        android:layout_marginRight="16dp"
-        android:text="+"
-        android:textSize="30sp"
-        android:textColor="@color/white"
-        android:background="@drawable/background_circle"/>
+    </LinearLayout>
+
 
 </LinearLayout>

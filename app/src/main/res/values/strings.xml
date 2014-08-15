@@ -21,5 +21,6 @@
 
     <string name="add_title_hint">Title</string>
     <string name="add_item_hint">Item</string>
+    <string name="add_folder_hint">Folder</string>
 
 </resources>

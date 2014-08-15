@@ -42,24 +42,32 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
         }
 
+        /*
+        If it's a folder do not show the item text, instead replace it with a list of subitems exc. subfolders in a smaller font.
+         */
+
         CustomTextView mText = (CustomTextView) v.findViewById(R.id.item_note_title);
         mText.setText(mNoteItems.get(position).getTitle());
+
+        CustomTextView mTime = (CustomTextView) v.findViewById(R.id.item_note_time);
+        mTime.setText(mNoteItems.get(position).getTimeFormatted());
 
         CustomTextView mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
 
         mItem.setVisibility(View.VISIBLE);
-        if(mNoteItems.get(position).getItem().length() != 0 && !mNoteItems.get(position).getIsFolder())
+        if(!mNoteItems.get(position).getIsFolder())
             mItem.setText(mNoteItems.get(position).getItem());
-        else
-            mItem.setVisibility(View.GONE);
+        else {
+            mItem.setText("Sub note 1, Sub note 2, Sub note 3...");
+            mItem.setTextSize(14);
+        }
 
         Button mImg = (Button) v.findViewById(R.id.item_note_img);
 
-        if(mNoteItems.get(position).getIsFolder()){
-            mImg.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_action_folder_aqua));
+        mImg.setVisibility(View.GONE);
+
+        if(mNoteItems.get(position).getIsFolder())
             mImg.setVisibility(View.VISIBLE);
-        } else
-            mImg.setVisibility(View.GONE);
 
         return v;
     }

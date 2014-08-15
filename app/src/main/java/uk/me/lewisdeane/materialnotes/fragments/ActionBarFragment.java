@@ -19,7 +19,7 @@ public class ActionBarFragment extends Fragment {
     private View mRootView;
     public static LinearLayout mContainer, mActionBar1;
     public static ImageButton mMenu;
-    private CustomTextView mHeader;
+    public static CustomTextView mHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -18,6 +18,7 @@ import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
+import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 
 public class MainActivity extends Activity implements CustomDialog.ClickListener{
@@ -25,8 +26,13 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
     public static ActionBarFragment mActionBarFragment;
     public static MainFragment mMainFragment;
     public static AddFragment mAddFragment;
+    public static FABFragment mFABFragment;
     public static FrameLayout mContainer;
     public static RelativeLayout mMainContainer;
+    public static boolean isInAdd = false;
+    public static Context mContext;
+
+    public static String PATH = ""; // This holds the current path of the parent note eg. University or University/Bath or University/Bath/Work
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +45,13 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
     private void init() {
         getActionBar().hide();
 
+        mContext = this;
+
         mActionBarFragment = (ActionBarFragment) getFragmentManager().findFragmentById(R.id.fragment_action_bar);
         mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
         mAddFragment = (AddFragment) getFragmentManager().findFragmentById(R.id.fragment_add);
+        mFABFragment = (FABFragment) getFragmentManager().findFragmentByTag("FAB");
+
         mContainer = (FrameLayout) findViewById(R.id.container);
         mMainContainer = (RelativeLayout) findViewById(R.id.main_container);
     }
@@ -51,5 +61,11 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
     }
 
     public void onCancelClick(){
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mMainFragment.mNoteAdapter.notifyDataSetChanged();
     }
 }

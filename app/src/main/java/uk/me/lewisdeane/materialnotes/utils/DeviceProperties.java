@@ -2,6 +2,7 @@ package uk.me.lewisdeane.materialnotes.utils;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -16,7 +17,26 @@ public class DeviceProperties {
         mContext = _context;
     }
 
-    public int getScreenHeight(){
+    private int getScreenHeight(){
         return ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getHeight();
+    }
+
+    public float getScreenHeightWithoutPadding(){
+        return getScreenHeight() - getStatusHeight() - convertToPx(56);
+    }
+
+    public float getHeight(){
+        return getScreenHeight() - getStatusHeight() - convertToPx(56 + 120);
+    }
+
+    private int getStatusHeight(){
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0)
+            return mContext.getResources().getDimensionPixelSize(resourceId);
+        return 0;
+    }
+
+    public float convertToPx(int _dp){
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _dp, mContext.getResources().getDisplayMetrics());
     }
 }
