@@ -3,10 +3,12 @@ package uk.me.lewisdeane.materialnotes.objects;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.databases.Database;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
@@ -89,23 +91,23 @@ public class NoteItem {
         timeParts.put("w", _difference / (7 * 24 * 60 * 60 * 1000));
 
         if(timeParts.get("w") > 0)
-            return (timeParts.get("w") + 1) + letters[4] + "";
+            return (timeParts.get("w") + 1) + (letters[4] + "");
         else if(timeParts.get("d") > 0 && timeParts.get("d") != 6)
-            return (timeParts.get("d") + 1) + letters[3] + "";
+            return (timeParts.get("d") + 1) + (letters[3] + "");
         else if(timeParts.get("d") == 6)
             return "1" + letters[4];
         else if(timeParts.get("h") > 0 && timeParts.get("h") != 23)
-            return (timeParts.get("h") + 1) + letters[2] + "";
+            return (timeParts.get("h") + 1) + (letters[2] + "");
         else if(timeParts.get("h") == 23)
             return "1" + letters[3];
         else if (timeParts.get("m") > 0 && timeParts.get("m") != 59)
-            return (timeParts.get("m") + 1) + letters[1] + "";
+            return (timeParts.get("m") + 1) + (letters[1] + "");
         else if(timeParts.get("m") == 59)
             return "1" + letters[2];
         else if(timeParts.get("s") > 0)
             return "1" + letters[1];
         else
-            return "Now";
+            return mContext.getString(R.string.time_now);
     }
 
     private long getDifference(){

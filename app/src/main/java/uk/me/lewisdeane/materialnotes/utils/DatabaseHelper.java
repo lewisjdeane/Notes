@@ -60,7 +60,7 @@ public class DatabaseHelper{
     public static ArrayList<NoteItem> getNotesFromDatabase(){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "TITLE", "SUBTITLE", "TIME", "FOLDER"}, null, null, null, null, "TITLE COLLATE NOCASE DESC");
+        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "TITLE", "SUBTITLE", "TIME", "FOLDER"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
@@ -80,7 +80,6 @@ public class DatabaseHelper{
                 }
 
                 boolean canAdd = false;
-
 
                 if(currentPath.size() == notePath.size()){
                     canAdd = true;
@@ -134,10 +133,7 @@ public class DatabaseHelper{
     }
 
     public static void onCancelClick(){
-        MainActivity.mMainFragment.mNoteAdapter.clear();
-        MainActivity.mMainFragment.mNoteAdapter.addAll(getNotesFromDatabase());
-        MainActivity.mMainFragment.mNoteAdapter.notifyDataSetChanged();
-        MainActivity.mMainFragment.applyListViewFeatures();
+        MainActivity.mMainFragment.reloadData();
     }
 
     public static String getSubitems(NoteItem _noteItem){

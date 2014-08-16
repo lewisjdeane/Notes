@@ -24,6 +24,7 @@ import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
+import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
 /**
@@ -65,14 +66,11 @@ public class FABFragment extends Fragment {
                         NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mItem.getText().toString().trim(), MainActivity.mAddFragment.mIsFolder);
 
                         noteItem.addToDatabase();
-                        MainActivity.mMainFragment.mNoteAdapter.add(noteItem);
 
                         Animations.setAddAnimation(true, mRootView);
                         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
                         MainActivity.isInAdd = false;
-
-                        MainActivity.mMainFragment.applyListViewFeatures();
                     }
                 } else {
                     MainActivity.mAddFragment.prepare();
@@ -82,6 +80,8 @@ public class FABFragment extends Fragment {
 
                     MainActivity.isInAdd = true;
                 }
+                MainActivity.mActionBarFragment.setUp();
+                MainActivity.mMainFragment.reloadData();
             }
         });
     }

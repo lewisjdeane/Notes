@@ -24,6 +24,9 @@
     <string name="add_folder_hint">Folder</string>
 
     <string name="home">Home</string>
-    <string name="no_subitems">No Subitems</string>
+    <string name="no_subitems">No Sub Items</string>
+    <string name="header_add">Add a new note</string>
+
+    <string name="time_now">Now</string>
 
 </resources>

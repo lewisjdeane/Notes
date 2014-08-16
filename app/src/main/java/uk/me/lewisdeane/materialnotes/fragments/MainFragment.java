@@ -1,6 +1,7 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -32,10 +33,12 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 public class MainFragment extends Fragment {
 
     private View mRootView;
-    public DynamicListView mList;
+    public static DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
     public static ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
     private SwipeDismissAdapter mSwipeDismissAdapter;
+
+    private static Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +49,8 @@ public class MainFragment extends Fragment {
     }
 
     private void init() {
+        mContext = getActivity();
+
         mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
         mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
@@ -55,7 +60,7 @@ public class MainFragment extends Fragment {
         applyListViewFeatures();
     }
 
-    public void applyListViewFeatures() {
+    public static void applyListViewFeatures() {
         mList.setAdapter(mNoteAdapter);
 
         mList.enableSwipeToDismiss(
@@ -64,9 +69,8 @@ public class MainFragment extends Fragment {
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
                             NoteItem noteItem = mNoteItems.get(position);
-                            new DatabaseHelper(getActivity()).deleteNoteFromDatabase(noteItem);
-                            mNoteAdapter.remove(noteItem);
-                            mNoteAdapter.notifyDataSetChanged();
+                            new DatabaseHelper(mContext).deleteNoteFromDatabase(noteItem);
+                            reloadData();
                         }
                     }
                 }
@@ -81,14 +85,19 @@ public class MainFragment extends Fragment {
                     else
                         MainActivity.PATH += mNoteItems.get(i).getTitle();
 
-                    MainActivity.mActionBarFragment.mHeader.setText(mNoteItems.get(i).getTitle());
-                    mNoteItems.clear();
-                    mNoteAdapter.addAll(new DatabaseHelper(getActivity()).getNotesFromDatabase());
-                    mNoteAdapter.notifyDataSetChanged();
+                    reloadData();
 
                     MainActivity.mActionBarFragment.setUp();
                 }
             }
         });
+    }
+
+    public static void reloadData(){
+        mNoteItems.clear();
+        mNoteItems = DatabaseHelper.getNotesFromDatabase();
+        mNoteAdapter.notifyDataSetChanged();
+
+        applyListViewFeatures();
     }
 }

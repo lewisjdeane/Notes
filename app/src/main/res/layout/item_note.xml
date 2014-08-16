@@ -35,7 +35,7 @@
                 android:minHeight="40dp"
                 android:gravity="left|center_vertical"
                 android:textColor="@color/aqua_primary"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 app:font="Roboto-Regular.ttf" />
 
         </LinearLayout>
@@ -47,7 +47,7 @@
             android:minHeight="40dp"
             android:gravity="left|center_vertical"
             android:textColor="@color/grey"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:font="Roboto-Regular.ttf" />
 
     </LinearLayout>
