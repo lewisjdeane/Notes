@@ -1,4 +1,4 @@
-<de.timroes.android.listview.EnhancedListView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nhaarman.listviewanimations.itemmanipulation.DynamicListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_list"
     android:layout_width="match_parent"
@@ -9,5 +9,4 @@
     android:dividerHeight="8dp"
     android:background="#E7E7E7"
     tools:context=".MainActivity$MainFragment">
-
-</de.timroes.android.listview.EnhancedListView>
+</com.nhaarman.listviewanimations.itemmanipulation.DynamicListView>

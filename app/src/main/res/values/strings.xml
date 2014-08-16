@@ -23,4 +23,7 @@
     <string name="add_item_hint">Item</string>
     <string name="add_folder_hint">Folder</string>
 
+    <string name="home">Home</string>
+    <string name="no_subitems">No Subitems</string>
+
 </resources>

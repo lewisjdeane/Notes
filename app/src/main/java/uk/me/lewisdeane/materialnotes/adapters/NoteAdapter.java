@@ -16,10 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
+
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
@@ -58,7 +61,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         if(!mNoteItems.get(position).getIsFolder())
             mItem.setText(mNoteItems.get(position).getItem());
         else {
-            mItem.setText("Sub note 1, Sub note 2, Sub note 3...");
+            mItem.setText(new DatabaseHelper(mContext).getSubitems(mNoteItems.get(position)));
             mItem.setTextSize(14);
         }
 

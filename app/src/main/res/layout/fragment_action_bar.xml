@@ -23,16 +23,32 @@
             android:src="@drawable/ic_action_menu_white"
             android:background="@color/transparent" />
 
-        <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
-            android:id="@+id/action_bar_1_header"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:paddingLeft="15dp"
-            android:gravity="left|center_vertical"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:font="Roboto-Regular.ttf"/>
+            android:orientation="vertical">
+
+            <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
+                android:id="@+id/action_bar_1_header"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="left|center_vertical"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:font="Roboto-Regular.ttf"/>
+
+            <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
+                android:id="@+id/action_bar_1_subheader"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:text="@string/home"
+                android:textSize="16sp"
+                android:textColor="#FFF"
+                android:gravity="left|top"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

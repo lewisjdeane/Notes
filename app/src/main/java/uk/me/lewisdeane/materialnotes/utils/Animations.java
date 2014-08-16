@@ -15,11 +15,15 @@ public abstract class Animations {
     private static DeviceProperties mDeviceProperties = new DeviceProperties(MainActivity.mContext);
 
     private static final float MOVE_TO_ADD = -(int)( mDeviceProperties.getHeight() - mDeviceProperties.convertToPx(82));
+    private static final float MOVE_TO_LIST = (int)(mDeviceProperties.getScreenHeightWithoutPadding());
+
     private static final String TRANSLATE_Y = "translationY", TRANSLATE_X = "translationX";
 
-    public static void setAddAnimation(boolean _up, Button _view){
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(_view, TRANSLATE_Y, _up ? MOVE_TO_ADD : 0, _up ? 0 : MOVE_TO_ADD);
-        objectAnimator.setDuration(250);
-        objectAnimator.start();
+    public static void setAddAnimation(boolean _up, View _view){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, _up ? MOVE_TO_ADD : 0, _up ? 0 : MOVE_TO_ADD).setDuration(250).start();
+    }
+
+    public static void setListAnimation(boolean _up, View _view){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, _up ? MOVE_TO_LIST : 0, _up ? 0 : MOVE_TO_LIST).setDuration(250).start();
     }
 }

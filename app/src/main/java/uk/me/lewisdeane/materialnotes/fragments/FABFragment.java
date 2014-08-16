@@ -33,9 +33,6 @@ public class FABFragment extends Fragment {
 
     public View mRootView;
     public static Button mFAB;
-    private MainFragment mMainFragment;
-    private AddFragment mAddFragment;
-    private MainActivity mMainActivity;
     private DeviceProperties mDeviceProperties;
     public static int amountToMoveDown;
 
@@ -50,9 +47,6 @@ public class FABFragment extends Fragment {
 
     private void init() {
         mFAB = (Button) mRootView.findViewById(R.id.fab);
-        mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
-        mAddFragment = (AddFragment) getFragmentManager().findFragmentById(R.id.fragment_add);
-        mMainActivity = (MainActivity) getActivity();
         mDeviceProperties = new DeviceProperties(getActivity());
 
         GradientDrawable bg = (GradientDrawable) mFAB.getBackground();
@@ -67,43 +61,24 @@ public class FABFragment extends Fragment {
             public void onClick(View view) {
 
                 if (MainActivity.isInAdd) {
-                    if(MainActivity.mAddFragment.mTitle.getText().toString().length() > 0) {
-                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString(), MainActivity.mAddFragment.mItem.getText().toString(), MainActivity.mAddFragment.mIsFolder);
+                    if (MainActivity.mAddFragment.mTitle.getText().toString().length() > 0) {
+                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mItem.getText().toString().trim(), MainActivity.mAddFragment.mIsFolder);
+
                         noteItem.addToDatabase();
+                        MainActivity.mMainFragment.mNoteAdapter.add(noteItem);
 
-                        MainActivity.mMainFragment.mNoteItems.add(noteItem);
-                        MainActivity.mMainFragment.mNoteAdapter.notifyDataSetChanged();
-
-                        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mRootView, "translationY", amountToMoveDown, 0);
-                        objectAnimator.setDuration(250);
-                        objectAnimator.start();
-
-                        ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(MainActivity.mMainFragment.mList, "translationY", mDeviceProperties.getScreenHeightWithoutPadding(), 0);
-                        objectAnimator2.setDuration(250);
-                        objectAnimator2.start();
+                        Animations.setAddAnimation(true, mRootView);
+                        Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
                         MainActivity.isInAdd = false;
-                    } else{
+
+                        MainActivity.mMainFragment.applyListViewFeatures();
                     }
                 } else {
-                    ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(MainActivity.mMainFragment.mList, "translationY", 0, mDeviceProperties.getScreenHeightWithoutPadding());
-                    objectAnimator2.setDuration(250);
-                    objectAnimator2.start();
+                    MainActivity.mAddFragment.prepare();
 
-                    MainActivity.mAddFragment.mTitle.setText("");
-                    MainActivity.mAddFragment.mItem.setText("");
-                    MainActivity.mAddFragment.mIsFolder = false;
-                    MainActivity.mAddFragment.mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
-                    MainActivity.mAddFragment.mItem.setVisibility(View.VISIBLE);
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) MainActivity.mAddFragment.mSecondaryContainer.getLayoutParams();
-                    lp.setMargins(0, 0, 0, 0);
-                    MainActivity.mAddFragment.mSecondaryContainer.setLayoutParams(lp);
-
-                    MainActivity.mAddFragment.mTitle.requestFocus();
-
-                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mRootView, "translationY", 0, amountToMoveDown);
-                    objectAnimator.setDuration(250);
-                    objectAnimator.start();
+                    Animations.setAddAnimation(false, mRootView);
+                    Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
 
                     MainActivity.isInAdd = true;
                 }

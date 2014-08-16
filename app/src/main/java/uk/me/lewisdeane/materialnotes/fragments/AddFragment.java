@@ -91,4 +91,17 @@ public class AddFragment extends Fragment {
             }
         });
     }
+
+    public void prepare(){
+        mTitle.setText("");
+        mItem.setText("");
+        mIsFolder = false;
+        mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
+        mItem.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSecondaryContainer.getLayoutParams();
+        lp.setMargins(0, 0, 0, 0);
+        mSecondaryContainer.setLayoutParams(lp);
+
+        mTitle.requestFocus();
+    }
 }

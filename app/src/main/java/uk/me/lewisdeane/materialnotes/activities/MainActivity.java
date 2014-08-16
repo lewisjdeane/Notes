@@ -20,6 +20,7 @@ import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
 import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
+import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 public class MainActivity extends Activity implements CustomDialog.ClickListener{
 
@@ -58,9 +59,11 @@ public class MainActivity extends Activity implements CustomDialog.ClickListener
 
 
     public void onConfirmClick(){
+        DatabaseHelper.onConfirmClick();
     }
 
     public void onCancelClick(){
+        DatabaseHelper.onCancelClick();
     }
 
     @Override

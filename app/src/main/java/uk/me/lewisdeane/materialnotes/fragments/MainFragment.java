@@ -2,12 +2,20 @@ package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.SwipeDismissAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 import java.util.ArrayList;
 
@@ -24,9 +32,10 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 public class MainFragment extends Fragment {
 
     private View mRootView;
-    public EnhancedListView mList;
+    public DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
     public static ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
+    private SwipeDismissAdapter mSwipeDismissAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,64 +46,49 @@ public class MainFragment extends Fragment {
     }
 
     private void init() {
-        mList = (EnhancedListView) mRootView.findViewById(R.id.main_list);
+        mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
         mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
 
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
-        mList.setAdapter(mNoteAdapter);
-
         applyListViewFeatures();
     }
 
-    private void applyListViewFeatures() {
-        mList.setDismissCallback(new EnhancedListView.OnDismissCallback() {
+    public void applyListViewFeatures() {
+        mList.setAdapter(mNoteAdapter);
+
+        mList.enableSwipeToDismiss(
+                new OnDismissCallback() {
+                    @Override
+                    public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+                            NoteItem noteItem = mNoteItems.get(position);
+                            new DatabaseHelper(getActivity()).deleteNoteFromDatabase(noteItem);
+                            mNoteAdapter.remove(noteItem);
+                            mNoteAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+        );
+
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public EnhancedListView.Undoable onDismiss(EnhancedListView enhancedListView, final int i) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mNoteItems.get(i).getIsFolder()) {
+                    if(MainActivity.PATH.length() > 0)
+                        MainActivity.PATH += "/" + mNoteItems.get(i).getTitle();
+                    else
+                        MainActivity.PATH += mNoteItems.get(i).getTitle();
 
-                final NoteItem noteItem = mNoteItems.get(i);
-                mNoteAdapter.remove(noteItem);
+                    MainActivity.mActionBarFragment.mHeader.setText(mNoteItems.get(i).getTitle());
+                    mNoteItems.clear();
+                    mNoteAdapter.addAll(new DatabaseHelper(getActivity()).getNotesFromDatabase());
+                    mNoteAdapter.notifyDataSetChanged();
 
-                return new EnhancedListView.Undoable() {
-                    @Override
-                    public void undo() {
-                        mNoteAdapter.insert(noteItem, i);
-                    }
-
-                    @Override
-                    public String getTitle() {
-                        return noteItem.getTitle() + " deleted!";
-                    }
-
-                    @Override
-                    public void discard() {
-                        noteItem.deleteFromDatabase();
-                    }
-                };
+                    MainActivity.mActionBarFragment.setUp();
+                }
             }
-        })
-                .enableSwipeToDismiss()
-                .setRequireTouchBeforeDismiss(false)
-                .setUndoHideDelay(5000)
-                .setShouldSwipeCallback(new EnhancedListView.OnShouldSwipeCallback() {
-                    @Override
-                    public boolean onShouldSwipe(EnhancedListView enhancedListView, int i) {
-                        if (mNoteItems.get(i).getIsFolder())
-                            return false;
-                        return true;
-                    }
-                });
-    }
-
-    public void onItemClicked(NoteItem _noteItem) {
-        if (_noteItem.getIsFolder()) {
-            MainActivity.PATH += "/" + _noteItem.getTitle();
-            MainActivity.mActionBarFragment.mHeader.setText(_noteItem.getTitle());
-            mNoteItems.clear();
-            mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
-            mNoteAdapter.notifyDataSetChanged();
-
-        }
+        });
     }
 }

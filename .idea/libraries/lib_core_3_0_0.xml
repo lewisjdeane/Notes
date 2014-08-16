@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib-core-3.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nhaarman.listviewanimations/lib-core/3.0.0/920176604aa211f8b1465608be483a8bcce8bf9c/lib-core-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nhaarman.listviewanimations/lib-core/3.0.0/b824b8f8f95bfa915b7323de1e17c7dcd31dadf1/lib-core-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
