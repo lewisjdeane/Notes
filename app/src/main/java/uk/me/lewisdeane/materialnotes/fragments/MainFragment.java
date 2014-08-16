@@ -70,7 +70,8 @@ public class MainFragment extends Fragment {
                         for (int position : reverseSortedPositions) {
                             NoteItem noteItem = mNoteItems.get(position);
                             new DatabaseHelper(mContext).deleteNoteFromDatabase(noteItem);
-                            reloadData();
+                            mNoteAdapter.remove(noteItem);
+                            mNoteAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -95,7 +96,7 @@ public class MainFragment extends Fragment {
 
     public static void reloadData(){
         mNoteItems.clear();
-        mNoteItems = DatabaseHelper.getNotesFromDatabase();
+        mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase());
         mNoteAdapter.notifyDataSetChanged();
 
         applyListViewFeatures();

@@ -54,6 +54,8 @@ public class DatabaseHelper{
             open("W");
             mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + _noteItem.getTime(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
             close();
+
+            MainActivity.mMainFragment.reloadData();
         }
     }
 
@@ -130,6 +132,8 @@ public class DatabaseHelper{
 
         mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
         close();
+
+        MainActivity.mMainFragment.reloadData();
     }
 
     public static void onCancelClick(){
@@ -144,7 +148,8 @@ public class DatabaseHelper{
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                subitems += cursor.getString(0) + ", ";
+                //if(MainActivity.PATH.split("/").length == (cursor.getString(0).split("/").length-1)) **** Check that only direct subitems are added
+                    subitems += cursor.getString(0) + ", ";
             } while (cursor.moveToNext());
         }
 

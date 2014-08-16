@@ -15,7 +15,7 @@
     <string name="dialog_button_delete">DELETE</string>
 
     <string name="dialog_delete_title">Confirm Delete</string>
-    <string name="dialog_delete_content">You will not be able to undo this process.</string>
+    <string name="dialog_delete_content">Along with this folder, all sub notes and sub folders will be deleted too.</string>
     <string name="dialog_delete_confirm">DELETE</string>
     <string name="dialog_delete_cancel">CANCEL</string>
 
