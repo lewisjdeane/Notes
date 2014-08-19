@@ -19,14 +19,35 @@
     <string name="dialog_delete_confirm">DELETE</string>
     <string name="dialog_delete_cancel">CANCEL</string>
 
-    <string name="add_title_hint">Title</string>
-    <string name="add_item_hint">Item</string>
-    <string name="add_folder_hint">Folder</string>
-
     <string name="home">Home</string>
     <string name="no_subitems">No Sub Items</string>
     <string name="header_add">Add a new note</string>
 
     <string name="time_now">Now</string>
+
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+
+    <string name="add_title_hint">Title</string>
+    <string name="add_item_hint">Content</string>
+    <string name="add_time_hint">Time</string>
+    <string name="add_date_hint">Date</string>
+    <string name="add_tags_hint">Tags</string>
+    <string name="add_link_hint">Link</string>
+
+    <string-array name="navigation_items">
+        <item>Everything</item>
+        <item>Reminders</item>
+        <item>Favourites</item>
+        <item>Upcoming</item>
+        <item>High Priority</item>
+        <item>Medium Priority</item>
+        <item>Low Priority</item>
+        <item>Archived</item>
+        <item>Settings</item>
+        <item>Information</item>
+    </string-array>
+
+
 
 </resources>

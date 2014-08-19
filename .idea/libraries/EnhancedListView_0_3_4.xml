@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="EnhancedListView-0.3.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.timroes.android/EnhancedListView/0.3.4/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.timroes.android/EnhancedListView/0.3.4/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

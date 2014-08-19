@@ -6,6 +6,11 @@
     android:background="#E7E7E7"
     tools:context=".MainActivity">
 
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -42,6 +47,15 @@
         </RelativeLayout>
 
     </LinearLayout>
+        
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:layout_width="240dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start"
+        android:name="uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment"/>
+    
+    </android.support.v4.widget.DrawerLayout>
 
     <fragment
         android:id="@+id/fragment_fab"

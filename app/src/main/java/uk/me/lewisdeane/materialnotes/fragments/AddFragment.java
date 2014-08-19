@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
+import uk.me.lewisdeane.materialnotes.adapters.AddAdapter;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
+import uk.me.lewisdeane.materialnotes.objects.AddItem;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
@@ -32,13 +37,14 @@ import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 public class AddFragment extends Fragment {
 
     private View mRootView;
-    public static LinearLayout mContainer, mPrimaryContainer, mSecondaryContainer;
-    private MainFragment mMainFragment;
-    private FABFragment mFABFragment;
-    public static EditText mTitle, mItem;
+    public static LinearLayout mContainer, mPrimaryContainer;
+    public static EditText mTitle;
+    public static ListView mList;
     public static ImageButton mFolder;
     public static boolean mIsFolder;
-    private float heightToMove;
+
+    private static AddAdapter mAddAdapter;
+    public static ArrayList<AddItem> mAddItems = new ArrayList<AddItem>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,56 +58,86 @@ public class AddFragment extends Fragment {
     private void init() {
         mContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_add_container);
         mPrimaryContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_add_primary_container);
-        mSecondaryContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_add_secondary_container);
 
         mTitle = (EditText) mRootView.findViewById(R.id.fragment_add_title);
-        mItem = (EditText) mRootView.findViewById(R.id.fragment_add_item);
         mFolder = (ImageButton) mRootView.findViewById(R.id.fragment_add_folder);
+        mList = (ListView) mRootView.findViewById(R.id.fragment_add_list);
 
-        mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
-        mFABFragment = (FABFragment) getFragmentManager().findFragmentById(R.id.fragment_fab);
+        loadList();
 
-        heightToMove = mItem.getLayoutParams().height;
+        mAddAdapter = new AddAdapter(getActivity(), R.layout.item_add, mAddItems);
+        mList.setAdapter(mAddAdapter);
     }
 
     private void setListeners() {
         mFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIsFolder = !mIsFolder;
-                mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
-
-                float toMove = -(new DeviceProperties(getActivity()).convertToPx(80));
-
-                ValueAnimator varl = ValueAnimator.ofInt(!mIsFolder ? -(int)heightToMove : 0, !mIsFolder ? 0 : -(int)heightToMove);
-                varl.setDuration(250);
-                varl.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSecondaryContainer.getLayoutParams();
-                        lp.setMargins(0, (Integer) animation.getAnimatedValue(), 0, 0);
-                        mSecondaryContainer.setLayoutParams(lp);
-                    }
-                });
-                varl.start();
-
-                ObjectAnimator.ofFloat(MainActivity.mFABFragment.mRootView, "translationY", !mIsFolder ? MainActivity.mFABFragment.amountToMoveDown + toMove : MainActivity.mFABFragment.amountToMoveDown, !mIsFolder ? MainActivity.mFABFragment.amountToMoveDown : MainActivity.mFABFragment.amountToMoveDown + toMove).setDuration(250).start();
-
+                if (MainActivity.isInAdd && !MainActivity.isInView) {
+                    mIsFolder = !mIsFolder;
+                    mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
+                }
             }
         });
     }
 
-    public void prepare(){
-        mTitle.setText("");
-        mItem.setText("");
-        mIsFolder = false;
-        mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
-        mItem.setVisibility(View.VISIBLE);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSecondaryContainer.getLayoutParams();
-        lp.setMargins(0, 0, 0, 0);
-        mSecondaryContainer.setLayoutParams(lp);
+    private void loadList() {
+        for (int i = 0; i < 5; i++) {
+            mAddItems.add(new AddItem(i, getHintFromPos(i), getImgFromPos(i)));
+        }
+    }
 
-        mTitle.requestFocus();
+    public String getHintFromPos(int _pos) {
+        switch (_pos) {
+            case 0:
+                return getString(R.string.add_item_hint);
+            case 1:
+                return getString(R.string.add_time_hint);
+            case 2:
+                return getString(R.string.add_date_hint);
+            case 3:
+                return getString(R.string.add_tags_hint);
+            case 4:
+                return getString(R.string.add_link_hint);
+            default:
+                return getString(R.string.add_item_hint);
+        }
+    }
+
+    public Drawable getImgFromPos(int _pos) {
+        switch (_pos) {
+            case 0:
+                return getActivity().getResources().getDrawable(R.drawable.ic_content);
+            case 1:
+                return getActivity().getResources().getDrawable(R.drawable.ic_time);
+            case 2:
+                return getActivity().getResources().getDrawable(R.drawable.ic_date);
+            case 3:
+                return getActivity().getResources().getDrawable(R.drawable.ic_tags);
+            case 4:
+                return getActivity().getResources().getDrawable(R.drawable.ic_link);
+            default:
+                return getActivity().getResources().getDrawable(R.drawable.ic_content);
+        }
+    }
+
+    public void prepare(NoteItem _noteItem) {
+        /*
+        if(_noteItem == null) {
+            mTitle.setText("");
+            mItem.setText("");
+            mIsFolder = false;
+            mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
+            mItem.setVisibility(View.VISIBLE);
+
+            mTitle.requestFocus();
+        } else{
+            mTitle.setText(_noteItem.getTitle());
+            mItem.setText(_noteItem.getItem());
+            mIsFolder = _noteItem.getIsFolder();
+            mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
+        }
+    }
+    */
     }
 }

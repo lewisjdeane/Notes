@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     public static String NOTE_TABLE = "NoteTable";
 
     private static final String NOTE_TABLE_CREATE = "create table " + NOTE_TABLE
-            + " (PATH TEXT, TITLE TEXT, SUBTITLE TEXT, TIME LONG, FOLDER STRING);";
+            + " (PATH TEXT, TITLE TEXT, SUBTITLE TEXT, LAST_MODIFIED LONG, FOLDER TEXT, TIME TEXT, DATE TEXT, TAGS TEXT, LINK TEXT);";
 
     public Database(Context context) {
         super(context, "Database", null, DATABASE_VERSION);

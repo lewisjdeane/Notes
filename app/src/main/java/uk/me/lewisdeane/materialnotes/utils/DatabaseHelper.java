@@ -46,10 +46,31 @@ public class DatabaseHelper{
     public void deleteNoteFromDatabase(NoteItem _noteItem){
         if(_noteItem.getIsFolder()){
             mTempNoteItem = _noteItem;
-            CustomDialog customDialog = new CustomDialog(mContext, mContext.getString(R.string.dialog_delete_title), mContext.getString(R.string.dialog_delete_content), mContext.getString(R.string.dialog_delete_confirm), mContext.getString(R.string.dialog_delete_cancel));
+
+            CustomDialog customDialog = new CustomDialog(mContext, mContext.getString(R.string.dialog_delete_title), mContext.getString(R.string.dialog_delete_content), mContext.getString(R.string.dialog_delete_confirm), mContext.getString(R.string.dialog_delete_cancel))
+            .setClickListener(new CustomDialog.ClickListener() {
+                @Override
+                public void onConfirmClick() {
+                    open("W");
+
+                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + mTempNoteItem.getTime(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+
+                    mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
+                    close();
+
+                    MainActivity.loadNotes();
+                }
+
+                @Override
+                public void onCancelClick() {
+                    MainActivity.loadNotes();
+                }
+            });
+
+            customDialog.show();
+
             customDialog.setCanceledOnTouchOutside(false);
             customDialog.setCancelable(false);
-            customDialog.show();
         } else {
             open("W");
             mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + _noteItem.getTime(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});

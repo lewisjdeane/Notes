@@ -22,7 +22,7 @@ public class ActionBarFragment extends Fragment {
 
     private View mRootView;
     public static LinearLayout mContainer, mActionBar1;
-    public static ImageButton mMenu;
+    public static ImageButton mMenu, mSearch;
     public static CustomTextView mHeader, mSubHeader;
 
     @Override
@@ -35,13 +35,14 @@ public class ActionBarFragment extends Fragment {
     }
 
     private void init(){
-        mContainer = (LinearLayout) mRootView.findViewById(R.id.action_bar_container);
-        mActionBar1 = (LinearLayout) mRootView.findViewById(R.id.action_bar_1);
+        mContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_action_bar_container);
+        mActionBar1 = (LinearLayout) mRootView.findViewById(R.id.fragment_action_bar_1);
 
-        mMenu = (ImageButton) mRootView.findViewById(R.id.action_bar_1_toggle);
+        mMenu = (ImageButton) mRootView.findViewById(R.id.fragment_action_bar_1_toggle);
+        mSearch = (ImageButton) mRootView.findViewById(R.id.fragment_action_bar_1_search);
 
-        mHeader = (CustomTextView) mRootView.findViewById(R.id.action_bar_1_header);
-        mSubHeader = (CustomTextView) mRootView.findViewById(R.id.action_bar_1_subheader);
+        mHeader = (CustomTextView) mRootView.findViewById(R.id.fragment_action_bar_1_header);
+        mSubHeader = (CustomTextView) mRootView.findViewById(R.id.fragment_action_bar_1_subheader);
     }
 
     private void setListeners(){
@@ -66,7 +67,7 @@ public class ActionBarFragment extends Fragment {
                             MainActivity.PATH = temp;
                         }
                     } else {
-                        // Open drawer...
+                        onDrawerOpened();
                     }
                 } else{
                     Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
@@ -75,17 +76,15 @@ public class ActionBarFragment extends Fragment {
                     MainActivity.isInAdd = false;
 
                     MainActivity.mMainFragment.reloadData();
-
-                    MainActivity.mActionBarFragment.setUp();
                 }
                 MainActivity.mMainFragment.reloadData();
 
-                setUp();
+                setUp(null);
             }
         });
     }
 
-    public void setUp(){
+    public void setUp(String _text){
         String[] split = MainActivity.PATH.split("/");
         mSubHeader.setText(split[0].length() == 0 ? getString(R.string.home) : split[split.length-1]);
         if(MainActivity.PATH.length() == 0 && !MainActivity.isInAdd)
@@ -94,7 +93,19 @@ public class ActionBarFragment extends Fragment {
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_arrow_back_white));
         }
 
-        if(MainActivity.isInAdd)
-            mSubHeader.setText(getString(R.string.header_add));
+        if(_text != null)
+            mSubHeader.setText(_text);
+    }
+
+    public void onDrawerOpened(){
+        showSearchIcon(false);
+    }
+
+    public void onDrawerClosed(){
+        showSearchIcon(true);
+    }
+
+    public void showSearchIcon(boolean _shouldShow){
+        mSearch.setVisibility(_shouldShow ? View.VISIBLE : View.GONE);
     }
 }

@@ -1,6 +1,7 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -32,7 +34,7 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
  */
 public class MainFragment extends Fragment {
 
-    private View mRootView;
+    private static View mRootView;
     public static DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
     public static ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
@@ -45,6 +47,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
         init();
+        setListeners();
         return mRootView;
     }
 
@@ -58,11 +61,33 @@ public class MainFragment extends Fragment {
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
         applyListViewFeatures();
+        mList.setAdapter(mNoteAdapter);
+    }
+
+    public void setListeners(){
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mNoteItems.get(i).getIsFolder()) {
+                    if(MainActivity.PATH.length() > 0)
+                        MainActivity.PATH += "/" + mNoteItems.get(i).getTitle();
+                    else
+                        MainActivity.PATH += mNoteItems.get(i).getTitle();
+                } else {
+                    MainActivity.mAddFragment.prepare(mNoteItems.get(i));
+
+                    Animations.setAddAnimation(false, mRootView);
+                    Animations.setListAnimation(false, mList);
+
+                    MainActivity.isInView = true;
+                }
+                MainActivity.mActionBarFragment.setUp(mNoteItems.get(i).getTitle());
+                MainActivity.loadNotes();
+            }
+        });
     }
 
     public static void applyListViewFeatures() {
-        mList.setAdapter(mNoteAdapter);
-
         mList.enableSwipeToDismiss(
                 new OnDismissCallback() {
                     @Override
@@ -76,22 +101,6 @@ public class MainFragment extends Fragment {
                     }
                 }
         );
-
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mNoteItems.get(i).getIsFolder()) {
-                    if(MainActivity.PATH.length() > 0)
-                        MainActivity.PATH += "/" + mNoteItems.get(i).getTitle();
-                    else
-                        MainActivity.PATH += mNoteItems.get(i).getTitle();
-
-                    reloadData();
-
-                    MainActivity.mActionBarFragment.setUp();
-                }
-            }
-        });
     }
 
     public static void reloadData(){

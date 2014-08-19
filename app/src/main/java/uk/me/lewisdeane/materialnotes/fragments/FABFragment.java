@@ -53,7 +53,7 @@ public class FABFragment extends Fragment {
         GradientDrawable bg = (GradientDrawable) mFAB.getBackground();
         bg.setColor(Color.parseColor("#ff9900"));
 
-        amountToMoveDown = -(int) (mDeviceProperties.getHeight() - mDeviceProperties.convertToPx(82));
+        amountToMoveDown = -(int) (mDeviceProperties.getHeight());
     }
 
     private void setListeners() {
@@ -63,24 +63,32 @@ public class FABFragment extends Fragment {
 
                 if (MainActivity.isInAdd) {
                     if (MainActivity.mAddFragment.mTitle.getText().toString().length() > 0) {
-                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mItem.getText().toString().trim(), MainActivity.mAddFragment.mIsFolder);
+                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mAddItems.get(0).getText().toString().trim(), MainActivity.mAddFragment.mIsFolder);
 
                         noteItem.addToDatabase();
 
                         Animations.setAddAnimation(true, mRootView);
                         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
-                        MainActivity.isInAdd = false;
+                        if(MainActivity.isInAdd)
+                            MainActivity.isInAdd = false;
+                        else if(MainActivity.isInView)
+                            MainActivity.isInView = false;
+
+                        MainActivity.mActionBarFragment.setUp(null);
                     }
-                } else {
-                    MainActivity.mAddFragment.prepare();
+                } else if(!MainActivity.isInAdd){
+                    MainActivity.mAddFragment.prepare(null);
 
                     Animations.setAddAnimation(false, mRootView);
                     Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
 
                     MainActivity.isInAdd = true;
+                    MainActivity.mActionBarFragment.setUp(getString(R.string.header_add));
+
+                } else{
+                    // Edit note.
                 }
-                MainActivity.mActionBarFragment.setUp();
                 MainActivity.mMainFragment.reloadData();
             }
         });

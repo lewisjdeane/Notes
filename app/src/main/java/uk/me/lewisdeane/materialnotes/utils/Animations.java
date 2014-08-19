@@ -14,7 +14,7 @@ public abstract class Animations {
 
     private static DeviceProperties mDeviceProperties = new DeviceProperties(MainActivity.mContext);
 
-    private static final float MOVE_TO_ADD = -(int)( mDeviceProperties.getHeight() - mDeviceProperties.convertToPx(82));
+    private static final float MOVE_TO_ADD = -(int)( mDeviceProperties.getHeight());
     private static final float MOVE_TO_LIST = (int)(mDeviceProperties.getScreenHeightWithoutPadding());
 
     private static final String TRANSLATE_Y = "translationY", TRANSLATE_X = "translationX";
