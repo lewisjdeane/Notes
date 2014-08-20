@@ -144,21 +144,6 @@ public class DatabaseHelper{
         mDatabase.close();
     }
 
-    public static void onConfirmClick(){
-        open("W");
-
-        mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + mTempNoteItem.getTime(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
-
-        mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
-        close();
-
-        MainActivity.loadNotes();
-    }
-
-    public static void onCancelClick(){
-        MainActivity.loadNotes();
-    }
-
     public static String getSubitems(NoteItem _noteItem){
         String subitems = "";
         open("R");
