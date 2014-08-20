@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
+import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.AddItem;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
@@ -26,7 +27,7 @@ public class AddAdapter extends ArrayAdapter<AddItem> {
 
     private ArrayList<AddItem> mAddItems;
 
-    public AddAdapter(Context _context, int _res, ArrayList<AddItem> _addItems){
+    public AddAdapter(Context _context, int _res, ArrayList<AddItem> _addItems) {
         super(_context, _res, _addItems);
 
         this.mAddItems = _addItems;
@@ -49,8 +50,8 @@ public class AddAdapter extends ArrayAdapter<AddItem> {
         mImg.setImageDrawable(addItem.getImg());
         mClear.setVisibility(View.GONE);
 
-        // Check for edit...
         mText.setHint(addItem.getHint());
+        mText.setText(addItem.getText());
 
         mClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +59,11 @@ public class AddAdapter extends ArrayAdapter<AddItem> {
                 mText.setText("");
             }
         });
+
+        mText.setClickable(MainActivity.isInAdd == 1 ? true : false);
+        mText.setFocusable(MainActivity.isInAdd == 1 ? true : false);
+        mText.setFocusableInTouchMode(MainActivity.isInAdd == 1 ? true : false);
+        mClear.setVisibility(MainActivity.isInAdd == 1 && mText.getText().length() > 0 ? View.VISIBLE : View.GONE);
 
         mText.addTextChangedListener(new TextWatcher() {
             @Override

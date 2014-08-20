@@ -74,12 +74,11 @@ public class MainFragment extends Fragment {
                     else
                         MainActivity.PATH += mNoteItems.get(i).getTitle();
                 } else {
-                    MainActivity.mAddFragment.prepare(mNoteItems.get(i));
+                    MainActivity.isInAdd = 2;
+                    MainActivity.mAddFragment.setUp(mNoteItems.get(i));
 
-                    Animations.setAddAnimation(false, mRootView);
-                    Animations.setListAnimation(false, mList);
-
-                    MainActivity.isInView = true;
+                    Animations.setAddAnimation(false, MainActivity.mFABFragment.mRootView);
+                    Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
                 }
                 MainActivity.mActionBarFragment.setUp(mNoteItems.get(i).getTitle());
                 MainActivity.loadNotes();
@@ -94,20 +93,12 @@ public class MainFragment extends Fragment {
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
                             NoteItem noteItem = mNoteItems.get(position);
-                            new DatabaseHelper(mContext).deleteNoteFromDatabase(noteItem);
+                            noteItem.deleteFromDatabase();
                             mNoteAdapter.remove(noteItem);
                             mNoteAdapter.notifyDataSetChanged();
                         }
                     }
                 }
         );
-    }
-
-    public static void reloadData(){
-        mNoteItems.clear();
-        mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase());
-        mNoteAdapter.notifyDataSetChanged();
-
-        applyListViewFeatures();
     }
 }

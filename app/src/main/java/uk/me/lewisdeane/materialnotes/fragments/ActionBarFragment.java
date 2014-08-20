@@ -3,6 +3,7 @@ package uk.me.lewisdeane.materialnotes.fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,45 +50,49 @@ public class ActionBarFragment extends Fragment {
         mMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if(!MainActivity.isInAdd) {
-                    if (!MainActivity.PATH.equals("")) {
-                        if (!MainActivity.PATH.contains("/"))
-                            MainActivity.PATH = "";
-                        else {
-                            String[] split = MainActivity.PATH.split("/");
-
-                            String temp = "";
-
-                            for (int i = 0; i < split.length - 1; i++)
-                                temp += split[i] + "/";
-
-                            temp = temp.substring(0, temp.length() - 1);
-
-                            MainActivity.PATH = temp;
-                        }
-                    } else {
-                        onDrawerOpened();
-                    }
-                } else{
-                    Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
-                    Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
-
-                    MainActivity.isInAdd = false;
-
-                    MainActivity.mMainFragment.reloadData();
-                }
-                MainActivity.mMainFragment.reloadData();
-
-                setUp(null);
+                goBack(false);
             }
         });
     }
 
+    public void goBack(boolean _backKey){
+        MainActivity.PATH = getNewPath(_backKey);
+        MainActivity.loadNotes();
+        setUp(null);
+    }
+
+    public String getNewPath(boolean _backKey){
+        if(MainActivity.isInAdd == 0 && !MainActivity.PATH.equals("") && !MainActivity.PATH.contains("/")){
+            return "";
+        } else if(MainActivity.isInAdd == 0 && !MainActivity.PATH.equals("") && MainActivity.PATH.contains("/")) {
+            String[] split = MainActivity.PATH.split("/");
+
+            String temp = "";
+
+            for (int i = 0; i < split.length - 1; i++)
+                temp += split[i] + "/";
+
+            return temp.substring(0, temp.length() - 1);
+        }  else if(MainActivity.isInAdd == 0 && MainActivity.PATH.equals("")){
+            if(_backKey)
+                getActivity().finish();
+            else
+                MainActivity.mNavigationDrawerFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
+            return "";
+        } else{
+            Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
+            Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
+
+            MainActivity.isInAdd = 0;
+
+            return MainActivity.PATH;
+        }
+    }
+
     public void setUp(String _text){
         String[] split = MainActivity.PATH.split("/");
-        mSubHeader.setText(split[0].length() == 0 ? getString(R.string.home) : split[split.length-1]);
-        if(MainActivity.PATH.length() == 0 && !MainActivity.isInAdd)
+        mSubHeader.setText(split[0].length() == 0 ? getString(R.string.app_name) : split[split.length-1]);
+        if(MainActivity.PATH.length() == 0 && MainActivity.isInAdd == 0)
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_menu_white));
         else {
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_arrow_back_white));

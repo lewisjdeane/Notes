@@ -46,6 +46,8 @@ public class AddFragment extends Fragment {
     private static AddAdapter mAddAdapter;
     public static ArrayList<AddItem> mAddItems = new ArrayList<AddItem>();
 
+    public static NoteItem ORIGINAL_NOTE;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class AddFragment extends Fragment {
         mFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.isInAdd && !MainActivity.isInView) {
+                if (MainActivity.isInAdd == 1) {
                     mIsFolder = !mIsFolder;
                     mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
                 }
@@ -81,7 +83,43 @@ public class AddFragment extends Fragment {
         });
     }
 
+    public void setUp(NoteItem _noteItem){
+        ORIGINAL_NOTE = null;
+        mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
+
+        mTitle.setText("");
+        mTitle.setClickable(_noteItem == null ? true : false);
+        mTitle.setFocusable(_noteItem == null ? true : false);
+        mTitle.setFocusableInTouchMode(_noteItem == null ? true : false);
+
+        for(AddItem addItem : mAddItems)
+            addItem.setText("");
+
+        if(MainActivity.isInAdd == 2) {
+            ORIGINAL_NOTE = _noteItem;
+            mAddItems.get(0).setText(_noteItem.getItem());
+            mAddItems.get(1).setText(_noteItem.getTime());
+            mAddItems.get(2).setText(_noteItem.getDate());
+            mAddItems.get(3).setText(_noteItem.getTags());
+            mAddItems.get(4).setText(_noteItem.getLink());
+
+            mTitle.setText(_noteItem.getTitle());
+            mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
+        }
+
+        mAddAdapter.notifyDataSetChanged();
+    }
+
+    public void setEditable(){
+        mTitle.setClickable(true);
+        mTitle.setFocusable(true);
+        mTitle.setFocusableInTouchMode(true);
+
+        mAddAdapter.notifyDataSetChanged();
+    }
+
     private void loadList() {
+        mAddItems.clear();
         for (int i = 0; i < 5; i++) {
             mAddItems.add(new AddItem(i, getHintFromPos(i), getImgFromPos(i)));
         }
@@ -119,25 +157,5 @@ public class AddFragment extends Fragment {
             default:
                 return getActivity().getResources().getDrawable(R.drawable.ic_content);
         }
-    }
-
-    public void prepare(NoteItem _noteItem) {
-        /*
-        if(_noteItem == null) {
-            mTitle.setText("");
-            mItem.setText("");
-            mIsFolder = false;
-            mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
-            mItem.setVisibility(View.VISIBLE);
-
-            mTitle.requestFocus();
-        } else{
-            mTitle.setText(_noteItem.getTitle());
-            mItem.setText(_noteItem.getItem());
-            mIsFolder = _noteItem.getIsFolder();
-            mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
-        }
-    }
-    */
     }
 }

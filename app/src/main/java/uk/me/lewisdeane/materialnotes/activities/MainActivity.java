@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static FrameLayout mContainer;
     public static RelativeLayout mMainContainer;
 
-    public static boolean isInAdd = false, isInView = false;
+    public static int isInAdd = 0; // 0 normally, 1 for editting/add, 2 for viewing
 
     public static Context mContext;
 
@@ -113,5 +113,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public void onResume(){
         super.onResume();
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed(){
+        mActionBarFragment.goBack(true);
     }
 }

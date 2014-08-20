@@ -61,35 +61,37 @@ public class FABFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (MainActivity.isInAdd) {
+                if (MainActivity.isInAdd == 1) {
                     if (MainActivity.mAddFragment.mTitle.getText().toString().length() > 0) {
-                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mAddItems.get(0).getText().toString().trim(), MainActivity.mAddFragment.mIsFolder);
+                        NoteItem noteItem = new NoteItem(getActivity(), MainActivity.mAddFragment.mIsFolder, MainActivity.mAddFragment.mTitle.getText().toString().trim(), MainActivity.mAddFragment.mAddItems.get(0).getText().toString().trim(), MainActivity.mAddFragment.mAddItems.get(1).getText().toString(), MainActivity.mAddFragment.mAddItems.get(2).getText().toString(), MainActivity.mAddFragment.mAddItems.get(3).getText().toString(), MainActivity.mAddFragment.mAddItems.get(4).getText().toString());
 
-                        noteItem.addToDatabase();
+                        if(MainActivity.mAddFragment.ORIGINAL_NOTE == null)
+                            noteItem.addToDatabase();
+                        else
+                            noteItem.editToDatabase(MainActivity.mAddFragment.ORIGINAL_NOTE);
 
                         Animations.setAddAnimation(true, mRootView);
                         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
-                        if(MainActivity.isInAdd)
-                            MainActivity.isInAdd = false;
-                        else if(MainActivity.isInView)
-                            MainActivity.isInView = false;
+                        MainActivity.isInAdd = 0;
 
                         MainActivity.mActionBarFragment.setUp(null);
                     }
-                } else if(!MainActivity.isInAdd){
-                    MainActivity.mAddFragment.prepare(null);
-
+                } else if(MainActivity.isInAdd == 2){
+                    MainActivity.isInAdd = 1;
+                    MainActivity.mAddFragment.setEditable();
+                } else {
                     Animations.setAddAnimation(false, mRootView);
                     Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
 
-                    MainActivity.isInAdd = true;
-                    MainActivity.mActionBarFragment.setUp(getString(R.string.header_add));
-
-                } else{
-                    // Edit note.
+                    if (MainActivity.isInAdd == 0) {
+                        MainActivity.isInAdd = 1;
+                        MainActivity.mActionBarFragment.setUp(getString(R.string.header_add));
+                        MainActivity.mAddFragment.setUp(null);
+                    }
                 }
-                MainActivity.mMainFragment.reloadData();
+
+                MainActivity.loadNotes();
             }
         });
     }

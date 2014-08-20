@@ -17,6 +17,11 @@ public class AddItem {
         setImg(_img);
     }
 
+    public AddItem(int _pos, String _hint, Drawable _img, String _text){
+        this(_pos, _hint, _img);
+        setText(_text);
+    }
+
     public AddItem setHint(String _hint){
         mHint = _hint;
         return this;

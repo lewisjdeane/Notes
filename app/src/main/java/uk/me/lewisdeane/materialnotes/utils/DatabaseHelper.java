@@ -31,15 +31,11 @@ public class DatabaseHelper{
         mContext = _context;
     }
 
-    public void addNoteToDatabase(NoteItem _noteItem){
+    public void addNoteToDatabase(NoteItem _oldNoteItem, NoteItem _newNoteItem){
         open("W");
-        mSQLiteDatabase.insert(Database.NOTE_TABLE, null, getContentVals(_noteItem));
-        close();
-    }
-
-    public void editNoteToDatabase(NoteItem _oldNoteItem, NoteItem _newNoteItem){
-        open("W");
-        mSQLiteDatabase.update(Database.NOTE_TABLE, getContentVals(_newNoteItem), "TITLE=? AND SUBTITLE=? AND TIME="+_oldNoteItem.getTime(), new String[]{_oldNoteItem.getTitle(), _oldNoteItem.getItem()});
+        if(_oldNoteItem != null)
+            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + _oldNoteItem.getLastModified(), new String[]{_oldNoteItem.getTitle(), _oldNoteItem.getItem()});
+        mSQLiteDatabase.insert(Database.NOTE_TABLE, null, getContentVals(_newNoteItem));
         close();
     }
 
@@ -53,11 +49,10 @@ public class DatabaseHelper{
                 public void onConfirmClick() {
                     open("W");
 
-                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + mTempNoteItem.getTime(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
 
                     mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
                     close();
-
                     MainActivity.loadNotes();
                 }
 
@@ -73,17 +68,16 @@ public class DatabaseHelper{
             customDialog.setCancelable(false);
         } else {
             open("W");
-            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND TIME=" + _noteItem.getTime(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
+            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
             close();
-
-            MainActivity.mMainFragment.reloadData();
+            MainActivity.loadNotes();
         }
     }
 
     public static ArrayList<NoteItem> getNotesFromDatabase(){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "TITLE", "SUBTITLE", "TIME", "FOLDER"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "TITLE", "SUBTITLE", "LAST_MODIFIED", "FOLDER", "TIME", "DATE", "TAGS", "LINK"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
@@ -115,7 +109,7 @@ public class DatabaseHelper{
                 }
 
                 if(canAdd)
-                    noteItems.add(new NoteItem(mContext, cursor.getString(1), cursor.getString(2), cursor.getString(4).equals("true") ? true : false, cursor.getLong(3)));
+                    noteItems.add(new NoteItem(mContext, cursor.getString(4).equals("true") ? true : false, cursor.getString(1), cursor.getString(2), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getLong(3)));
 
             } while(cursor.moveToNext());
         }
@@ -130,8 +124,12 @@ public class DatabaseHelper{
         contentValues.put("PATH", MainActivity.PATH.equals("") ?  _noteItem.getTitle() : MainActivity.PATH + "/" + _noteItem.getTitle());
         contentValues.put("TITLE", _noteItem.getTitle());
         contentValues.put("SUBTITLE", _noteItem.getItem());
-        contentValues.put("TIME", _noteItem.getTime());
+        contentValues.put("LAST_MODIFIED", _noteItem.getLastModified());
         contentValues.put("FOLDER", _noteItem.getIsFolder() ? "true" : "false");
+        contentValues.put("TIME", _noteItem.getTime());
+        contentValues.put("DATE", _noteItem.getDate());
+        contentValues.put("TAGS", _noteItem.getTags());
+        contentValues.put("LINK", _noteItem.getLink());
 
         return contentValues;
     }
@@ -154,11 +152,11 @@ public class DatabaseHelper{
         mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
         close();
 
-        MainActivity.mMainFragment.reloadData();
+        MainActivity.loadNotes();
     }
 
     public static void onCancelClick(){
-        MainActivity.mMainFragment.reloadData();
+        MainActivity.loadNotes();
     }
 
     public static String getSubitems(NoteItem _noteItem){

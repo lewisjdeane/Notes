@@ -53,7 +53,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         mText.setText(mNoteItems.get(position).getTitle());
 
         CustomTextView mTime = (CustomTextView) v.findViewById(R.id.item_note_time);
-        mTime.setText(mNoteItems.get(position).getTimeFormatted());
+        mTime.setText(mNoteItems.get(position).getLastModifiedFormatted());
 
         CustomTextView mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
 

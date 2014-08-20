@@ -1,16 +1,9 @@
 package uk.me.lewisdeane.materialnotes.objects;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.activities.MainActivity;
-import uk.me.lewisdeane.materialnotes.databases.Database;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -19,24 +12,25 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 public class NoteItem {
 
     private Context mContext;
-    private String mTitle, mItem;
-    private long mTime;
+    private String mTitle, mItem, mTime, mDate, mTags, mLink;
+    private long mLastModified;
     private boolean isFolder;
 
-    public NoteItem(Context _context, String _title, String _item, boolean _isFolder) {
+    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link) {
         mContext = _context;
         setTitle(_title);
         setItem(_item);
         setIsFolder(_isFolder);
-        setTime();
+        setLastModified();
+        setTime(_time);
+        setDate(_date);
+        setTags(_tags);
+        setLink(_link);
     }
 
-    public NoteItem(Context _context, String _title, String _item, boolean _isFolder, long _time) {
-        mContext = _context;
-        setTitle(_title);
-        setItem(_item);
-        setIsFolder(_isFolder);
-        setTime(_time);
+    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, long _lastModified) {
+        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
+        setLastModified(_lastModified);
     }
 
     public void setTitle(String _title){
@@ -51,12 +45,28 @@ public class NoteItem {
         mItem = _item;
     }
 
-    private void setTime(){
-        mTime = System.currentTimeMillis();
+    private void setLastModified(){
+        mLastModified = System.currentTimeMillis();
     }
 
-    private void setTime(long _time){
+    private void setLastModified(long _lastModified){
+        mLastModified = _lastModified;
+    }
+
+    public void setTime(String _time){
         mTime = _time;
+    }
+
+    public void setDate(String _date){
+        mDate = _date;
+    }
+
+    public void setTags(String _tags){
+        mTags = _tags;
+    }
+
+    public void setLink(String _link){
+        mLink = _link;
     }
 
     public String getTitle(){
@@ -71,12 +81,28 @@ public class NoteItem {
         return mItem;
     }
 
-    public String getTimeFormatted(){
+    public String getTime(){
+        return mTime;
+    }
+
+    public String getDate(){
+        return mDate;
+    }
+
+    public String getTags(){
+        return mTags;
+    }
+
+    public String getLink(){
+        return mLink;
+    }
+
+    public String getLastModifiedFormatted(){
         return formatDifference(getDifference());
     }
 
-    public long getTime(){
-        return mTime;
+    public long getLastModified(){
+        return mLastModified;
     }
 
     private String formatDifference(long _difference){
@@ -111,12 +137,14 @@ public class NoteItem {
     }
 
     private long getDifference(){
-        return System.currentTimeMillis() - mTime;
+        return System.currentTimeMillis() - mLastModified;
     }
 
     public void addToDatabase(){
-        new DatabaseHelper(mContext).addNoteToDatabase(this);
+        new DatabaseHelper(mContext).addNoteToDatabase(null, this);
     }
+
+    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(mContext).addNoteToDatabase(_oldItem, this); }
 
     public void deleteFromDatabase(){
         new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
