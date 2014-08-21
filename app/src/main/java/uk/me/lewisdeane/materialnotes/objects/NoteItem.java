@@ -1,6 +1,7 @@
 package uk.me.lewisdeane.materialnotes.objects;
 
 import android.content.Context;
+
 import java.util.HashMap;
 
 import uk.me.lewisdeane.materialnotes.R;

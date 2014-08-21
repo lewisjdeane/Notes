@@ -59,6 +59,7 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/item_note_overflow"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:minHeight="40dp"

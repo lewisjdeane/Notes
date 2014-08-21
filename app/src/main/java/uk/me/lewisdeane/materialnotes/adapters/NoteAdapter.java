@@ -1,22 +1,19 @@
 package uk.me.lewisdeane.materialnotes.adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
+import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
@@ -61,7 +58,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         if(!mNoteItems.get(position).getIsFolder())
             mItem.setText(mNoteItems.get(position).getItem());
         else {
-            mItem.setText(new DatabaseHelper(mContext).getSubitems(mNoteItems.get(position)));
+            mItem.setText(new DatabaseHelper(mContext).getSubItems(mNoteItems.get(position)));
             mItem.setTextSize(14);
         }
 
@@ -71,6 +68,37 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
         if(mNoteItems.get(position).getIsFolder())
             mImg.setVisibility(View.VISIBLE);
+
+        final ImageButton overflow = (ImageButton) v.findViewById(R.id.item_note_overflow);
+        overflow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context themedContext = mContext;
+                themedContext.setTheme(android.R.style.Theme_Holo_Light);
+                PopupMenu popupMenu = new PopupMenu(themedContext, view);
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                inflater.inflate(R.menu.popup, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.menu_popup_open:
+                                MainActivity.openNote(mNoteItems.get(position));
+                                break;
+                            case R.id.menu_popup_edit:
+                                MainActivity.editNote(mNoteItems.get(position));
+                                break;
+                            case R.id.menu_popup_delete:
+                                MainActivity.deleteNote(mNoteItems.get(position));
+                        }
+                        return false;
+                    }
+                });
+
+                popupMenu.show();
+            }
+        });
 
         return v;
     }

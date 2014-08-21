@@ -1,35 +1,23 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Fragment;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.AddAdapter;
-import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.AddItem;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
-import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
 /**
  * Created by Lewis on 13/08/2014.
@@ -85,17 +73,18 @@ public class AddFragment extends Fragment {
 
     public void setUp(NoteItem _noteItem){
         ORIGINAL_NOTE = null;
+        mIsFolder = false;
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
         mTitle.setText("");
-        mTitle.setClickable(_noteItem == null ? true : false);
-        mTitle.setFocusable(_noteItem == null ? true : false);
-        mTitle.setFocusableInTouchMode(_noteItem == null ? true : false);
+        mTitle.setClickable(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
+        mTitle.setFocusable(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
+        mTitle.setFocusableInTouchMode(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
 
         for(AddItem addItem : mAddItems)
             addItem.setText("");
 
-        if(MainActivity.isInAdd == 2) {
+        if(_noteItem != null) {
             ORIGINAL_NOTE = _noteItem;
             mAddItems.get(0).setText(_noteItem.getItem());
             mAddItems.get(1).setText(_noteItem.getTime());

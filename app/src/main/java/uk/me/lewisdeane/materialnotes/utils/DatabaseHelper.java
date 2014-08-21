@@ -4,12 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
@@ -34,7 +30,7 @@ public class DatabaseHelper{
     public void addNoteToDatabase(NoteItem _oldNoteItem, NoteItem _newNoteItem){
         open("W");
         if(_oldNoteItem != null)
-            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + _oldNoteItem.getLastModified(), new String[]{_oldNoteItem.getTitle(), _oldNoteItem.getItem()});
+            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _oldNoteItem.getLastModified(), new String[]{_oldNoteItem.getTitle(), _oldNoteItem.getItem()});
         mSQLiteDatabase.insert(Database.NOTE_TABLE, null, getContentVals(_newNoteItem));
         close();
     }
@@ -49,7 +45,7 @@ public class DatabaseHelper{
                 public void onConfirmClick() {
                     open("W");
 
-                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
 
                     mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
                     close();
@@ -68,7 +64,7 @@ public class DatabaseHelper{
             customDialog.setCancelable(false);
         } else {
             open("W");
-            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND SUBTITLE=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
+            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
             close();
             MainActivity.loadNotes();
         }
@@ -77,39 +73,13 @@ public class DatabaseHelper{
     public static ArrayList<NoteItem> getNotesFromDatabase(){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "TITLE", "SUBTITLE", "LAST_MODIFIED", "FOLDER", "TIME", "DATE", "TAGS", "LINK"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                String[] notePathArray = cursor.getString(0).split("/");
-                String[] currentPathArray = MainActivity.PATH.split("/");
-
-                ArrayList<String> notePath = new ArrayList<String>();
-                ArrayList<String> currentPath = new ArrayList<String>();
-
-                for(int i = 0; i < notePathArray.length-1; i++)
-                    notePath.add(notePathArray[i]);
-
-                for(int i = 0; i < currentPathArray.length; i++) {
-                    if(currentPathArray[i].length() > 0)
-                        currentPath.add(currentPathArray[i]);
-                }
-
-                boolean canAdd = false;
-
-                if(currentPath.size() == notePath.size()){
-                    canAdd = true;
-                    for(int i = 0; i < currentPath.size(); i++){
-                        if(!currentPath.get(i).equals(notePath.get(i))) {
-                            canAdd = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(canAdd)
-                    noteItems.add(new NoteItem(mContext, cursor.getString(4).equals("true") ? true : false, cursor.getString(1), cursor.getString(2), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getLong(3)));
+                if(getPrevPath(cursor.getString(0)).equals(MainActivity.PATH))
+                    noteItems.add(new NoteItem(mContext, cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
 
             } while(cursor.moveToNext());
         }
@@ -121,15 +91,15 @@ public class DatabaseHelper{
     private ContentValues getContentVals(NoteItem _noteItem){
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put("PATH", MainActivity.PATH.equals("") ?  _noteItem.getTitle() : MainActivity.PATH + "/" + _noteItem.getTitle());
-        contentValues.put("TITLE", _noteItem.getTitle());
-        contentValues.put("SUBTITLE", _noteItem.getItem());
-        contentValues.put("LAST_MODIFIED", _noteItem.getLastModified());
+        contentValues.put("PATH", MainActivity.PATH + _noteItem.getTitle());
         contentValues.put("FOLDER", _noteItem.getIsFolder() ? "true" : "false");
+        contentValues.put("TITLE", _noteItem.getTitle());
+        contentValues.put("ITEM", _noteItem.getItem());
         contentValues.put("TIME", _noteItem.getTime());
         contentValues.put("DATE", _noteItem.getDate());
         contentValues.put("TAGS", _noteItem.getTags());
         contentValues.put("LINK", _noteItem.getLink());
+        contentValues.put("LAST_MODIFIED", _noteItem.getLastModified());
 
         return contentValues;
     }
@@ -144,33 +114,41 @@ public class DatabaseHelper{
         mDatabase.close();
     }
 
-    public static String getSubitems(NoteItem _noteItem){
-        String subitems = "";
+    public static String getSubItems(NoteItem _noteItem){
+        String subItems = "";
         open("R");
         Cursor cursor = mSQLiteDatabase.rawQuery("SELECT TITLE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(_noteItem) +"%'", null);
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                //if(MainActivity.PATH.split("/").length == (cursor.getString(0).split("/").length-1)) **** Check that only direct subitems are added
-                    subitems += cursor.getString(0) + ", ";
+                if (MainActivity.PATH.split("/").length == cursor.getString(0).split("/").length)
+                    subItems += cursor.getString(0) + ", ";
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         close();
 
-        return subitems.length() == 0 ? mContext.getString(R.string.no_subitems) : subitems.substring(0, subitems.length()-2);
+        return subItems.length() == 0 ? mContext.getString(R.string.no_subitems) : subItems.substring(0, subItems.length()-2);
     }
 
     private static String getTempPath(NoteItem _noteItem){
-        String temp = MainActivity.PATH.length() > 0 ? MainActivity.PATH + "/" + _noteItem.getTitle() + "/" : _noteItem.getTitle() + "/";
+        String temp = MainActivity.PATH + _noteItem.getTitle() + "/";
 
         for(int i = 0; i < temp.length(); i++){
             if((temp.charAt(i)+"").equals("'") && !(temp.charAt(i-1)+"").equals("\'"))
                 temp = temp.substring(0, i) + '\'' +  temp.substring(i);
         }
-
         return temp;
+    }
+
+    public static String getPrevPath(String _path){
+        for(int i = _path.length()-2; i >= 0; i--){
+            if((_path.charAt(i)+"").equals("/")){
+                return _path.substring(0, i+1);
+            }
+        }
+        return "/";
     }
 }

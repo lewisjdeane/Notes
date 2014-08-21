@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -16,9 +15,7 @@ import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
-import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.AddItem;
-import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
  * Created by Lewis on 19/08/2014.

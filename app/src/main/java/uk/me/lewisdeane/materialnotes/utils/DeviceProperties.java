@@ -1,9 +1,7 @@
 package uk.me.lewisdeane.materialnotes.utils;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.WindowManager;
 
 /**

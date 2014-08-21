@@ -35,19 +35,23 @@
     <string name="add_tags_hint">Tags</string>
     <string name="add_link_hint">Link</string>
 
+    <string name="open">Open</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
     <string-array name="navigation_items">
         <item>Everything</item>
-        <item>Reminders</item>
-        <item>Favourites</item>
         <item>Upcoming</item>
-        <item>High Priority</item>
-        <item>Medium Priority</item>
-        <item>Low Priority</item>
         <item>Archived</item>
         <item>Settings</item>
         <item>Information</item>
     </string-array>
 
+    <string name="navigation_item_1">Everything</string>
+    <string name="navigation_item_2">Upcoming</string>
+    <string name="navigation_item_3">Archived</string>
+    <string name="navigation_item_4">Settings</string>
+    <string name="navigation_item_5">Info</string>
 
 
 </resources>

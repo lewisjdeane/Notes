@@ -2,8 +2,6 @@ package uk.me.lewisdeane.materialnotes.utils;
 
 import android.animation.ObjectAnimator;
 import android.view.View;
-import android.view.animation.Animation;
-import android.widget.Button;
 
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 

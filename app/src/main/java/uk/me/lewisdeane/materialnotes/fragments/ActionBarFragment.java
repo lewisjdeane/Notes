@@ -2,7 +2,6 @@ package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ public class ActionBarFragment extends Fragment {
     private View mRootView;
     public static LinearLayout mContainer, mActionBar1;
     public static ImageButton mMenu, mSearch;
-    public static CustomTextView mHeader, mSubHeader;
+    public static CustomTextView mHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,8 +41,7 @@ public class ActionBarFragment extends Fragment {
         mMenu = (ImageButton) mRootView.findViewById(R.id.fragment_action_bar_1_toggle);
         mSearch = (ImageButton) mRootView.findViewById(R.id.fragment_action_bar_1_search);
 
-        mHeader = (CustomTextView) mRootView.findViewById(R.id.fragment_action_bar_1_header);
-        mSubHeader = (CustomTextView) mRootView.findViewById(R.id.fragment_action_bar_1_subheader);
+        mHeader = (CustomTextView) mRootView.findViewById(R.id.fragment_action_bar_1_subheader);
     }
 
     private void setListeners(){
@@ -62,18 +60,9 @@ public class ActionBarFragment extends Fragment {
     }
 
     public String getNewPath(boolean _backKey){
-        if(MainActivity.isInAdd == 0 && !MainActivity.PATH.equals("") && !MainActivity.PATH.contains("/")){
-            return "";
-        } else if(MainActivity.isInAdd == 0 && !MainActivity.PATH.equals("") && MainActivity.PATH.contains("/")) {
-            String[] split = MainActivity.PATH.split("/");
-
-            String temp = "";
-
-            for (int i = 0; i < split.length - 1; i++)
-                temp += split[i] + "/";
-
-            return temp.substring(0, temp.length() - 1);
-        }  else if(MainActivity.isInAdd == 0 && MainActivity.PATH.equals("")){
+        if(MainActivity.isInAdd == 0 && MainActivity.PATH.length() > 1){
+            return DatabaseHelper.getPrevPath(MainActivity.PATH);
+        } else if(MainActivity.isInAdd == 0 && MainActivity.PATH.equals("/")){
             if(_backKey)
                 getActivity().finish();
             else
@@ -91,15 +80,16 @@ public class ActionBarFragment extends Fragment {
 
     public void setUp(String _text){
         String[] split = MainActivity.PATH.split("/");
-        mSubHeader.setText(split[0].length() == 0 ? getString(R.string.app_name) : split[split.length-1]);
-        if(MainActivity.PATH.length() == 0 && MainActivity.isInAdd == 0)
+        mHeader.setText(MainActivity.PATH.equals("/") ? getString(R.string.app_name) : split[split.length-1]);
+
+        if(MainActivity.PATH.equals("/") && MainActivity.isInAdd == 0)
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_menu_white));
         else {
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_arrow_back_white));
         }
 
         if(_text != null)
-            mSubHeader.setText(_text);
+            mHeader.setText(_text);
     }
 
     public void onDrawerOpened(){
@@ -111,6 +101,6 @@ public class ActionBarFragment extends Fragment {
     }
 
     public void showSearchIcon(boolean _shouldShow){
-        mSearch.setVisibility(_shouldShow ? View.VISIBLE : View.GONE);
+        MainActivity.mActionBarFragment.mSearch.setClickable(_shouldShow);
     }
 }
