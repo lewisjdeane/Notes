@@ -33,6 +33,7 @@ public class NavigationDrawerFragment extends Fragment {
     public static ActionBarDrawerToggle mDrawerToggle;
     public static DrawerLayout mDrawerLayout;
     public static ArrayList<DrawerItem> mDrawerItems = new ArrayList<DrawerItem>();
+    public static DrawerAdapter mDrawerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +54,9 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerItems.add(new DrawerItem(R.drawable.ic_action_info_outline_grey, getString(R.string.navigation_item_5), false, true));
 
         mListView = (ListView) mRootView.findViewById(R.id.fragment_navigation_drawer_list);
-        mListView.setAdapter(new DrawerAdapter(getActivity(), R.layout.item_drawer, mDrawerItems));
+
+        mDrawerAdapter = new DrawerAdapter(getActivity(), R.layout.item_drawer, mDrawerItems);
+        mListView.setAdapter(mDrawerAdapter);
     }
 
     private void setListeners(){

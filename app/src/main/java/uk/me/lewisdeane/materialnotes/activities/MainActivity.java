@@ -40,6 +40,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static boolean DRAWER_OPEN = false;
     public static String PATH = "/"; // This holds the current path of the parent note eg. University or University/Bath or University/Bath/Work
     public static String MODE = "Everything"; // Holds the string of the current mode from navigation drawer;
+    public static int CURRENT_SELECTED_POSITION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +87,28 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         if(!_item.equals(MODE)){
             MODE = _item;
             PATH = "/";
+
+            CURRENT_SELECTED_POSITION = _position;
+            isInAdd = 0;
+            mAddFragment.setUp(null);
+            mActionBarFragment.setUp(null);
+
+            for(DrawerItem di : _items)
+                di.setIsSelected(false);
+
             if(_position < _items.size() - 2 ){
+                _items.get(CURRENT_SELECTED_POSITION).setIsSelected(true);
                 loadNotes();
             } else if(_position == _items.size()-2){
                 loadSettings();
             } else if(_position == _items.size()-1){
                 loadInfo();
             }
+
+            mMainFragment.applyListViewFeatures();
         }
+
+        mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
         mNavigationDrawerFragment.mDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
