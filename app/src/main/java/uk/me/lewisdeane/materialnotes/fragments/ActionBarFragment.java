@@ -13,6 +13,7 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
+import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -60,9 +61,9 @@ public class ActionBarFragment extends Fragment {
     }
 
     public String getNewPath(boolean _backKey){
-        if(MainActivity.isInAdd == 0 && MainActivity.PATH.length() > 1){
+        if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.length() > 1){
             return DatabaseHelper.getPrevPath(MainActivity.PATH);
-        } else if(MainActivity.isInAdd == 0 && MainActivity.PATH.equals("/")){
+        } else if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.equals("/")){
             if(_backKey)
                 getActivity().finish();
             else
@@ -71,7 +72,7 @@ public class ActionBarFragment extends Fragment {
             Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
             Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
-            MainActivity.isInAdd = 0;
+            MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
         }
         return MainActivity.PATH;
     }
@@ -80,7 +81,7 @@ public class ActionBarFragment extends Fragment {
         String[] split = MainActivity.PATH.split("/");
         mHeader.setText(MainActivity.PATH.equals("/") ? getSelectedItem() : split[split.length-1]);
 
-        if(MainActivity.PATH.equals("/") && MainActivity.isInAdd == 0)
+        if(MainActivity.PATH.equals("/") && MainActivity.ADD_MODE == MainActivity.AddMode.NONE)
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_menu_white));
         else {
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_arrow_back_white));

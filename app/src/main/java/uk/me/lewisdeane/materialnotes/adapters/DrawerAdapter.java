@@ -3,17 +3,11 @@ package uk.me.lewisdeane.materialnotes.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
@@ -22,8 +16,10 @@ import uk.me.lewisdeane.materialnotes.utils.Colours;
 
 public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
 
-    ArrayList<DrawerItem> mDrawerItems = new ArrayList<DrawerItem>();
-    Context mContext;
+    private ArrayList<DrawerItem> mDrawerItems = new ArrayList<DrawerItem>();
+    private Context mContext;
+    private CustomTextView mTitle;
+    private ImageView mIcon;
 
     public DrawerAdapter(Context context, int resource,
                          ArrayList<DrawerItem> _drawerItems) {
@@ -37,28 +33,23 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
 
-        if (v == null) {
-            LayoutInflater vi;
-            vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.item_drawer, null);
-        }
+        // Inflate correct layout.
+        if (v == null)
+            v = LayoutInflater.from(getContext()).inflate(R.layout.item_drawer, null);
 
-        DrawerItem di = mDrawerItems.get(position);
+        // Get current item from list.
+        DrawerItem drawerItem = mDrawerItems.get(position);
 
-        CustomTextView titleView = (CustomTextView) v.findViewById(R.id.item_drawer_title);
-        ImageView imgView = (ImageView) v.findViewById(R.id.item_drawer_img);
+        // Initialise views.
+        mTitle = (CustomTextView) v.findViewById(R.id.item_drawer_title);
+        mIcon = (ImageView) v.findViewById(R.id.item_drawer_img);
 
-        titleView.setTypeface(Typeface.createFromAsset(getContext().getResources().getAssets(), "Roboto-Medium.ttf"));
+        // Set data from list.
+        mTitle.setText(drawerItem.getTitle());
+        mIcon.setImageDrawable(Colours.getColouredDrawable(mContext.getResources().getDrawable(drawerItem.getRes()), mContext.getResources().getColor(drawerItem.getIsSelected() ? R.color.blue_primary : R.color.darkish_grey)));
 
-        if(di.getIsSelected())
-            titleView.setTextColor(mContext.getResources().getColor(R.color.blue_primary));
-        else
-            titleView.setTextColor(mContext.getResources().getColor(R.color.darkish_grey));
-
-        Drawable drawable = Colours.getColouredDrawable(mContext.getResources().getDrawable(di.getRes()), mContext.getResources().getColor(di.getIsSelected() ? R.color.blue_primary : R.color.darkish_grey));
-        imgView.setImageDrawable(drawable);
-
-        titleView.setText(di.getTitle());
+        // Apply properties based on if drawer item is currently selected.
+        mTitle.setTextColor(drawerItem.getIsSelected() ? Colours.getPrimaryColour() : Colours.getDarkColour());
 
         return v;
     }

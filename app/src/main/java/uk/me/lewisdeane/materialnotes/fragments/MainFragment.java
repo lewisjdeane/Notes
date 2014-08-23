@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,7 +21,9 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
+import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
+import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
 /**
  * Created by Lewis on 05/08/2014.
@@ -34,6 +37,8 @@ public class MainFragment extends Fragment {
     private SwipeDismissAdapter mSwipeDismissAdapter;
 
     private static Context mContext;
+
+    private float START_Y, START_X;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +67,32 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MainActivity.openNote(mNoteItems.get(i));
+            }
+        });
+
+        mList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        START_Y = motionEvent.getY();
+                        START_X = motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // Check to see if swiping item or scrolling
+                        if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > new DeviceProperties(getActivity()).convertToPx(100)) {
+                            if (MainActivity.isFABHidden && motionEvent.getY() > START_Y) {
+                                Animations.animateAddOut(MainActivity.mFABFragment.mRootView);
+                                MainActivity.isFABHidden = false;
+                            } else if (!MainActivity.isFABHidden && motionEvent.getY() < START_Y) {
+                                Animations.animateAddIn(MainActivity.mFABFragment.mRootView);
+                                MainActivity.isFABHidden = true;
+                            }
+                        } else{
+
+                        }
+                }
+                return false;
             }
         });
     }

@@ -31,7 +31,11 @@ public abstract class Colours {
         return _drawable;
     }
 
-    public static int getSelectedColour(){
+    public static int getPrimaryColour(){
         return MainActivity.mContext.getResources().getColor(R.color.blue_primary);
+    }
+
+    public static int getDarkColour(){
+        return MainActivity.mContext.getResources().getColor(R.color.dark_grey);
     }
 }

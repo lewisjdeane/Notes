@@ -27,6 +27,9 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
     private ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
     private Context mContext;
+    private CustomTextView mTitle, mItem, mLastModified;
+    private ImageView mFolder;
+    private LinearLayout mOverflowLayout;
 
     public NoteAdapter(Context context, int resource,
                        ArrayList<NoteItem> _noteItems) {
@@ -40,50 +43,40 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
 
-        if (v == null) {
+        // Inflate layout.
+        if (v == null)
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
-        }
 
-        /*
-        If it's a folder do not show the item text, instead replace it with a list of subitems exc. subfolders in a smaller font.
-         */
+        // Get current NoteItem
+        NoteItem noteItem = mNoteItems.get(position);
 
-        CustomTextView mText = (CustomTextView) v.findViewById(R.id.item_note_title);
-        mText.setText(mNoteItems.get(position).getTitle());
+        // Initialise views.
+        mTitle = (CustomTextView) v.findViewById(R.id.item_note_title);
+        mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
+        mLastModified = (CustomTextView) v.findViewById(R.id.item_note_last_modified);
 
-        CustomTextView mTime = (CustomTextView) v.findViewById(R.id.item_note_time);
-        mTime.setText(mNoteItems.get(position).getLastModifiedFormatted());
+        mFolder = (ImageView) v.findViewById(R.id.item_note_folder);
+        final ImageView mOverflow = (ImageView) v.findViewById(R.id.item_note_overflow);
 
-        CustomTextView mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
+        mOverflowLayout = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
 
-        mItem.setVisibility(View.VISIBLE);
-        if(!mNoteItems.get(position).getIsFolder())
-            mItem.setText(mNoteItems.get(position).getItem());
-        else {
-            mItem.setText(new DatabaseHelper(mContext).getSubItems(mNoteItems.get(position)));
-            mItem.setTextSize(14);
-        }
+        // Apply data from NoteItems.
+        mTitle.setText(mNoteItems.get(position).getTitle());
+        mItem.setText(noteItem.getIsFolder() ? new DatabaseHelper(mContext).getSubItems(noteItem) : noteItem.getItem());
+        mLastModified.setText(noteItem.getLastModifiedFormatted());
 
-        mText.setTextColor(Colours.getSelectedColour());
+        // Apply properties to item.
+        mTitle.setTextColor(Colours.getPrimaryColour());
+        mFolder.setVisibility(noteItem.getIsFolder() ? View.VISIBLE : View.INVISIBLE);
 
-        ImageView mImg = (ImageView) v.findViewById(R.id.item_note_folder);
-
-        mImg.setVisibility(View.INVISIBLE);
-
-        if(mNoteItems.get(position).getIsFolder()){
-            mImg.setVisibility(View.VISIBLE);
-        }
-
-        final ImageButton overflow = (ImageButton) v.findViewById(R.id.item_note_overflow);
-
-        final LinearLayout overflowLayout = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
-
-        overflowLayout.setOnClickListener(new View.OnClickListener() {
+        // Set listener so popup menu shows on overflow click.
+        mOverflowLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context themedContext = mContext;
                 themedContext.setTheme(android.R.style.Theme_Holo_Light);
-                PopupMenu popupMenu = new PopupMenu(themedContext, overflow);
+
+                PopupMenu popupMenu = new PopupMenu(themedContext, mOverflow);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.popup, popupMenu.getMenu());
 
@@ -99,6 +92,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                                 break;
                             case R.id.menu_popup_delete:
                                 MainActivity.deleteNote(mNoteItems.get(position));
+                                break;
                         }
                         return false;
                     }

@@ -1,8 +1,12 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
+//import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +40,8 @@ public class AddFragment extends Fragment {
 
     public static NoteItem ORIGINAL_NOTE;
 
+    private static Context mContext;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class AddFragment extends Fragment {
     }
 
     private void init() {
+        mContext = getActivity();
+
         mContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_add_container);
         mPrimaryContainer = (LinearLayout) mRootView.findViewById(R.id.fragment_add_primary_container);
 
@@ -63,7 +71,7 @@ public class AddFragment extends Fragment {
         mFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.isInAdd == 1) {
+                if (MainActivity.ADD_MODE == MainActivity.AddMode.ADD) {
                     mIsFolder = !mIsFolder;
                     mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
                 }
@@ -77,9 +85,10 @@ public class AddFragment extends Fragment {
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
         mTitle.setText("");
-        mTitle.setClickable(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
-        mTitle.setFocusable(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
-        mTitle.setFocusableInTouchMode(_noteItem != null && MainActivity.isInAdd == 2 ? false : true);
+        boolean isEditable = _noteItem != null && MainActivity.ADD_MODE == MainActivity.AddMode.VIEW ? false : true;
+        mTitle.setClickable(isEditable);
+        mTitle.setFocusable(isEditable);
+        mTitle.setFocusableInTouchMode(isEditable);
 
         for(AddItem addItem : mAddItems)
             addItem.setText("");
@@ -90,7 +99,7 @@ public class AddFragment extends Fragment {
             mAddItems.get(1).setText(_noteItem.getTime());
             mAddItems.get(2).setText(_noteItem.getDate());
             mAddItems.get(3).setText(_noteItem.getTags());
-            mAddItems.get(4).setText(_noteItem.getLink());
+            //mAddItems.get(4).setText(_noteItem.getLink());
 
             mTitle.setText(_noteItem.getTitle());
             mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));

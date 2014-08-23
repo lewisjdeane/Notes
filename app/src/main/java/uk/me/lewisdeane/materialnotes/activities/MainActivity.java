@@ -3,13 +3,13 @@ package uk.me.lewisdeane.materialnotes.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
@@ -33,14 +33,17 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static FrameLayout mContainer;
     public static RelativeLayout mMainContainer;
 
-    public static int isInAdd = 0; // 0 normally, 1 for editting/add, 2 for viewing
-
     public static Context mContext;
 
-    public static boolean DRAWER_OPEN = false;
-    public static String PATH = "/"; // This holds the current path of the parent note eg. University or University/Bath or University/Bath/Work
-    public static String MODE = "Everything"; // Holds the string of the current mode from navigation drawer;
+    public static boolean DRAWER_OPEN = false, isFABHidden = false;
+    public static enum AddMode {NONE, ADD, VIEW};
+    public static String PATH = "/";
+    public static String MODE = "Everything";
     public static int CURRENT_SELECTED_POSITION = 0;
+
+    public static AddMode ADD_MODE = AddMode.NONE;
+
+    public static FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             PATH = "/";
 
             CURRENT_SELECTED_POSITION = _position;
-            isInAdd = 0;
+            ADD_MODE = AddMode.NONE;
 
             for(DrawerItem di : _items)
                 di.setIsSelected(false);
@@ -118,7 +121,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     private void loadSettings(){
-
     }
 
     private void loadInfo(){
@@ -133,7 +135,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         if (_noteItem.getIsFolder()) {
             PATH += _noteItem.getTitle() + "/";
         } else {
-            isInAdd = 2;
+            ADD_MODE = AddMode.VIEW;
             mAddFragment.setUp(_noteItem);
 
             Animations.setAddAnimation(false, mFABFragment.mRootView);
@@ -144,7 +146,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     public static void editNote(NoteItem _noteItem){
-        isInAdd = 1;
+        ADD_MODE = AddMode.ADD;
         mAddFragment.setUp(_noteItem);
 
         Animations.setAddAnimation(false, mFABFragment.mRootView);
