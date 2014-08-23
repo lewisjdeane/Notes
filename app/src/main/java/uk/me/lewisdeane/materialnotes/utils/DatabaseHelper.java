@@ -117,12 +117,12 @@ public class DatabaseHelper{
     public static String getSubItems(NoteItem _noteItem){
         String subItems = "";
         open("R");
-        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT TITLE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(_noteItem) +"%'", null);
+        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT TITLE, PATH FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(_noteItem) +"%'", null);
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                if (MainActivity.PATH.split("/").length == cursor.getString(0).split("/").length)
+                if (cursor.getString(1).startsWith(MainActivity.PATH) && Misc.getOccurences(cursor.getString(1), "/")-1 == Misc.getOccurences(MainActivity.PATH, "/"))
                     subItems += cursor.getString(0) + ", ";
             } while (cursor.moveToNext());
         }

@@ -90,8 +90,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
             CURRENT_SELECTED_POSITION = _position;
             isInAdd = 0;
-            mAddFragment.setUp(null);
-            mActionBarFragment.setUp(null);
 
             for(DrawerItem di : _items)
                 di.setIsSelected(false);
@@ -106,9 +104,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             }
 
             mMainFragment.applyListViewFeatures();
+            mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
         }
 
-        mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
+        mActionBarFragment.setUp(null);
         mNavigationDrawerFragment.mDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 

@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/aqua_primary"
+        android:background="@color/blue_primary"
         android:paddingLeft="16dp">
 
         <ImageButton

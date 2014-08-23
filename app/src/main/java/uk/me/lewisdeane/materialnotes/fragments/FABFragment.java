@@ -2,18 +2,21 @@ package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
+import uk.me.lewisdeane.materialnotes.utils.Misc;
 
 /**
  * Created by Lewis on 05/08/2014.
@@ -24,6 +27,7 @@ public class FABFragment extends Fragment {
     public static Button mFAB;
     private DeviceProperties mDeviceProperties;
     public static int amountToMoveDown;
+    private Paint mPaintBorder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,7 +43,7 @@ public class FABFragment extends Fragment {
         mDeviceProperties = new DeviceProperties(getActivity());
 
         GradientDrawable bg = (GradientDrawable) mFAB.getBackground();
-        bg.setColor(Color.parseColor("#ff9900"));
+        bg.setColor(getResources().getColor(R.color.pink_primary));
 
         amountToMoveDown = -(int) (mDeviceProperties.getHeight());
     }
@@ -63,7 +67,7 @@ public class FABFragment extends Fragment {
                         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
                         MainActivity.isInAdd = 0;
-
+                        Misc.hideKeyboard();
                         MainActivity.mActionBarFragment.setUp(null);
                     }
                 } else if(MainActivity.isInAdd == 2){

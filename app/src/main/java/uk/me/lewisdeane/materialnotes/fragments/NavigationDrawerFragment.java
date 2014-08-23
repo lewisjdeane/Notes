@@ -47,11 +47,12 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void init() {
-        mDrawerItems.add(new DrawerItem(R.drawable.background_circle, getString(R.string.navigation_item_1), getIsSelected(getString(R.string.navigation_item_1)), false));
-        mDrawerItems.add(new DrawerItem(R.drawable.background_circle, getString(R.string.navigation_item_2), getIsSelected(getString(R.string.navigation_item_2)), false));
-        mDrawerItems.add(new DrawerItem(R.drawable.background_circle, getString(R.string.navigation_item_3), getIsSelected(getString(R.string.navigation_item_3)), false));
-        mDrawerItems.add(new DrawerItem(R.drawable.ic_action_settings_grey, getString(R.string.navigation_item_4), false, true));
-        mDrawerItems.add(new DrawerItem(R.drawable.ic_action_info_outline_grey, getString(R.string.navigation_item_5), false, true));
+        mDrawerItems.clear();
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_folder, getString(R.string.navigation_item_1), getIsSelected(getString(R.string.navigation_item_1))));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_upcoming, getString(R.string.navigation_item_2), getIsSelected(getString(R.string.navigation_item_2))));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_delete, getString(R.string.navigation_item_3), getIsSelected(getString(R.string.navigation_item_3))));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_action_settings_grey, getString(R.string.navigation_item_4), false));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_action_info_outline_grey, getString(R.string.navigation_item_5), false));
 
         mListView = (ListView) mRootView.findViewById(R.id.fragment_navigation_drawer_list);
 

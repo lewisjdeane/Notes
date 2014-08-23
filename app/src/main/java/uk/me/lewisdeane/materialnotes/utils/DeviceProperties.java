@@ -24,7 +24,7 @@ public class DeviceProperties {
     }
 
     public float getHeight(){
-        return getScreenHeight() - getStatusHeight() - convertToPx(56 + 120);
+        return getScreenHeight() - getStatusHeight() - convertToPx(56 + 80 + 28 + 16);
     }
 
     private int getStatusHeight(){

@@ -12,40 +12,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:minHeight="80dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
+            android:id="@+id/item_note_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/item_note_img"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="31dp"
-                android:layout_gravity="center_vertical"
-                android:textColor="#FFF"
-                android:background="@drawable/ic_action_folder_aqua" />
-
-            <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
-                android:id="@+id/item_note_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="40dp"
-                android:gravity="left|center_vertical"
-                android:textColor="@color/aqua_primary"
-                android:textSize="24sp"
-                app:font="Roboto-Regular.ttf" />
-
-        </LinearLayout>
+            android:minHeight="40dp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/aqua_primary"
+            android:textSize="24sp"
+            app:font="Roboto-Regular.ttf" />
 
         <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
             android:id="@+id/item_note_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="40dp"
-            android:gravity="left|center_vertical"
+            android:paddingBottom="8dp"
+            android:gravity="left|bottom"
             android:textColor="@color/grey"
             android:textSize="18sp"
             app:font="Roboto-Regular.ttf" />
@@ -53,6 +39,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/item_note_overflow_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="80dp"
@@ -61,22 +48,30 @@
         <ImageButton
             android:id="@+id/item_note_overflow"
             android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:minHeight="40dp"
+            android:layout_height="30dp"
+            android:minHeight="30dp"
             android:scaleType="fitCenter"
-            android:layout_gravity="right|center_vertical"
+            android:layout_gravity="right|top"
             android:src="@drawable/ic_action_3dots"
             android:background="#0000" />
+
+        <ImageView
+            android:id="@+id/item_note_folder"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="2dp"
+            android:scaleType="fitCenter"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/ic_action_folder" />
 
         <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
             android:id="@+id/item_note_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:gravity="right|center_vertical"
-            android:paddingRight="8dp"
-            android:text="19m"
-            android:textColor="@color/grey"
+            android:layout_height="25dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="right|bottom"
+            android:textColor="@color/darkish_grey"
             android:textSize="12sp"
             app:font="Roboto-Regular.ttf" />
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -19,6 +20,7 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 public class NoteAdapter extends ArrayAdapter<NoteItem> {
@@ -62,20 +64,26 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             mItem.setTextSize(14);
         }
 
-        Button mImg = (Button) v.findViewById(R.id.item_note_img);
+        mText.setTextColor(Colours.getSelectedColour());
 
-        mImg.setVisibility(View.GONE);
+        ImageView mImg = (ImageView) v.findViewById(R.id.item_note_folder);
 
-        if(mNoteItems.get(position).getIsFolder())
+        mImg.setVisibility(View.INVISIBLE);
+
+        if(mNoteItems.get(position).getIsFolder()){
             mImg.setVisibility(View.VISIBLE);
+        }
 
         final ImageButton overflow = (ImageButton) v.findViewById(R.id.item_note_overflow);
-        overflow.setOnClickListener(new View.OnClickListener() {
+
+        final LinearLayout overflowLayout = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
+
+        overflowLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context themedContext = mContext;
                 themedContext.setTheme(android.R.style.Theme_Holo_Light);
-                PopupMenu popupMenu = new PopupMenu(themedContext, view);
+                PopupMenu popupMenu = new PopupMenu(themedContext, overflow);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.popup, popupMenu.getMenu());
 

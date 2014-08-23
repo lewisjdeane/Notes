@@ -4,6 +4,7 @@
     android:id="@+id/fab"
     android:layout_width="56dp"
     android:layout_height="56dp"
+    android:paddingBottom="3dp"
     android:background="@drawable/background_circle"
     android:text="+"
     android:textSize="30sp"

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +18,12 @@ import android.widget.TextView;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.DrawerItem;
+import uk.me.lewisdeane.materialnotes.utils.Colours;
 
 public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
 
     ArrayList<DrawerItem> mDrawerItems = new ArrayList<DrawerItem>();
     Context mContext;
-    ArrayList<Typeface> mTypefaces = new ArrayList<Typeface>();
 
     public DrawerAdapter(Context context, int resource,
                          ArrayList<DrawerItem> _drawerItems) {
@@ -37,35 +40,25 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            if (position < 3)
-                v = vi.inflate(R.layout.item_drawer, null);
-            else
-                v = vi.inflate(R.layout.item_drawer_small, null);
+            v = vi.inflate(R.layout.item_drawer, null);
         }
 
         DrawerItem di = mDrawerItems.get(position);
 
-        if (!di.getIsSmall()) {
-            CustomTextView titleView = (CustomTextView) v.findViewById(R.id.item_drawer_title);
-            TextView divider = (TextView) v.findViewById(R.id.item_drawer_bottom_divider);
+        CustomTextView titleView = (CustomTextView) v.findViewById(R.id.item_drawer_title);
+        ImageView imgView = (ImageView) v.findViewById(R.id.item_drawer_img);
 
-            if (di.getIsSelected())
-                titleView.setTypeface(Typeface.createFromAsset(getContext().getResources().getAssets(), "Roboto-Medium.ttf"));
-            else
-                titleView.setTypeface(Typeface.createFromAsset(getContext().getResources().getAssets(), "Roboto-Light.ttf"));
+        titleView.setTypeface(Typeface.createFromAsset(getContext().getResources().getAssets(), "Roboto-Medium.ttf"));
 
-            titleView.setText(di.getTitle());
-        } else {
-            CustomTextView titleView = (CustomTextView) v.findViewById(R.id.item_drawer_small_title);
-            ImageView imageView = (ImageView) v.findViewById(R.id.item_drawer_small_image);
-            TextView topDivider = (TextView) v.findViewById(R.id.item_drawer_small_top_divider);
+        if(di.getIsSelected())
+            titleView.setTextColor(mContext.getResources().getColor(R.color.blue_primary));
+        else
+            titleView.setTextColor(mContext.getResources().getColor(R.color.darkish_grey));
 
-            if(position == 2 || position == 4)
-                topDivider.setBackgroundColor(Color.parseColor("#F7F7F7"));
+        Drawable drawable = Colours.getColouredDrawable(mContext.getResources().getDrawable(di.getRes()), mContext.getResources().getColor(di.getIsSelected() ? R.color.blue_primary : R.color.darkish_grey));
+        imgView.setImageDrawable(drawable);
 
-            titleView.setText(di.getTitle());
-            imageView.setBackgroundDrawable(getContext().getResources().getDrawable(di.getRes()));
-        }
+        titleView.setText(di.getTitle());
 
         return v;
     }

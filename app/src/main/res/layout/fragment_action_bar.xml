@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/aqua_primary">
+    android:background="@color/blue_primary">
 
     <LinearLayout
         android:id="@+id/fragment_action_bar_1"
@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:paddingLeft="16dp"
             android:gravity="left|center_vertical"
             android:textSize="20sp"
             android:textColor="#FFF"

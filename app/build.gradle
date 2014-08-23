@@ -21,7 +21,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'de.hdodenhof:circleimageview:1.1.1'
     compile 'uk.me.lewisdeane.ldialogs:app@aar'
     compile 'de.timroes.android:EnhancedListView:0.3.4'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.0.+'

@@ -67,20 +67,18 @@ public class ActionBarFragment extends Fragment {
                 getActivity().finish();
             else
                 MainActivity.mNavigationDrawerFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
-            return "";
         } else{
             Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
             Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
 
             MainActivity.isInAdd = 0;
-
-            return MainActivity.PATH;
         }
+        return MainActivity.PATH;
     }
 
     public void setUp(String _text){
         String[] split = MainActivity.PATH.split("/");
-        mHeader.setText(MainActivity.PATH.equals("/") ? getString(R.string.app_name) : split[split.length-1]);
+        mHeader.setText(MainActivity.PATH.equals("/") ? getSelectedItem() : split[split.length-1]);
 
         if(MainActivity.PATH.equals("/") && MainActivity.isInAdd == 0)
             mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_menu_white));
@@ -90,6 +88,19 @@ public class ActionBarFragment extends Fragment {
 
         if(_text != null)
             mHeader.setText(_text);
+    }
+
+    private String getSelectedItem(){
+        switch(MainActivity.CURRENT_SELECTED_POSITION){
+            case 0:
+                return getString(R.string.navigation_item_1);
+            case 1:
+                return getString(R.string.navigation_item_2);
+            case 2:
+                return getString(R.string.navigation_item_3);
+            default:
+                return getString(R.string.navigation_item_1);
+        }
     }
 
     public void onDrawerOpened(){
