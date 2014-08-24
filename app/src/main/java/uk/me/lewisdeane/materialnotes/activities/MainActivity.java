@@ -5,12 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
+import uk.me.lewisdeane.lnavigationdrawer.NavigationListView;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
@@ -22,7 +25,7 @@ import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
-public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
+public class MainActivity extends Activity implements NavigationListView.NavigationItemClickListener{
 
     // Fragments that are used in main activity.
     public static ActionBarFragment mActionBarFragment;
@@ -104,6 +107,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         MainActivity.mFABFragment.mRootView.setClickable(false);
     }
 
+    public void onNavigationItemSelected(String _item, ArrayList<NavigationItem> _items, int _position){
+    }
+
     public void onNavigationItemSelected(NoteMode _item, ArrayList<DrawerItem> _items, int _position){
 
         if(!_item.equals(NOTE_MODE)){
@@ -129,7 +135,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
             // Set items swipe able and highlight newly selected item.
             mMainFragment.applyListViewFeatures();
-            mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
+            //mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
         }
 
         // Close drawer and set up actio nbar.

@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
+import uk.me.lewisdeane.lnavigationdrawer.NavigationListView;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.DrawerAdapter;
@@ -28,7 +31,7 @@ import uk.me.lewisdeane.materialnotes.objects.DrawerItem;
 public class NavigationDrawerFragment extends Fragment {
 
     private View mRootView;
-    private ListView mListView;
+    private NavigationListView mListView;
     private NavigationDrawerCallbacks mCallbacks;
     public static ActionBarDrawerToggle mDrawerToggle;
     public static DrawerLayout mDrawerLayout;
@@ -54,19 +57,35 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerItems.add(new DrawerItem(R.drawable.ic_action_settings_grey, getString(R.string.navigation_item_4), false));
         mDrawerItems.add(new DrawerItem(R.drawable.ic_action_info_outline_grey, getString(R.string.navigation_item_5), false));
 
-        mListView = (ListView) mRootView.findViewById(R.id.fragment_navigation_drawer_list);
+        mListView = (NavigationListView) mRootView.findViewById(R.id.fragment_navigation_drawer_list);
 
+        mListView.addNavigationItem(new NavigationItem("Everything", R.drawable.ic_mask_folder, true));
+        mListView.addNavigationItem(new NavigationItem("Upcoming", R.drawable.ic_mask_upcoming));
+        mListView.addNavigationItem(new NavigationItem("Archived", R.drawable.ic_mask_delete));
+        mListView.addNavigationItem(new NavigationItem("Settings", R.drawable.ic_action_settings_grey));
+        mListView.addNavigationItem(new NavigationItem("Information", R.drawable.ic_action_info_outline_grey));
+
+        mListView.setSelectedColor("#FF9900");
+
+        mListView.setNavigationItemClickListener(new NavigationListView.NavigationItemClickListener() {
+            @Override
+            public void onNavigationItemSelected(String s, ArrayList<NavigationItem> navigationItems, int i) {
+            }
+        });
+
+        /*
         mDrawerAdapter = new DrawerAdapter(getActivity(), R.layout.item_drawer, mDrawerItems);
         mListView.setAdapter(mDrawerAdapter);
+        */
     }
 
     private void setListeners(){
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 mCallbacks.onNavigationItemSelected(MainActivity.getNoteMode(i), mDrawerItems, i);
             }
-        });
+        });*/
     }
 
     public void setUp(int _res, DrawerLayout _drawerLayout){
@@ -77,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                mCallbacks.onDrawerClosed();
+                //mCallbacks.onDrawerClosed();
                 MainActivity.mFABFragment.mRootView.setClickable(true);
                 MainActivity.mActionBarFragment.mSearch.setClickable(true);
             }
@@ -85,7 +104,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                mCallbacks.onDrawerOpened();
+                //mCallbacks.onDrawerOpened();
                 MainActivity.mFABFragment.mRootView.setClickable(false);
                 MainActivity.mActionBarFragment.mSearch.setClickable(false);
             }
@@ -116,7 +135,7 @@ public class NavigationDrawerFragment extends Fragment {
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().getClass() + " must implement NavigationDrawerCallbacks.");
+            //throw new ClassCastException(getActivity().getClass() + " must implement NavigationDrawerCallbacks.");
         }
     }
 

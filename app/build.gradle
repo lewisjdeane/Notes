@@ -22,6 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'uk.me.lewisdeane.ldialogs:app@aar'
+    compile 'uk.me.lewisdeane.lnavigationdrawer:lnavigationdrawer@aar'
     compile 'de.timroes.android:EnhancedListView:0.3.4'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.0.+'
 }
