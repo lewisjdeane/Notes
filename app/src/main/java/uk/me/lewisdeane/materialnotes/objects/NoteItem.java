@@ -13,11 +13,11 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 public class NoteItem {
 
     private Context mContext;
-    private String mTitle, mItem, mTime, mDate, mTags, mLink;
+    private String mTitle, mItem, mTime, mDate, mTags, mLink, mPath;
     private long mLastModified;
     private boolean isFolder;
 
-    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link) {
+    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link){
         mContext = _context;
         setTitle(_title);
         setItem(_item);
@@ -29,50 +29,78 @@ public class NoteItem {
         setLink(_link);
     }
 
-    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, long _lastModified) {
+    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, Long _lastModified){
         this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
         setLastModified(_lastModified);
     }
 
-    public void setTitle(String _title){
+    public NoteItem(Context _context, String _path, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link) {
+        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
+        setPath(_path);
+    }
+
+
+    public NoteItem(Context _context, String _path, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, long _lastModified) {
+        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
+        setPath(_path);
+        setLastModified(_lastModified);
+    }
+
+    public NoteItem setTitle(String _title){
         mTitle = _title;
+        return this;
     }
 
-    public void setIsFolder(boolean _isFolder){
+    public NoteItem setPath(String _path){
+        mPath = _path;
+        return this;
+    }
+
+    public NoteItem setIsFolder(boolean _isFolder){
         isFolder = _isFolder;
+        return this;
     }
 
-    public void setItem(String _item){
+    public NoteItem setItem(String _item){
         mItem = _item;
+        return this;
     }
 
-    private void setLastModified(){
+    private NoteItem setLastModified(){
         mLastModified = System.currentTimeMillis();
+        return this;
     }
 
-    private void setLastModified(long _lastModified){
+    private NoteItem setLastModified(long _lastModified){
         mLastModified = _lastModified;
+        return this;
     }
 
-    public void setTime(String _time){
+    public NoteItem setTime(String _time){
         mTime = _time;
+        return this;
     }
 
-    public void setDate(String _date){
+    public NoteItem setDate(String _date){
         mDate = _date;
+        return this;
     }
 
-    public void setTags(String _tags){
+    public NoteItem setTags(String _tags){
         mTags = _tags;
+        return this;
     }
 
-    public void setLink(String _link){
+    public NoteItem setLink(String _link){
         mLink = _link;
+        return this;
     }
 
     public String getTitle(){
         return mTitle;
     }
+
+    public String getPath(){ return mPath; }
 
     public boolean getIsFolder(){
         return isFolder;

@@ -48,9 +48,9 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void init() {
         mDrawerItems.clear();
-        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_folder, getString(R.string.navigation_item_1), getIsSelected(getString(R.string.navigation_item_1))));
-        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_upcoming, getString(R.string.navigation_item_2), getIsSelected(getString(R.string.navigation_item_2))));
-        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_delete, getString(R.string.navigation_item_3), getIsSelected(getString(R.string.navigation_item_3))));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_folder, getString(R.string.navigation_item_1), getIsSelected(MainActivity.NoteMode.EVERYTHING)));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_upcoming, getString(R.string.navigation_item_2), getIsSelected(MainActivity.NoteMode.UPCOMING)));
+        mDrawerItems.add(new DrawerItem(R.drawable.ic_mask_delete, getString(R.string.navigation_item_3), getIsSelected(MainActivity.NoteMode.ARCHIVE)));
         mDrawerItems.add(new DrawerItem(R.drawable.ic_action_settings_grey, getString(R.string.navigation_item_4), false));
         mDrawerItems.add(new DrawerItem(R.drawable.ic_action_info_outline_grey, getString(R.string.navigation_item_5), false));
 
@@ -64,7 +64,7 @@ public class NavigationDrawerFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mCallbacks.onNavigationItemSelected(mDrawerItems.get(i).getTitle(), mDrawerItems, i);
+                mCallbacks.onNavigationItemSelected(MainActivity.getNoteMode(i), mDrawerItems, i);
             }
         });
     }
@@ -106,8 +106,8 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private boolean getIsSelected(String _toCompare){
-        return MainActivity.MODE.equals(_toCompare);
+    private boolean getIsSelected(MainActivity.NoteMode _toCompare){
+        return MainActivity.NOTE_MODE.equals(_toCompare);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     public interface NavigationDrawerCallbacks{
-        public void onNavigationItemSelected(String item, ArrayList<DrawerItem> items, int position);
+        public void onNavigationItemSelected(MainActivity.NoteMode item, ArrayList<DrawerItem> items, int position);
         public void onDrawerOpened();
         public void onDrawerClosed();
     }

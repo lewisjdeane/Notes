@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaActionSound;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -44,10 +46,10 @@ public class DatabaseHelper{
                 @Override
                 public void onConfirmClick() {
                     open("W");
-
-                    mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
-
-                    mSQLiteDatabase.execSQL("DELETE FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(mTempNoteItem)  + "%'");
+                    mSQLiteDatabase.delete(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+                    if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
+                        mSQLiteDatabase.insert(Database.ARCHIVE_TABLE, null, getContentVals(mTempNoteItem));
+                    deleteSubItems(mTempNoteItem);
                     close();
                     MainActivity.loadNotes();
                 }
@@ -64,23 +66,48 @@ public class DatabaseHelper{
             customDialog.setCancelable(false);
         } else {
             open("W");
-            mSQLiteDatabase.delete(Database.NOTE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
+            mSQLiteDatabase.delete(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
+            if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
+                mSQLiteDatabase.insert(Database.ARCHIVE_TABLE, null, getContentVals(_noteItem));
             close();
             MainActivity.loadNotes();
         }
     }
 
+    private void deleteSubItems(NoteItem _noteItem){
+        Database database = new Database(mContext);
+        SQLiteDatabase sqLiteDatabase = database.getReadableDatabase();
+
+        String table = MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
+
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + table + " WHERE PATH LIKE '" + getTempPath(_noteItem) + "%'", null);
+        if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
+            cursor.moveToFirst();
+            do{
+                NoteItem noteItem = new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8));
+                noteItem.setPath(cursor.getString(0));
+                mSQLiteDatabase.delete(table, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + noteItem.getLastModified(), new String[]{noteItem.getTitle(), noteItem.getItem()});
+                if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
+                    mSQLiteDatabase.insert(Database.ARCHIVE_TABLE, null, getContentVals(noteItem));
+            } while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        sqLiteDatabase.close();
+        database.close();
+    }
+
     public static ArrayList<NoteItem> getNotesFromDatabase(){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(Database.NOTE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+        Cursor cursor = mSQLiteDatabase.query(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
                 if(getPrevPath(cursor.getString(0)).equals(MainActivity.PATH))
-                    noteItems.add(new NoteItem(mContext, cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
-
+                    noteItems.add(new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
+                Log.i("",cursor.getString(0));
             } while(cursor.moveToNext());
         }
 
@@ -91,7 +118,9 @@ public class DatabaseHelper{
     private ContentValues getContentVals(NoteItem _noteItem){
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put("PATH", MainActivity.PATH + _noteItem.getTitle());
+        String path = _noteItem.getPath() != null ? _noteItem.getPath() : MainActivity.PATH + _noteItem.getTitle();
+
+        contentValues.put("PATH", path);
         contentValues.put("FOLDER", _noteItem.getIsFolder() ? "true" : "false");
         contentValues.put("TITLE", _noteItem.getTitle());
         contentValues.put("ITEM", _noteItem.getItem());
@@ -117,7 +146,10 @@ public class DatabaseHelper{
     public static String getSubItems(NoteItem _noteItem){
         String subItems = "";
         open("R");
-        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT TITLE, PATH FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + getTempPath(_noteItem) +"%'", null);
+
+        String table = MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
+
+        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT TITLE, PATH FROM " + table + " WHERE PATH LIKE '" + getTempPath(_noteItem) +"%'", null);
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
