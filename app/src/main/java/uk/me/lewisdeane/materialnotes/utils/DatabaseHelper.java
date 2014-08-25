@@ -46,8 +46,8 @@ public class DatabaseHelper{
                 @Override
                 public void onConfirmClick() {
                     open("W");
-                    mSQLiteDatabase.delete(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
-                    if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
+                    mSQLiteDatabase.delete(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+                    if(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE)
                         mSQLiteDatabase.insert(Database.ARCHIVE_TABLE, null, getContentVals(mTempNoteItem));
                     deleteSubItems(mTempNoteItem);
                     close();
@@ -78,7 +78,7 @@ public class DatabaseHelper{
         Database database = new Database(mContext);
         SQLiteDatabase sqLiteDatabase = database.getReadableDatabase();
 
-        String table = MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
+        String table = MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
 
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + table + " WHERE PATH LIKE '" + getTempPath(_noteItem) + "%'", null);
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
@@ -100,15 +100,33 @@ public class DatabaseHelper{
     public static ArrayList<NoteItem> getNotesFromDatabase(){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+        Cursor cursor = mSQLiteDatabase.query(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
                 if(getPrevPath(cursor.getString(0)).equals(MainActivity.PATH))
-                    noteItems.add(new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
-                Log.i("",cursor.getString(0));
+                    noteItems.add(new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true"), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
             } while(cursor.moveToNext());
+        }
+
+        /*
+        Put folders at top, and apply sorting method here.
+         */
+
+        // Remove items without times or dates
+        if(MainActivity.NOTE_MODE == MainActivity.NoteMode.UPCOMING) {
+            for (int i = 0; i < noteItems.size(); i++) {
+                if (noteItems.get(i).getTime().length() == 0 && noteItems.get(i).getDate().length() == 0) {
+                    noteItems.remove(i);
+                    i--;
+                }
+            }
+
+            // Put in chronological order.
+
+        } else{
+            // Sort usual.
         }
 
         close();
@@ -177,9 +195,8 @@ public class DatabaseHelper{
 
     public static String getPrevPath(String _path){
         for(int i = _path.length()-2; i >= 0; i--){
-            if((_path.charAt(i)+"").equals("/")){
+            if((_path.charAt(i)+"").equals("/"))
                 return _path.substring(0, i+1);
-            }
         }
         return "/";
     }

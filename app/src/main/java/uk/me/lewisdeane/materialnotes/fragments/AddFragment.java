@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,7 @@ public class AddFragment extends Fragment {
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
         mTitle.setText("");
-        boolean isEditable = _noteItem != null && MainActivity.ADD_MODE == MainActivity.AddMode.VIEW ? false : true;
+        boolean isEditable = _noteItem == null && MainActivity.ADD_MODE != MainActivity.AddMode.VIEW;
         mTitle.setClickable(isEditable);
         mTitle.setFocusable(isEditable);
         mTitle.setFocusableInTouchMode(isEditable);
@@ -99,8 +100,7 @@ public class AddFragment extends Fragment {
             mAddItems.get(1).setText(_noteItem.getTime());
             mAddItems.get(2).setText(_noteItem.getDate());
             mAddItems.get(3).setText(_noteItem.getTags());
-            //mAddItems.get(4).setText(_noteItem.getLink());
-
+            mAddItems.get(4).setText(_noteItem.getLink());
             mTitle.setText(_noteItem.getTitle());
             mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
         }

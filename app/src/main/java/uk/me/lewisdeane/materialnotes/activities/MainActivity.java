@@ -25,7 +25,7 @@ import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
-public class MainActivity extends Activity implements NavigationListView.NavigationItemClickListener{
+public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     // Fragments that are used in main activity.
     public static ActionBarFragment mActionBarFragment;
@@ -45,8 +45,13 @@ public class MainActivity extends Activity implements NavigationListView.Navigat
     public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false;
 
     // Enums defining different modes available.
-    public static enum AddMode {NONE, ADD, VIEW};
-    public static enum NoteMode { EVERYTHING, UPCOMING, ARCHIVE }
+    public static enum AddMode {
+        NONE, ADD, VIEW
+    }
+
+    ;
+
+    public static enum NoteMode {EVERYTHING, UPCOMING, ARCHIVE}
 
     // Current Path loading notes from.
     public static String PATH = "/";
@@ -87,82 +92,44 @@ public class MainActivity extends Activity implements NavigationListView.Navigat
         mMainContainer = (RelativeLayout) findViewById(R.id.main_container);
 
         // Set up the navigation drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.fragment_navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp((DrawerLayout) findViewById(R.id.drawer_layout));
 
     }
 
-    public void onDrawerOpened(){
+    public void onDrawerOpened() {
         // Set properties applicable when drawer opened.
-        DRAWER_OPEN = false;
+        DRAWER_OPEN = true;
         mActionBarFragment.onDrawerOpened();
         MainActivity.mFABFragment.mRootView.setClickable(true);
     }
 
-    public void onDrawerClosed(){
+    public void onDrawerClosed() {
         // Set properties applicable when drawer closed.
-        DRAWER_OPEN = true;
+        DRAWER_OPEN = false;
         mActionBarFragment.onDrawerClosed();
         MainActivity.mFABFragment.mRootView.setClickable(false);
     }
 
-    public void onNavigationItemSelected(String _item, ArrayList<NavigationItem> _items, int _position){
-    }
-
-    public void onNavigationItemSelected(NoteMode _item, ArrayList<DrawerItem> _items, int _position){
-
-        if(!_item.equals(NOTE_MODE)){
-
-            // If a new drawer item selected then load it.
-            NOTE_MODE = _item;
-            PATH = "/";
-            CURRENT_SELECTED_POSITION = _position;
-            ADD_MODE = AddMode.NONE;
-
-            // Deselect all items.
-            for(DrawerItem di : _items)
-                di.setIsSelected(false);
-
-            if(_position < _items.size() - 2 ){
-                _items.get(CURRENT_SELECTED_POSITION).setIsSelected(true);
-                loadNotes();
-            } else if(_position == _items.size()-2){
-                loadSettings();
-            } else if(_position == _items.size()-1){
-                loadInfo();
-            }
-
-            // Set items swipe able and highlight newly selected item.
-            mMainFragment.applyListViewFeatures();
-            //mNavigationDrawerFragment.mDrawerAdapter.notifyDataSetChanged();
-        }
-
-        // Close drawer and set up actio nbar.
-        mActionBarFragment.setUp(null);
-        mNavigationDrawerFragment.mDrawerLayout.closeDrawer(Gravity.LEFT);
-    }
-
-    public static void loadNotes(){
+    public static void loadNotes() {
         // Load notes from database based on current Note Mode.
         clearNoteList();
         mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase());
         mMainFragment.applyListViewFeatures();
     }
 
-    private void loadSettings(){
+    public static void loadSettings() {
         // Go to settings.
     }
 
-    private void loadInfo(){
+    public static void loadInfo() {
         // Go to info page.
     }
 
-    public static void clearNoteList(){
+    public static void clearNoteList() {
         mMainFragment.mNoteItems.clear();
     }
 
-    public static void openNote(NoteItem _noteItem){
+    public static void openNote(NoteItem _noteItem) {
         if (_noteItem.getIsFolder()) {
             // Append current path so that sub items of folder will be shown.
             PATH += _noteItem.getTitle() + "/";
@@ -180,7 +147,7 @@ public class MainActivity extends Activity implements NavigationListView.Navigat
         loadNotes();
     }
 
-    public static void editNote(NoteItem _noteItem){
+    public static void editNote(NoteItem _noteItem) {
         // Open note in editable mode and apply transformations needed to set up.
         ADD_MODE = AddMode.ADD;
         mAddFragment.setUp(_noteItem);
@@ -190,16 +157,16 @@ public class MainActivity extends Activity implements NavigationListView.Navigat
         mActionBarFragment.setUp(_noteItem.getTitle());
     }
 
-    public static void deleteNote(NoteItem _noteItem){
+    public static void deleteNote(NoteItem _noteItem) {
         // Delete the note from the database and sub items if applicable.
         _noteItem.deleteFromDatabase();
         mMainFragment.mNoteAdapter.remove(_noteItem);
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
     }
 
-    public static NoteMode getNoteMode(int _position){
+    public static NoteMode getNoteMode(int _position) {
         // Return NoteMode from position clicked.
-        switch(_position){
+        switch (_position) {
             case 0:
                 return NoteMode.EVERYTHING;
             case 1:
@@ -212,13 +179,13 @@ public class MainActivity extends Activity implements NavigationListView.Navigat
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         mActionBarFragment.goBack(true);
     }
 }

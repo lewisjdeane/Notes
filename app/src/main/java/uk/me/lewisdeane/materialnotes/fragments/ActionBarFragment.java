@@ -2,6 +2,7 @@ package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
-import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -64,7 +64,7 @@ public class ActionBarFragment extends Fragment {
         if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.length() > 1){
             return DatabaseHelper.getPrevPath(MainActivity.PATH);
         } else if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.equals("/")){
-            if(_backKey)
+            if(_backKey && MainActivity.DRAWER_OPEN)
                 getActivity().finish();
             else
                 MainActivity.mNavigationDrawerFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
@@ -81,11 +81,7 @@ public class ActionBarFragment extends Fragment {
         String[] split = MainActivity.PATH.split("/");
         mHeader.setText(MainActivity.PATH.equals("/") ? getSelectedItem() : split[split.length-1]);
 
-        if(MainActivity.PATH.equals("/") && MainActivity.ADD_MODE == MainActivity.AddMode.NONE)
-            mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_menu_white));
-        else {
-            mMenu.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_arrow_back_white));
-        }
+        mMenu.setImageDrawable(getActivity().getResources().getDrawable(MainActivity.PATH.equals("/") && MainActivity.ADD_MODE == MainActivity.AddMode.NONE ? R.drawable.ic_action_menu_white : R.drawable.ic_action_arrow_back_white));
 
         if(_text != null)
             mHeader.setText(_text);

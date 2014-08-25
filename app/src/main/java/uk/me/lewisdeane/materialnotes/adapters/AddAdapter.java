@@ -3,6 +3,7 @@ package uk.me.lewisdeane.materialnotes.adapters;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +49,8 @@ public class AddAdapter extends ArrayAdapter<AddItem> {
 
         mIcon.setImageDrawable(addItem.getImg());
 
-        mTitle.setHint(addItem.getHint());
-        mTitle.setText(addItem.getText());
+        mTitle.setHint(mAddItems.get(position).getHint());
+        mTitle.setText(mAddItems.get(position).getText());
 
         mClear.setOnClickListener(new View.OnClickListener() {
             @Override

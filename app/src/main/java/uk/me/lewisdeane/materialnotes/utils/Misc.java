@@ -22,7 +22,7 @@ public class Misc {
         InputMethodManager inputManager = (InputMethodManager) MainActivity.mContext
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        //check if no view has focus:
+        // Check if view has focus and if so hide keyboard
         View view = MainActivity.mAddFragment.getActivity().getCurrentFocus();
         if (view == null)
             return;
@@ -37,7 +37,6 @@ public class Misc {
             if((_text.charAt(i) + "").equals(_lookingFor))
                 count++;
         }
-        Log.i(_text, count+"");
 
         return count;
     }

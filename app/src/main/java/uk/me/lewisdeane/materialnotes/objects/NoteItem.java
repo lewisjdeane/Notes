@@ -1,6 +1,7 @@
 package uk.me.lewisdeane.materialnotes.objects;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 public class NoteItem {
 
     private Context mContext;
-    private String mTitle, mItem, mTime, mDate, mTags, mLink, mPath;
+    private String mTitle = "", mItem = "", mTime = "", mDate = "", mTags = "", mLink = "", mPath = "";
     private long mLastModified;
     private boolean isFolder;
 
@@ -47,52 +48,52 @@ public class NoteItem {
     }
 
     public NoteItem setTitle(String _title){
-        mTitle = _title;
+        this.mTitle = _title;
         return this;
     }
 
     public NoteItem setPath(String _path){
-        mPath = _path;
+        this.mPath = _path;
         return this;
     }
 
     public NoteItem setIsFolder(boolean _isFolder){
-        isFolder = _isFolder;
+        this.isFolder = _isFolder;
         return this;
     }
 
     public NoteItem setItem(String _item){
-        mItem = _item;
+        this.mItem = _item;
         return this;
     }
 
     private NoteItem setLastModified(){
-        mLastModified = System.currentTimeMillis();
+        this.mLastModified = System.currentTimeMillis();
         return this;
     }
 
     private NoteItem setLastModified(long _lastModified){
-        mLastModified = _lastModified;
+        this.mLastModified = _lastModified;
         return this;
     }
 
     public NoteItem setTime(String _time){
-        mTime = _time;
+        this.mTime = _time;
         return this;
     }
 
     public NoteItem setDate(String _date){
-        mDate = _date;
+        this.mDate = _date;
         return this;
     }
 
     public NoteItem setTags(String _tags){
-        mTags = _tags;
+        this.mTags = _tags;
         return this;
     }
 
     public NoteItem setLink(String _link){
-        mLink = _link;
+        this.mLink = _link;
         return this;
     }
 
@@ -178,4 +179,5 @@ public class NoteItem {
     public void deleteFromDatabase(){
         new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
     }
+
 }

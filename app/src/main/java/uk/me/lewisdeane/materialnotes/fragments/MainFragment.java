@@ -34,9 +34,6 @@ public class MainFragment extends Fragment {
     public static DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
     public static ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
-    private SwipeDismissAdapter mSwipeDismissAdapter;
-
-    private static Context mContext;
 
     private float START_Y, START_X;
 
@@ -50,8 +47,6 @@ public class MainFragment extends Fragment {
     }
 
     private void init() {
-        mContext = getActivity();
-
         mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
         mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
@@ -59,6 +54,7 @@ public class MainFragment extends Fragment {
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
         applyListViewFeatures();
+
         mList.setAdapter(mNoteAdapter);
     }
 
@@ -88,8 +84,6 @@ public class MainFragment extends Fragment {
                                 Animations.animateAddIn(MainActivity.mFABFragment.mRootView);
                                 MainActivity.FAB_HIDDEN = true;
                             }
-                        } else{
-
                         }
                 }
                 return false;
