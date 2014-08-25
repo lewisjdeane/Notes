@@ -65,7 +65,7 @@ public class NavigationDrawerFragment extends Fragment {
         mListView.addNavigationItem(new NavigationItem("Settings", R.drawable.ic_action_settings_grey));
         mListView.addNavigationItem(new NavigationItem("Information", R.drawable.ic_action_info_outline_grey));
 
-        mListView.setSelectedColor("#FF9900");
+        mListView.setSelectedColor("#4285F4");
 
         mListView.setNavigationItemClickListener(new NavigationListView.NavigationItemClickListener() {
             @Override
