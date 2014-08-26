@@ -3,24 +3,17 @@ package uk.me.lewisdeane.materialnotes.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
-
-import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
-import uk.me.lewisdeane.lnavigationdrawer.NavigationListView;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
 import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 import uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment;
-import uk.me.lewisdeane.materialnotes.objects.DrawerItem;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
@@ -45,13 +38,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false;
 
     // Enums defining different modes available.
-    public static enum AddMode {
-        NONE, ADD, VIEW
-    }
+    public static enum AddMode { NONE, ADD, VIEW }
 
-    ;
-
-    public static enum NoteMode {EVERYTHING, UPCOMING, ARCHIVE}
+    public static enum NoteMode { EVERYTHING, UPCOMING, ARCHIVE }
 
     // Current Path loading notes from.
     public static String PATH = "/";
@@ -62,6 +51,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     // Items storing current Note and Add Mode.
     public static AddMode ADD_MODE = AddMode.NONE;
     public static NoteMode NOTE_MODE = NoteMode.EVERYTHING;
+
+    public static boolean SEARCHING = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +104,13 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static void loadNotes() {
         // Load notes from database based on current Note Mode.
         clearNoteList();
-        mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase());
+        mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase(""));
+        mMainFragment.applyListViewFeatures();
+    }
+
+    public static void loadSearchResults(String _search){
+        clearNoteList();
+        mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase(_search));
         mMainFragment.applyListViewFeatures();
     }
 
@@ -141,6 +138,12 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             Animations.setAddAnimation(false, mFABFragment.mRootView);
             Animations.setListAnimation(false, mMainFragment.mList);
         }
+
+        mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
+        mActionBarFragment.mActionBar2.setVisibility(View.GONE);
+        mActionBarFragment.mSearchBox.setText("");
+
+        MainActivity.PATH = _noteItem.getPath() + "/";
 
         // Set up action bar and load notes.
         mActionBarFragment.setUp(_noteItem.getTitle());

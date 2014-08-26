@@ -3,25 +3,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_action_bar_container"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/blue_primary">
+
+    <ImageButton
+        android:id="@+id/fragment_action_bar_1_toggle"
+        android:layout_width="56dp"
+        android:layout_height="fill_parent"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_action_menu_white"
+        android:background="@color/transparent" />
 
     <LinearLayout
         android:id="@+id/fragment_action_bar_1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/fragment_action_bar_1_toggle"
-            android:layout_width="56dp"
-            android:layout_height="fill_parent"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_action_menu_white"
-            android:background="@color/transparent" />
 
         <uk.me.lewisdeane.materialnotes.customviews.CustomTextView
             android:id="@+id/fragment_action_bar_1_subheader"
@@ -41,6 +41,36 @@
             android:padding="16dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_action_search_white"
+            android:background="@color/transparent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_action_bar_2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/fragment_action_bar_2_search_box"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:paddingLeft="16dp"
+            android:gravity="left|center_vertical"
+            android:background="@color/transparent"
+            android:hint="@string/action_search_hint"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"
+            android:textColor="#FFF"
+            android:textColorHint="#FFF"/>
+
+        <ImageButton
+            android:id="@+id/fragment_action_bar_2_voice_search"
+            android:layout_width="56dp"
+            android:layout_height="fill_parent"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_voice_search"
             android:background="@color/transparent" />
     </LinearLayout>
 

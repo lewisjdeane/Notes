@@ -1,7 +1,6 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.AdapterView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.SwipeDismissAdapter;
 
 import java.util.ArrayList;
 
@@ -21,7 +19,6 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
-import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
@@ -49,7 +46,7 @@ public class MainFragment extends Fragment {
     private void init() {
         mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
-        mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
+        mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase("");
 
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
@@ -76,7 +73,7 @@ public class MainFragment extends Fragment {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         // Check to see if swiping item or scrolling
-                        if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > new DeviceProperties(getActivity()).convertToPx(100)) {
+                        if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(50)) {
                             if (MainActivity.FAB_HIDDEN && motionEvent.getY() > START_Y) {
                                 Animations.animateAddOut(MainActivity.mFABFragment.mRootView);
                                 MainActivity.FAB_HIDDEN = false;

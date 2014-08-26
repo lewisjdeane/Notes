@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaActionSound;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -61,7 +59,7 @@ public class DatabaseHelper{
             });
 
             customDialog.show();
-
+            customDialog.setConfirmColour("#4285F4");
             customDialog.setCanceledOnTouchOutside(false);
             customDialog.setCancelable(false);
         } else {
@@ -84,8 +82,14 @@ public class DatabaseHelper{
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                NoteItem noteItem = new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true") ? true : false, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8));
-                noteItem.setPath(cursor.getString(0));
+                NoteItem.Builder builder = new NoteItem.Builder(cursor.getString(0), cursor.getString(1).equals("true"), cursor.getString(2));
+                builder.item(cursor.getString(3))
+                        .time(cursor.getString(4))
+                        .date(cursor.getString(5))
+                        .link(cursor.getString(6))
+                        .lastModified(cursor.getLong(7));
+                NoteItem noteItem = builder.build();
+
                 mSQLiteDatabase.delete(table, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + noteItem.getLastModified(), new String[]{noteItem.getTitle(), noteItem.getItem()});
                 if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
                     mSQLiteDatabase.insert(Database.ARCHIVE_TABLE, null, getContentVals(noteItem));
@@ -97,18 +101,33 @@ public class DatabaseHelper{
         database.close();
     }
 
-    public static ArrayList<NoteItem> getNotesFromDatabase(){
+    public static ArrayList<NoteItem> getNotesFromDatabase(String _search){
         ArrayList<NoteItem> noteItems = new ArrayList<NoteItem>();
         open("R");
-        Cursor cursor = mSQLiteDatabase.query(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "TAGS", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+        //Cursor cursor = mSQLiteDatabase.query(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, new String[]{"PATH", "FOLDER", "TITLE", "ITEM", "TIME", "DATE", "LINK", "LAST_MODIFIED"}, null, null, null, null, "TITLE COLLATE NOCASE ASC");
+
+        String table = MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
+
+        String query = "SELECT * FROM " + table + (_search.length() > 0 ? " WHERE TITLE LIKE '%" + _search + "%' AND PATH LIKE '" + MainActivity.PATH + "%' ORDER BY FOLDER DESC, TITLE ASC" : " ORDER BY FOLDER DESC, TITLE ASC");
+
+        Cursor cursor = mSQLiteDatabase.rawQuery(query, null);
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                if(getPrevPath(cursor.getString(0)).equals(MainActivity.PATH))
-                    noteItems.add(new NoteItem(mContext, cursor.getString(0), cursor.getString(1).equals("true"), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getLong(8)));
+                NoteItem.Builder builder = new NoteItem.Builder(cursor.getString(0), cursor.getString(1).equals("true"), cursor.getString(2));
+                builder.item(cursor.getString(3))
+                        .time(cursor.getString(4))
+                        .date(cursor.getString(5))
+                        .link(cursor.getString(6))
+                        .lastModified(cursor.getLong(7));
+
+                if(getPrevPath(cursor.getString(0)).equals(MainActivity.PATH) || _search.length() > 0)
+                    noteItems.add(builder.build());
+
             } while(cursor.moveToNext());
         }
+
 
         /*
         Put folders at top, and apply sorting method here.
@@ -122,11 +141,6 @@ public class DatabaseHelper{
                     i--;
                 }
             }
-
-            // Put in chronological order.
-
-        } else{
-            // Sort usual.
         }
 
         close();
@@ -144,7 +158,6 @@ public class DatabaseHelper{
         contentValues.put("ITEM", _noteItem.getItem());
         contentValues.put("TIME", _noteItem.getTime());
         contentValues.put("DATE", _noteItem.getDate());
-        contentValues.put("TAGS", _noteItem.getTags());
         contentValues.put("LINK", _noteItem.getLink());
         contentValues.put("LAST_MODIFIED", _noteItem.getLastModified());
 
@@ -172,7 +185,7 @@ public class DatabaseHelper{
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();
             do{
-                if (cursor.getString(1).startsWith(MainActivity.PATH) && Misc.getOccurences(cursor.getString(1), "/")-1 == Misc.getOccurences(MainActivity.PATH, "/"))
+                if (cursor.getString(1).startsWith(_noteItem.getPath()) && Misc.getOccurences(cursor.getString(1), "/")-1 == Misc.getOccurences(_noteItem.getPath(), "/"))
                     subItems += cursor.getString(0) + ", ";
             } while (cursor.moveToNext());
         }
@@ -184,7 +197,7 @@ public class DatabaseHelper{
     }
 
     private static String getTempPath(NoteItem _noteItem){
-        String temp = MainActivity.PATH + _noteItem.getTitle() + "/";
+        String temp = _noteItem.getPath() + "/";
 
         for(int i = 0; i < temp.length(); i++){
             if((temp.charAt(i)+"").equals("'") && !(temp.charAt(i-1)+"").equals("\'"))

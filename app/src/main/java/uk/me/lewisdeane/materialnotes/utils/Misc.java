@@ -1,9 +1,7 @@
 package uk.me.lewisdeane.materialnotes.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -12,7 +10,7 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 /**
  * Created by Lewis on 23/08/2014.
  */
-public class Misc {
+public abstract class Misc {
 
     public static void toast(String _text){
         Toast.makeText(MainActivity.mContext, _text, Toast.LENGTH_SHORT).show();

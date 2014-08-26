@@ -9,16 +9,16 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     public static final String NOTE_TABLE = "NoteTable";
     public static final String ARCHIVE_TABLE = "ArchiveTable";
 
     private static final String NOTE_TABLE_CREATE = "create table " + NOTE_TABLE
-            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, TAGS TEXT, LINK TEXT, LAST_MODIFIED LONG);";
+            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, LINK TEXT, LAST_MODIFIED LONG);";
 
     private static final String ARCHIVE_TABLE_CREATE = "create table " + ARCHIVE_TABLE
-            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, TAGS TEXT, LINK TEXT, LAST_MODIFIED LONG);";
+            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, LINK TEXT, LAST_MODIFIED LONG);";
 
     public Database(Context context) {
         super(context, "Database", null, DATABASE_VERSION);

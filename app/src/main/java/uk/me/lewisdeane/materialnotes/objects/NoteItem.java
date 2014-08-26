@@ -1,11 +1,9 @@
 package uk.me.lewisdeane.materialnotes.objects;
 
-import android.content.Context;
-import android.util.Log;
-
 import java.util.HashMap;
 
 import uk.me.lewisdeane.materialnotes.R;
+import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -13,38 +11,22 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
  */
 public class NoteItem {
 
-    private Context mContext;
-    private String mTitle = "", mItem = "", mTime = "", mDate = "", mTags = "", mLink = "", mPath = "";
+    private String mTitle = "", mItem = "", mTime = "", mDate = "", mLink = "", mPath = "";
     private long mLastModified;
-    private boolean isFolder;
+    private boolean mIsFolder;
 
-    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link){
-        mContext = _context;
-        setTitle(_title);
-        setItem(_item);
-        setIsFolder(_isFolder);
-        setLastModified();
-        setTime(_time);
-        setDate(_date);
-        setTags(_tags);
-        setLink(_link);
-    }
-
-    public NoteItem(Context _context, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, Long _lastModified){
-        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
-        setLastModified(_lastModified);
-    }
-
-    public NoteItem(Context _context, String _path, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link) {
-        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
-        setPath(_path);
-    }
-
-
-    public NoteItem(Context _context, String _path, boolean _isFolder, String _title, String _item, String _time, String _date, String _tags, String _link, long _lastModified) {
-        this(_context, _isFolder, _title, _item, _time, _date, _tags, _link);
-        setPath(_path);
-        setLastModified(_lastModified);
+    public NoteItem(Builder _builder){
+        setPath(_builder.mPath);
+        setIsFolder(_builder.mIsFolder);
+        setTitle(_builder.mTitle);
+        setItem(_builder.mItem);
+        setTime(_builder.mTime);
+        setDate(_builder.mDate);
+        setLink(_builder.mLink);
+        if(_builder.mLastModified == 0)
+            setLastModified();
+        else
+            setLastModified(_builder.mLastModified);
     }
 
     public NoteItem setTitle(String _title){
@@ -57,8 +39,8 @@ public class NoteItem {
         return this;
     }
 
-    public NoteItem setIsFolder(boolean _isFolder){
-        this.isFolder = _isFolder;
+    public NoteItem setIsFolder(boolean _mIsFolder){
+        this.mIsFolder = _mIsFolder;
         return this;
     }
 
@@ -87,11 +69,6 @@ public class NoteItem {
         return this;
     }
 
-    public NoteItem setTags(String _tags){
-        this.mTags = _tags;
-        return this;
-    }
-
     public NoteItem setLink(String _link){
         this.mLink = _link;
         return this;
@@ -104,7 +81,7 @@ public class NoteItem {
     public String getPath(){ return mPath; }
 
     public boolean getIsFolder(){
-        return isFolder;
+        return mIsFolder;
     }
 
     public String getItem(){
@@ -117,10 +94,6 @@ public class NoteItem {
 
     public String getDate(){
         return mDate;
-    }
-
-    public String getTags(){
-        return mTags;
     }
 
     public String getLink(){
@@ -163,7 +136,7 @@ public class NoteItem {
         else if(timeParts.get("s") > 0)
             return "1" + letters[1];
         else
-            return mContext.getString(R.string.time_now);
+            return MainActivity.mContext.getString(R.string.time_now);
     }
 
     private long getDifference(){
@@ -171,13 +144,59 @@ public class NoteItem {
     }
 
     public void addToDatabase(){
-        new DatabaseHelper(mContext).addNoteToDatabase(null, this);
+        new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(null, this);
     }
 
-    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(mContext).addNoteToDatabase(_oldItem, this); }
+    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(_oldItem, this); }
 
     public void deleteFromDatabase(){
-        new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
+        new DatabaseHelper(MainActivity.mContext).deleteNoteFromDatabase(this);
     }
 
+    public static class Builder{
+
+        // Required params.
+        private final String mTitle, mPath;
+        private final boolean mIsFolder;
+
+        // Optional params.
+        private String mItem = "", mTime = "", mDate = "", mLink = "";
+        private long mLastModified = 0;
+
+        // Basic constructor for required params.
+        public Builder(String _path, boolean _isFolder, String _title){
+            this.mPath = _path;
+            this.mIsFolder = _isFolder;
+            this.mTitle = _title;
+        }
+
+        public Builder item(String _item){
+            this.mItem = _item;
+            return this;
+        }
+
+        public Builder time(String _time){
+            this.mTime = _time;
+            return this;
+        }
+
+        public Builder date(String _date){
+            this.mDate = _date;
+            return this;
+        }
+
+        public Builder link(String _link){
+            this.mLink = _link;
+            return this;
+        }
+
+        public Builder lastModified(Long _lastModified){
+            this.mLastModified = _lastModified;
+            return this;
+        }
+
+        public NoteItem build(){
+            return new NoteItem(this);
+        }
+    }
 }

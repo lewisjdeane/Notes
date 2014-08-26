@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
 
 import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
@@ -59,6 +60,11 @@ public class NavigationDrawerFragment extends Fragment {
                     MainActivity.PATH = "/";
                     MainActivity.CURRENT_SELECTED_POSITION = i;
                     MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
+
+                    // When new item selected turn off search.
+                    MainActivity.mActionBarFragment.mSearchBox.setText("");
+                    MainActivity.mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
+                    MainActivity.mActionBarFragment.mActionBar2.setVisibility(View.GONE);
 
                     if(i < navigationItems.size() - 2 ){
                         navigationItems.get(MainActivity.CURRENT_SELECTED_POSITION).setIsSelected(true);
