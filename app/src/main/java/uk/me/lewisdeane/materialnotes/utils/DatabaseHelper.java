@@ -39,8 +39,18 @@ public class DatabaseHelper{
         if(_noteItem.getIsFolder()){
             mTempNoteItem = _noteItem;
 
-            CustomDialog customDialog = new CustomDialog(mContext, mContext.getString(R.string.dialog_delete_title), mContext.getString(R.string.dialog_delete_content), mContext.getString(R.string.dialog_delete_confirm), mContext.getString(R.string.dialog_delete_cancel))
-            .setClickListener(new CustomDialog.ClickListener() {
+            CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
+            builder.title(mContext.getString(R.string.dialog_delete_title));
+            builder.content(mContext.getString(R.string.dialog_delete_content));
+            builder.positiveText(mContext.getString(R.string.dialog_delete_confirm));
+            builder.negativeText(mContext.getString(R.string.dialog_delete_cancel));
+            builder.positiveColor("#4285F4");
+
+            CustomDialog customDialog = builder.build();
+            customDialog.setCanceledOnTouchOutside(false);
+            customDialog.setCancelable(false);
+            customDialog.show();
+            customDialog.setClickListener(new CustomDialog.ClickListener() {
                 @Override
                 public void onConfirmClick() {
                     open("W");
@@ -57,11 +67,6 @@ public class DatabaseHelper{
                     MainActivity.loadNotes();
                 }
             });
-
-            customDialog.show();
-            customDialog.setConfirmColour("#4285F4");
-            customDialog.setCanceledOnTouchOutside(false);
-            customDialog.setCancelable(false);
         } else {
             open("W");
             mSQLiteDatabase.delete(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});

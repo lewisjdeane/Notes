@@ -110,7 +110,6 @@ public class NavigationDrawerFragment extends Fragment {
             public void onDrawerSlide(View drawerView, float offSet){
                 // Fade the things out as drawer slides.
                 MainActivity.mFABFragment.mRootView.setAlpha(1-offSet);
-                MainActivity.mActionBarFragment.mSearch.setAlpha(1-offSet);
             }
         };
 

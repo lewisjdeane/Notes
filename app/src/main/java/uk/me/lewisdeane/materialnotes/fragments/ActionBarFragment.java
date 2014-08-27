@@ -1,6 +1,7 @@
 package uk.me.lewisdeane.materialnotes.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -75,6 +77,8 @@ public class ActionBarFragment extends Fragment {
                 goBack(false);
                 mActionBar1.setVisibility(View.VISIBLE);
                 mActionBar2.setVisibility(View.GONE);
+                InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(mContainer.getWindowToken(), 0);
             }
         });
         mSearch.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +86,9 @@ public class ActionBarFragment extends Fragment {
             public void onClick(View view) {
                 mActionBar1.setVisibility(View.GONE);
                 mActionBar2.setVisibility(View.VISIBLE);
+                InputMethodManager inputMethodManager=(InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(mContainer.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+
             }
         });
         mMic.setOnClickListener(new View.OnClickListener() {
