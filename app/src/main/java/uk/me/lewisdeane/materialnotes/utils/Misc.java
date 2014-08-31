@@ -1,6 +1,9 @@
 package uk.me.lewisdeane.materialnotes.utils;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -37,5 +40,23 @@ public abstract class Misc {
         }
 
         return count;
+    }
+
+    public static Drawable getColouredDrawable(Drawable _drawable, int _colour){
+        int iColor = _colour;
+        int red = (iColor & 0xFF0000) / 0xFFFF;
+        int green = (iColor & 0xFF00) / 0xFF;
+        int blue = iColor & 0xFF;
+
+        float[] matrix = { 0, 0, 0, 0, red
+                , 0, 0, 0, 0, green
+                , 0, 0, 0, 0, blue
+                , 0, 0, 0, 1, 0 };
+
+        ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
+
+        _drawable.setColorFilter(colorFilter);
+
+        return _drawable;
     }
 }

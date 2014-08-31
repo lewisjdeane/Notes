@@ -7,12 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 
@@ -85,10 +82,10 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()){
                             case R.id.menu_popup_open:
-                                MainActivity.openNote(mNoteItems.get(position));
+                                MainActivity.openNote(false, mNoteItems.get(position));
                                 break;
                             case R.id.menu_popup_edit:
-                                MainActivity.editNote(mNoteItems.get(position));
+                                MainActivity.openNote(true, mNoteItems.get(position));
                                 break;
                             case R.id.menu_popup_delete:
                                 MainActivity.deleteNote(mNoteItems.get(position));

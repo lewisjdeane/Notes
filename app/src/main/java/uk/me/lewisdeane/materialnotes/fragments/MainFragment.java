@@ -59,7 +59,7 @@ public class MainFragment extends Fragment {
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MainActivity.openNote(mNoteItems.get(i));
+                MainActivity.openNote(false, mNoteItems.get(i));
             }
         });
 

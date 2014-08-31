@@ -24,7 +24,6 @@ import java.util.List;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
-import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
 /**
@@ -138,6 +137,8 @@ public class ActionBarFragment extends Fragment {
     }
 
     public String getNewPath(boolean _backKey){
+        // If we are viewing the note or folder go back to the directory containing it.
+
         if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.length() > 1){
             return DatabaseHelper.getPrevPath(MainActivity.PATH);
         } else if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.equals("/")){
@@ -146,12 +147,9 @@ public class ActionBarFragment extends Fragment {
             else
                 MainActivity.mNavigationDrawerFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
         } else {
-            Animations.setAddAnimation(true, MainActivity.mFABFragment.mRootView);
-            Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
-
+            MainActivity.closeAdd();
             MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
-
-            return MainActivity.ADD_MODE == MainActivity.AddMode.VIEW ? DatabaseHelper.getPrevPath(MainActivity.PATH) : MainActivity.PATH;
+            return DatabaseHelper.getPrevPath(MainActivity.PATH+"/");
         }
         return MainActivity.PATH;
     }

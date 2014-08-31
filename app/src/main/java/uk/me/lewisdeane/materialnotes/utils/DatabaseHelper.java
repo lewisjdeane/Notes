@@ -39,10 +39,8 @@ public class DatabaseHelper{
         if(_noteItem.getIsFolder()){
             mTempNoteItem = _noteItem;
 
-            CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
-            builder.title(mContext.getString(R.string.dialog_delete_title));
+            CustomDialog.Builder builder = new CustomDialog.Builder(mContext, mContext.getString(R.string.dialog_delete_title), mContext.getString(R.string.dialog_delete_confirm));
             builder.content(mContext.getString(R.string.dialog_delete_content));
-            builder.positiveText(mContext.getString(R.string.dialog_delete_confirm));
             builder.negativeText(mContext.getString(R.string.dialog_delete_cancel));
             builder.positiveColor("#4285F4");
 

@@ -17,6 +17,7 @@ import uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
+import uk.me.lewisdeane.materialnotes.utils.Misc;
 
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -38,9 +39,11 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false;
 
     // Enums defining different modes available.
-    public static enum AddMode { NONE, ADD, VIEW }
+    public static enum AddMode {
+        NONE, ADD, VIEW
+    }
 
-    public static enum NoteMode { EVERYTHING, UPCOMING, ARCHIVE }
+    public static enum NoteMode {EVERYTHING, UPCOMING, ARCHIVE}
 
     // Current Path loading notes from.
     public static String PATH = "/";
@@ -84,7 +87,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
         // Set up the navigation drawer.
         mNavigationDrawerFragment.setUp((DrawerLayout) findViewById(R.id.drawer_layout));
-
     }
 
     public void onDrawerOpened() {
@@ -108,7 +110,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mMainFragment.applyListViewFeatures();
     }
 
-    public static void loadSearchResults(String _search){
+    public static void loadSearchResults(String _search) {
         clearNoteList();
         mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase(_search));
         mMainFragment.applyListViewFeatures();
@@ -126,38 +128,30 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mMainFragment.mNoteItems.clear();
     }
 
-    public static void openNote(NoteItem _noteItem) {
-        if (_noteItem.getIsFolder()) {
+    public static void openNote(boolean _shouldEdit, NoteItem _noteItem) {
+        // Called whenever open or edit clicked on a note/folder.
+
+        if (_noteItem.getIsFolder() && !_shouldEdit) {
             // Append current path so that sub items of folder will be shown.
             PATH += _noteItem.getTitle() + "/";
         } else {
             // If it's a note open it in the add fragment and animate views.
-            ADD_MODE = AddMode.VIEW;
-            mAddFragment.setUp(_noteItem);
-
-            Animations.setAddAnimation(false, mFABFragment.mRootView);
-            Animations.setListAnimation(false, mMainFragment.mList);
+            ADD_MODE = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
+            openAdd(_shouldEdit, _noteItem);
         }
 
         mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
         mActionBarFragment.mActionBar2.setVisibility(View.GONE);
         mActionBarFragment.mSearchBox.setText("");
 
-        MainActivity.PATH = _noteItem.getPath() + "/";
-
         // Set up action bar and load notes.
         mActionBarFragment.setUp(_noteItem.getTitle());
         loadNotes();
-    }
 
-    public static void editNote(NoteItem _noteItem) {
-        // Open note in editable mode and apply transformations needed to set up.
-        ADD_MODE = AddMode.ADD;
-        mAddFragment.setUp(_noteItem);
+        /*
+        When back pressed go back to where edit or open clicked.
 
-        Animations.setAddAnimation(false, mFABFragment.mRootView);
-        Animations.setListAnimation(false, mMainFragment.mList);
-        mActionBarFragment.setUp(_noteItem.getTitle());
+         */
     }
 
     public static void deleteNote(NoteItem _noteItem) {
@@ -179,6 +173,19 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             default:
                 return NoteMode.EVERYTHING;
         }
+    }
+
+    public static void openAdd(boolean _shouldEdit, NoteItem _noteItem){
+        mActionBarFragment.setUp("");
+        mAddFragment.setUp(_shouldEdit, _noteItem);
+        Animations.animateFAB(true, true, MainActivity.mContext.getResources().getDrawable(_shouldEdit ? R.drawable.ic_fab_done : R.drawable.ic_fab_edit));
+        Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
+    }
+
+    public static void closeAdd(){
+        Misc.hideKeyboard();
+        Animations.animateFAB(true, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_add));
+        Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
     }
 
     @Override

@@ -119,16 +119,15 @@ public class AddFragment extends Fragment {
         });
     }
 
-    public void setUp(NoteItem _noteItem){
-        ORIGINAL_NOTE = null;
+    public void setUp(boolean _shouldEdit, NoteItem _noteItem){
+        ORIGINAL_NOTE = _noteItem;
         mIsFolder = false;
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
-        mTitle.setText("");
-        boolean isEditable = _noteItem == null && MainActivity.ADD_MODE != MainActivity.AddMode.VIEW;
-        mTitle.setClickable(isEditable);
-        mTitle.setFocusable(isEditable);
-        mTitle.setFocusableInTouchMode(isEditable);
+        mTitle.setText("");;
+        mTitle.setClickable(_shouldEdit);
+        mTitle.setFocusable(_shouldEdit);
+        mTitle.setFocusableInTouchMode(_shouldEdit);
 
         for(int i = 0; i < mItems.length; i++)
             mItems[i] = "";
@@ -143,12 +142,15 @@ public class AddFragment extends Fragment {
             mTitle.setText(_noteItem.getTitle());
             mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
         }
-        updateViews();
+        updateViews(_shouldEdit);
     }
 
-    private void updateViews(){
+    private void updateViews(boolean _editable){
         for(int i = 0; i < mContainerViews.length; i++){
             mItemViews[i].setText(mItems[i]);
+            mItemViews[i].setClickable(_editable);
+            mItemViews[i].setFocusable(_editable);
+            mItemViews[i].setFocusableInTouchMode(_editable);
         }
     }
 
