@@ -42,13 +42,15 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
         // Inflate layout.
         if (v == null) {
-            // If it's a folder inflate folder view.
-            if (noteItem.getIsFolder())
-                v = LayoutInflater.from(getContext()).inflate(R.layout.item_folder, null);
-                // Otherwise inflate note view.
-            else
-                v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
+            v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
         }
+
+        LinearLayout folderContainer = (LinearLayout) v.findViewById(R.id.item_folder_container);
+        LinearLayout noteContainer = (LinearLayout) v.findViewById(R.id.item_note_container);
+
+        folderContainer.setVisibility(noteItem.getIsFolder() ? View.VISIBLE : View.GONE);
+        noteContainer.setVisibility(noteItem.getIsFolder() ? View.GONE : View.VISIBLE);
+
 
         if (noteItem.getIsFolder()) {
             CustomTextView title = (CustomTextView) v.findViewById(R.id.item_folder_title);
@@ -59,9 +61,12 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_folder_overflow_info);
 
-            title.setText(noteItem.getTitle());
-            subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
-            lastModified.setText(noteItem.getLastModifiedFormatted());
+            try {
+                title.setText(noteItem.getTitle());
+                subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
+                lastModified.setText(noteItem.getLastModifiedFormatted());
+            } catch (NullPointerException e) {
+            }
 
             title.setTextColor(Colours.getPrimaryColour());
 
@@ -83,12 +88,15 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
 
             // Apply data from NoteItems.
-            title.setText(noteItem.getTitle());
-            item.setText(noteItem.getIsFolder() ? new DatabaseHelper(mContext).getSubItems(noteItem) : noteItem.getItem());
-            time.setText(noteItem.getTime());
-            date.setText(noteItem.getDate());
-            link.setText(noteItem.getLink());
-            lastModified.setText(noteItem.getLastModifiedFormatted());
+            try {
+                title.setText(noteItem.getTitle());
+                item.setText(noteItem.getItem());
+                time.setText(noteItem.getTime());
+                date.setText(noteItem.getDate());
+                link.setText(noteItem.getLink());
+                lastModified.setText(noteItem.getLastModifiedFormatted());
+            } catch (NullPointerException e) {
+            }
 
             itemContainer.setVisibility(item.getText().length() > 0 ? View.VISIBLE : View.GONE);
             timeContainer.setVisibility(time.getText().length() > 0 ? View.VISIBLE : View.GONE);

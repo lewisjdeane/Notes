@@ -124,6 +124,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     public static void clearNoteList() {
         mMainFragment.mNoteItems.clear();
+        mMainFragment.mNoteAdapter.notifyDataSetChanged();
     }
 
     public static void openNote(boolean _shouldEdit, NoteItem _noteItem) {
@@ -131,7 +132,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
         if (_noteItem.getIsFolder() && !_shouldEdit) {
             // Append current path so that sub items of folder will be shown.
-            PATH += _noteItem.getTitle() + "/";
+            PATH += _noteItem.getTitle().trim() + "/";
         } else {
             // If it's a note open it in the add fragment and animate views.
             ADD_MODE = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
