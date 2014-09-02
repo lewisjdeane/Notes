@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static FrameLayout mContainer;
     public static RelativeLayout mMainContainer;
 
-    // Global context accessable from static contexts.
+    // Global context accessible from static contexts.
     public static Context mContext;
 
     // booleans storing state of elements.
@@ -54,8 +54,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     // Items storing current Note and Add Mode.
     public static AddMode ADD_MODE = AddMode.NONE;
     public static NoteMode NOTE_MODE = NoteMode.EVERYTHING;
-
-    public static boolean SEARCHING = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,11 +145,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         // Set up action bar and load notes.
         mActionBarFragment.setUp(_noteItem.getTitle());
         loadNotes();
-
-        /*
-        When back pressed go back to where edit or open clicked.
-
-         */
     }
 
     public static void deleteNote(NoteItem _noteItem) {
@@ -180,12 +173,14 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mAddFragment.setUp(_shouldEdit, _noteItem);
         Animations.animateFAB(true, true, MainActivity.mContext.getResources().getDrawable(_shouldEdit ? R.drawable.ic_fab_done : R.drawable.ic_fab_edit));
         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
+        mActionBarFragment.mSearch.setVisibility(View.GONE);
     }
 
     public static void closeAdd(){
         Misc.hideKeyboard();
         Animations.animateFAB(true, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_add));
         Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
+        mActionBarFragment.mSearch.setVisibility(View.VISIBLE);
     }
 
     @Override

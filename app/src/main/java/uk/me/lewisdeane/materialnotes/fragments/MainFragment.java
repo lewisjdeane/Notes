@@ -73,7 +73,7 @@ public class MainFragment extends Fragment {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         // Check to see if swiping item or scrolling
-                        if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(50)) {
+                        if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(40)) {
                             if (MainActivity.FAB_HIDDEN && motionEvent.getY() > START_Y) {
                                 Animations.animateAddOut(MainActivity.mFABFragment.mRootView);
                                 MainActivity.FAB_HIDDEN = false;

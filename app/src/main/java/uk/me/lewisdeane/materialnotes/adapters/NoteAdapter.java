@@ -24,9 +24,6 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
     private ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
     private Context mContext;
-    private CustomTextView mTitle, mItem, mLastModified;
-    private ImageView mFolder;
-    private LinearLayout mOverflowLayout;
 
     public NoteAdapter(Context context, int resource,
                        ArrayList<NoteItem> _noteItems) {
@@ -40,55 +37,97 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
 
-        // Inflate layout.
-        if (v == null)
-            v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
-
-        // Get current NoteItem
+        // Get the current NoteItem.
         NoteItem noteItem = mNoteItems.get(position);
 
-        // Initialise views.
-        mTitle = (CustomTextView) v.findViewById(R.id.item_note_title);
-        mItem = (CustomTextView) v.findViewById(R.id.item_note_item);
-        mLastModified = (CustomTextView) v.findViewById(R.id.item_note_last_modified);
+        // Inflate layout.
+        if (v == null) {
+            // If it's a folder inflate folder view.
+            if (noteItem.getIsFolder())
+                v = LayoutInflater.from(getContext()).inflate(R.layout.item_folder, null);
+                // Otherwise inflate note view.
+            else
+                v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
+        }
 
-        mFolder = (ImageView) v.findViewById(R.id.item_note_folder);
-        final ImageView mOverflow = (ImageView) v.findViewById(R.id.item_note_overflow);
+        if (noteItem.getIsFolder()) {
+            CustomTextView title = (CustomTextView) v.findViewById(R.id.item_folder_title);
+            CustomTextView subItems = (CustomTextView) v.findViewById(R.id.item_folder_subitems);
 
-        mOverflowLayout = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
+            ImageView overflow = (ImageView) v.findViewById(R.id.item_folder_overflow);
+            CustomTextView lastModified = (CustomTextView) v.findViewById(R.id.item_folder_last_modified);
 
-        // Apply data from NoteItems.
-        mTitle.setText(mNoteItems.get(position).getTitle());
-        mItem.setText(noteItem.getIsFolder() ? new DatabaseHelper(mContext).getSubItems(noteItem) : noteItem.getItem());
-        mLastModified.setText(noteItem.getLastModifiedFormatted());
+            LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_folder_overflow_info);
 
-        // Apply properties to item.
-        mTitle.setTextColor(Colours.getPrimaryColour());
-        mFolder.setVisibility(noteItem.getIsFolder() ? View.VISIBLE : View.INVISIBLE);
+            title.setText(noteItem.getTitle());
+            subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
+            lastModified.setText(noteItem.getLastModifiedFormatted());
 
+            title.setTextColor(Colours.getPrimaryColour());
+
+            setOverflowListener(overflowContainer, noteItem, overflow);
+        } else {
+            // Initialise views.
+            CustomTextView title = (CustomTextView) v.findViewById(R.id.item_note_title);
+            CustomTextView item = (CustomTextView) v.findViewById(R.id.item_note_item);
+            CustomTextView time = (CustomTextView) v.findViewById(R.id.item_note_time);
+            CustomTextView date = (CustomTextView) v.findViewById(R.id.item_note_date);
+            CustomTextView link = (CustomTextView) v.findViewById(R.id.item_note_link);
+            CustomTextView lastModified = (CustomTextView) v.findViewById(R.id.item_note_last_modified);
+            ImageView overflow = (ImageView) v.findViewById(R.id.item_note_overflow);
+
+            LinearLayout itemContainer = (LinearLayout) v.findViewById(R.id.item_note_item_container);
+            LinearLayout timeContainer = (LinearLayout) v.findViewById(R.id.item_note_time_container);
+            LinearLayout dateContainer = (LinearLayout) v.findViewById(R.id.item_note_date_container);
+            LinearLayout linkContainer = (LinearLayout) v.findViewById(R.id.item_note_link_container);
+            LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
+
+            // Apply data from NoteItems.
+            title.setText(noteItem.getTitle());
+            item.setText(noteItem.getIsFolder() ? new DatabaseHelper(mContext).getSubItems(noteItem) : noteItem.getItem());
+            time.setText(noteItem.getTime());
+            date.setText(noteItem.getDate());
+            link.setText(noteItem.getLink());
+            lastModified.setText(noteItem.getLastModifiedFormatted());
+
+            itemContainer.setVisibility(item.getText().length() > 0 ? View.VISIBLE : View.GONE);
+            timeContainer.setVisibility(time.getText().length() > 0 ? View.VISIBLE : View.GONE);
+            dateContainer.setVisibility(date.getText().length() > 0 ? View.VISIBLE : View.GONE);
+            linkContainer.setVisibility(link.getText().length() > 0 ? View.VISIBLE : View.GONE);
+
+            // Apply properties to item.
+            title.setTextColor(Colours.getPrimaryColour());
+
+            setOverflowListener(overflowContainer, noteItem, overflow);
+        }
+
+        return v;
+    }
+
+    private void setOverflowListener(LinearLayout _overflowContainer, final NoteItem _noteItem, final View _anchor) {
         // Set listener so popup menu shows on overflow click.
-        mOverflowLayout.setOnClickListener(new View.OnClickListener() {
+        _overflowContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context themedContext = mContext;
                 themedContext.setTheme(android.R.style.Theme_Holo_Light);
 
-                PopupMenu popupMenu = new PopupMenu(themedContext, mOverflow);
+                PopupMenu popupMenu = new PopupMenu(themedContext, _anchor);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.popup, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
+                        switch (menuItem.getItemId()) {
                             case R.id.menu_popup_open:
-                                MainActivity.openNote(false, mNoteItems.get(position));
+                                MainActivity.openNote(false, _noteItem);
                                 break;
                             case R.id.menu_popup_edit:
-                                MainActivity.openNote(true, mNoteItems.get(position));
+                                MainActivity.openNote(true, _noteItem);
                                 break;
                             case R.id.menu_popup_delete:
-                                MainActivity.deleteNote(mNoteItems.get(position));
+                                MainActivity.deleteNote(_noteItem);
                                 break;
                         }
                         return false;
@@ -98,8 +137,6 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                 popupMenu.show();
             }
         });
-
-        return v;
     }
 
 }

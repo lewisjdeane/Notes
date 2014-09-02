@@ -16,9 +16,9 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
  */
 public abstract class Animations {
 
-    private static final float MOVE_TO_ADD = -(int)( DeviceProperties.getHeight());
-    private static final float MOVE_TO_ADD_HIDE = (int)DeviceProperties.convertToPx(100);
-    private static final float MOVE_TO_LIST = (int)(DeviceProperties.getScreenHeightWithoutPadding());
+    private static float MOVE_TO_ADD = -(int)(DeviceProperties.getHeight());
+    private static float MOVE_TO_ADD_HIDE = (int)DeviceProperties.convertToPx(100);
+    private static float MOVE_TO_LIST = (int)(DeviceProperties.getScreenHeightWithoutPadding());
 
     private static final int ANIMATION_DURATION = 250;
 
@@ -38,10 +38,6 @@ public abstract class Animations {
 
     public static void animateAddIn(View _view){
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0, MOVE_TO_ADD_HIDE).setDuration(ANIMATION_DURATION).start();
-    }
-
-    public static void animateAlpha(View _view, boolean _out, int _duration){
-        ObjectAnimator.ofFloat(_view, "alpha", _out ? 1 : 0, _out ? 0 : 1).setDuration(_duration);
     }
 
     public static void animateFAB(boolean _shouldMove, boolean _up, final Drawable _newDrawable){
