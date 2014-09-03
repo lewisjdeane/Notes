@@ -19,6 +19,7 @@ public abstract class Animations {
     private static float MOVE_TO_ADD = -(int)(DeviceProperties.getHeight());
     private static float MOVE_TO_ADD_HIDE = (int)DeviceProperties.convertToPx(100);
     private static float MOVE_TO_LIST = (int)(DeviceProperties.getScreenHeightWithoutPadding());
+    private static float MOVE_TO_SCROLL = (MainActivity.mAddFragment.mScrollView.getHeight());
 
     private static final int ANIMATION_DURATION = 250;
 
@@ -32,12 +33,20 @@ public abstract class Animations {
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, !_up ? MOVE_TO_LIST : 0, !_up ? 0 : MOVE_TO_LIST).setDuration(ANIMATION_DURATION).start();
     }
 
-    public static void animateAddOut(View _view){
+    public static void animateFABIn(View _view){
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, MOVE_TO_ADD_HIDE, 0).setDuration(ANIMATION_DURATION).start();
     }
 
-    public static void animateAddIn(View _view){
+    public static void animateFABOut(View _view){
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0, MOVE_TO_ADD_HIDE).setDuration(ANIMATION_DURATION).start();
+    }
+
+    public static void animateScroll(View _view, boolean _shouldShow){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, _shouldShow ? MOVE_TO_SCROLL : 0, _shouldShow ? 0 : MOVE_TO_SCROLL).setDuration(ANIMATION_DURATION).start();
+    }
+
+    public static void putScrollBack(View _view){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0 ,0).setDuration(1).start();
     }
 
     public static void animateFAB(boolean _shouldMove, boolean _up, final Drawable _newDrawable){

@@ -13,6 +13,7 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
+import uk.me.lewisdeane.materialnotes.utils.Misc;
 
 /**
  * Created by Lewis on 05/08/2014.
@@ -71,27 +72,33 @@ public class FABFragment extends Fragment {
 
                 } else if(MainActivity.ADD_MODE == MainActivity.AddMode.ADD){
 
-                    MainActivity.closeAdd();
-
                     boolean isFolder = MainActivity.mAddFragment.mIsFolder;
                     EditText titleView = MainActivity.mAddFragment.mTitle;
                     EditText[] itemViews = MainActivity.mAddFragment.mItemViews;
 
-                    // Build a new NoteItem from the inputted data.
-                    NoteItem.Builder builder = new NoteItem.Builder(MainActivity.PATH + titleView.getText().toString().trim(), isFolder, titleView.getText().toString());
-                    builder.item(itemViews[0].getText().toString())
-                            .time(itemViews[1].getText().toString())
-                            .date(itemViews[2].getText().toString())
-                            .link(itemViews[3].getText().toString());
-                    NoteItem noteItem = builder.build();
+                    if(titleView.getText().toString().trim().length() > 0 && !titleView.getText().toString().contains("/")) {
+                        MainActivity.closeAdd();
 
-                    if(MainActivity.mAddFragment.ORIGINAL_NOTE == null)
-                        noteItem.addToDatabase();
-                    else
-                        noteItem.editToDatabase(MainActivity.mAddFragment.ORIGINAL_NOTE);
+                        // Build a new NoteItem from the inputted data.
+                        NoteItem.Builder builder = new NoteItem.Builder(MainActivity.PATH + titleView.getText().toString().trim(), isFolder, titleView.getText().toString());
+                        builder.item(itemViews[0].getText().toString())
+                                .time(itemViews[1].getText().toString())
+                                .date(itemViews[2].getText().toString())
+                                .link(itemViews[3].getText().toString());
+                        NoteItem noteItem = builder.build();
 
-                    MainActivity.mActionBarFragment.goBack(false);
-                    MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
+                        if (MainActivity.mAddFragment.ORIGINAL_NOTE == null)
+                            noteItem.addToDatabase();
+                        else
+                            noteItem.editToDatabase(MainActivity.mAddFragment.ORIGINAL_NOTE);
+
+                        MainActivity.mActionBarFragment.goBack(false);
+                        MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
+                    } else if(titleView.getText().toString().length() == 0){
+                        Misc.toast("Title required.");
+                    } else{
+                        Misc.toast("'/' is not an allowed character in the title");
+                    }
 
                 } else if(MainActivity.ADD_MODE == MainActivity.AddMode.VIEW){
                     MainActivity.ADD_MODE = MainActivity.AddMode.ADD;
@@ -102,5 +109,15 @@ public class FABFragment extends Fragment {
                 MainActivity.loadNotes();
             }
         });
+    }
+
+    public void hide(){
+        Animations.animateFABOut(MainActivity.mFABFragment.mRootView);
+        MainActivity.FAB_HIDDEN = true;
+    }
+
+    public void show(){
+        Animations.animateFABIn(MainActivity.mFABFragment.mRootView);
+        MainActivity.FAB_HIDDEN = false;
     }
 }

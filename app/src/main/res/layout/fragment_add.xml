@@ -40,6 +40,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/item_add_scroll_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 

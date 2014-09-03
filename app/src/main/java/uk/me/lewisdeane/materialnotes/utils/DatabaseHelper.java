@@ -110,7 +110,7 @@ public class DatabaseHelper{
 
         String table = MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
 
-        String query = "SELECT * FROM " + table + (_search.length() > 0 ? " WHERE TITLE LIKE '%" + _search + "%' AND PATH LIKE '" + MainActivity.PATH + "%' ORDER BY FOLDER DESC, TITLE ASC" : " ORDER BY FOLDER DESC, TITLE ASC");
+        String query = "SELECT * FROM " + table + (_search.length() > 0 ? " WHERE TITLE LIKE '%" + _search + "%' AND PATH LIKE '" + MainActivity.PATH + "%' " + Sorting.FOLDER_FIRST_ALPHABETICAL : " " + Sorting.FOLDER_FIRST_ALPHABETICAL);
 
         Cursor cursor = mSQLiteDatabaseStack.peek().rawQuery(query, null);
 
@@ -181,7 +181,7 @@ public class DatabaseHelper{
 
         String table = MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE;
 
-        Cursor cursor = mSQLiteDatabaseStack.peek().rawQuery("SELECT TITLE, PATH FROM " + table + " WHERE PATH LIKE '" + getTempPath(_noteItem) + "%'", null);
+        Cursor cursor = mSQLiteDatabaseStack.peek().rawQuery("SELECT TITLE, PATH FROM " + table + " WHERE PATH LIKE '" + getTempPath(_noteItem) + "%' " + Sorting.FOLDER_FIRST_ALPHABETICAL, null);
 
         if(cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0){
             cursor.moveToFirst();

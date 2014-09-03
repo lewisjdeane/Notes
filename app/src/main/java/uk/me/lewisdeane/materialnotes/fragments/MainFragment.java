@@ -18,7 +18,6 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
-import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
@@ -75,11 +74,9 @@ public class MainFragment extends Fragment {
                         // Check to see if swiping item or scrolling
                         if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(40)) {
                             if (MainActivity.FAB_HIDDEN && motionEvent.getY() > START_Y) {
-                                Animations.animateAddOut(MainActivity.mFABFragment.mRootView);
-                                MainActivity.FAB_HIDDEN = false;
+                                MainActivity.mFABFragment.show();
                             } else if (!MainActivity.FAB_HIDDEN && motionEvent.getY() < START_Y) {
-                                Animations.animateAddIn(MainActivity.mFABFragment.mRootView);
-                                MainActivity.FAB_HIDDEN = true;
+                                MainActivity.mFABFragment.hide();
                             }
                         }
                 }

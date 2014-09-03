@@ -8,14 +8,19 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TimePicker;
 
+import uk.me.lewisdeane.ldialogs.CustomDialog;
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.utils.Animations;
 
 /**
  * Created by Lewis on 13/08/2014.
@@ -37,6 +42,7 @@ public class AddFragment extends Fragment {
     public static EditText[] mItemViews = new EditText[4];
     private LinearLayout[] mContainerViews = new LinearLayout[4];
     private ImageView[] mImageViews = new ImageView[4], mClearViews = new ImageView[4];
+    public static ScrollView mScrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +61,8 @@ public class AddFragment extends Fragment {
 
         mTitle = (EditText) mRootView.findViewById(R.id.fragment_add_title);
         mFolder = (ImageButton) mRootView.findViewById(R.id.fragment_add_folder);
+
+        mScrollView = (ScrollView) mRootView.findViewById(R.id.item_add_scroll_container);
 
         mContainerViews[0] = (LinearLayout) mRootView.findViewById(R.id.item_add_container_1);
         mContainerViews[1] = (LinearLayout) mRootView.findViewById(R.id.item_add_container_2);
@@ -76,7 +84,7 @@ public class AddFragment extends Fragment {
         mClearViews[2] = (ImageView) mRootView.findViewById(R.id.item_add_clear_3);
         mClearViews[3] = (ImageView) mRootView.findViewById(R.id.item_add_clear_4);
 
-        for(int i = 0; i < mContainerViews.length; i++){
+        for (int i = 0; i < mContainerViews.length; i++) {
             final int k = i;
             mClearViews[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,6 +111,64 @@ public class AddFragment extends Fragment {
             });
         }
 
+        mItemViews[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final TimePicker timePicker = new TimePicker(getActivity());
+                if (mItemViews[1].getText().toString().length() > 0) {
+                    String[] timeParts = mItemViews[1].getText().toString().split(":");
+                    timePicker.setCurrentHour(Integer.parseInt(timeParts[0]));
+                    timePicker.setCurrentMinute(Integer.parseInt(timeParts[1]));
+                }
+                CustomDialog.Builder builder = new CustomDialog.Builder(getActivity(), "Time", "Done");
+                builder.negativeText("Cancel");
+                builder.positiveColor("#4285F4");
+                CustomDialog customDialog = builder.build();
+                customDialog.setCustomView(timePicker);
+                customDialog.show();
+
+                customDialog.setClickListener(new CustomDialog.ClickListener() {
+                    @Override
+                    public void onConfirmClick() {
+                        mItemViews[1].setText(timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute());
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                    }
+                });
+            }
+        });
+
+        mItemViews[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final DatePicker datePicker = new DatePicker(getActivity());
+                datePicker.setCalendarViewShown(false);
+                if (mItemViews[2].getText().toString().length() > 0) {
+                    String[] dateParts = mItemViews[2].getText().toString().split("/");
+                    datePicker.init(Integer.parseInt(dateParts[2]), Integer.parseInt(dateParts[1])-1, Integer.parseInt(dateParts[0]), null);
+                }
+                CustomDialog.Builder builder = new CustomDialog.Builder(getActivity(), "Time", "Done");
+                builder.positiveColor("#4285F4");
+                builder.negativeText("Cancel");
+                CustomDialog customDialog = builder.build();
+                customDialog.setCustomView(datePicker);
+                customDialog.show();
+
+                customDialog.setClickListener(new CustomDialog.ClickListener() {
+                    @Override
+                    public void onConfirmClick() {
+                        mItemViews[2].setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear());
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                    }
+                });
+            }
+        });
+
 
         loadList();
     }
@@ -112,6 +178,7 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (MainActivity.ADD_MODE == MainActivity.AddMode.ADD) {
+                    Animations.animateScroll(mScrollView, mIsFolder);
                     mIsFolder = !mIsFolder;
                     mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
                 }
@@ -119,20 +186,22 @@ public class AddFragment extends Fragment {
         });
     }
 
-    public void setUp(boolean _shouldEdit, NoteItem _noteItem){
+    public void setUp(boolean _shouldEdit, NoteItem _noteItem) {
+        Animations.putScrollBack(mScrollView);
         ORIGINAL_NOTE = _noteItem;
         mIsFolder = false;
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
-        mTitle.setText("");;
+        mTitle.setText("");
+        ;
         mTitle.setClickable(_shouldEdit);
         mTitle.setFocusable(_shouldEdit);
         mTitle.setFocusableInTouchMode(_shouldEdit);
 
-        for(int i = 0; i < mItems.length; i++)
+        for (int i = 0; i < mItems.length; i++)
             mItems[i] = "";
 
-        if(_noteItem != null) {
+        if (_noteItem != null) {
             ORIGINAL_NOTE = _noteItem;
             mItems[0] = _noteItem.getItem();
             mItems[1] = _noteItem.getTime();
@@ -140,17 +209,29 @@ public class AddFragment extends Fragment {
             mItems[3] = _noteItem.getLink();
 
             mTitle.setText(_noteItem.getTitle());
-            mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
+            mFolder.setVisibility(View.GONE);
+
+            mScrollView.setVisibility(_noteItem.getIsFolder() ? View.GONE : View.VISIBLE);
+        } else {
+            mFolder.setVisibility(View.VISIBLE);
+            mScrollView.setVisibility(View.VISIBLE);
         }
         updateViews(_shouldEdit);
     }
 
-    private void updateViews(boolean _editable){
-        for(int i = 0; i < mContainerViews.length; i++){
+    private void updateViews(boolean _editable) {
+        for (int i = 0; i < mContainerViews.length; i++) {
             mItemViews[i].setText(mItems[i]);
             mItemViews[i].setClickable(_editable);
-            mItemViews[i].setFocusable(_editable);
-            mItemViews[i].setFocusableInTouchMode(_editable);
+            if (i != 1 && i != 2) {
+                mItemViews[i].setFocusable(_editable);
+                mItemViews[i].setFocusableInTouchMode(_editable);
+            } else {
+                mItemViews[i].setFocusable(false);
+                mItemViews[i].setFocusableInTouchMode(false);
+            }
+            mContainerViews[i].setVisibility(!_editable && mItems[i].length() == 0 ? View.GONE : View.VISIBLE);
+            mClearViews[i].setVisibility(_editable && mItems[i].length() > 0 ? View.VISIBLE : View.GONE);
         }
     }
 

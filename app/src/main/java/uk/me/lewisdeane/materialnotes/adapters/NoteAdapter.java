@@ -61,12 +61,9 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_folder_overflow_info);
 
-            try {
-                title.setText(noteItem.getTitle());
-                subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
-                lastModified.setText(noteItem.getLastModifiedFormatted());
-            } catch (NullPointerException e) {
-            }
+            title.setText(noteItem.getTitle());
+            subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
+            lastModified.setText(noteItem.getLastModifiedFormatted());
 
             title.setTextColor(Colours.getPrimaryColour());
 
@@ -88,15 +85,12 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
 
             // Apply data from NoteItems.
-            try {
-                title.setText(noteItem.getTitle());
-                item.setText(noteItem.getItem());
-                time.setText(noteItem.getTime());
-                date.setText(noteItem.getDate());
-                link.setText(noteItem.getLink());
-                lastModified.setText(noteItem.getLastModifiedFormatted());
-            } catch (NullPointerException e) {
-            }
+            title.setText(noteItem.getTitle());
+            item.setText(noteItem.getItem());
+            time.setText(noteItem.getTime());
+            date.setText(noteItem.getDate());
+            link.setText(noteItem.getLink());
+            lastModified.setText(noteItem.getLastModifiedFormatted());
 
             itemContainer.setVisibility(item.getText().length() > 0 ? View.VISIBLE : View.GONE);
             timeContainer.setVisibility(time.getText().length() > 0 ? View.VISIBLE : View.GONE);
@@ -105,6 +99,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
             // Apply properties to item.
             title.setTextColor(Colours.getPrimaryColour());
+            link.setLinkTextColor(Colours.getPrimaryColour());
 
             setOverflowListener(overflowContainer, noteItem, overflow);
         }
