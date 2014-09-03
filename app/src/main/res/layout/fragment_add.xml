@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_add_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -19,23 +20,32 @@
         <ImageButton
             android:id="@+id/fragment_add_folder"
             android:layout_width="25dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_action_folder_white_not_selected"
             android:background="@color/transparent" />
 
-        <EditText
-            android:id="@+id/fragment_add_title"
+        <uk.me.lewisdeane.materialnotes.customviews.FloatLabelLayout
             android:layout_width="fill_parent"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:paddingLeft="31dp"
-            android:gravity="left|center_vertical"
-            android:textSize="24sp"
-            android:textColor="@color/white"
-            android:textCursorDrawable="@null"
-            android:background="@color/transparent"
-            android:hint="@string/add_title_hint"
-            android:textColorHint="@color/white" />
+            app:floatLabelTrigger="focus"
+            app:floatLabelTextAppearance="@style/TextAppearance.MaterialNotes.FloatLabelTitle">
+
+            <EditText
+                android:id="@+id/fragment_add_title"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:gravity="left|center_vertical"
+                android:layout_gravity="bottom"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@null"
+                android:background="@color/transparent"
+                android:hint="@string/add_title_hint"
+                android:textColorHint="@color/white"/>
+        </uk.me.lewisdeane.materialnotes.customviews.FloatLabelLayout>
 
     </LinearLayout>
 
@@ -65,17 +75,20 @@
                     android:layout_gravity="center_vertical"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/ic_content"/>
+                    android:src="@drawable/ic_content" />
 
                 <EditText
                     android:id="@+id/item_add_text_1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="36dp"
                     android:background="@color/transparent"
-                    android:hint="@string/add_item_hint"/>
+                    android:textCursorDrawable="@null"
+                    android:hint="@string/add_item_hint"
+                    android:textColor="@color/dark_grey"
+                    android:textColorHint="@color/grey"/>
 
                 <ImageView
                     android:id="@+id/item_add_clear_1"
@@ -103,7 +116,7 @@
                     android:layout_gravity="center_vertical"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/ic_time"/>
+                    android:src="@drawable/ic_time" />
 
                 <EditText
                     android:id="@+id/item_add_text_2"
@@ -113,7 +126,9 @@
                     android:layout_weight="1"
                     android:paddingLeft="36dp"
                     android:background="@color/transparent"
-                    android:hint="@string/add_time_hint"/>
+                    android:hint="@string/add_time_hint"
+                    android:textColor="@color/dark_grey"
+                    android:textColorHint="@color/grey"/>
 
                 <ImageView
                     android:id="@+id/item_add_clear_2"
@@ -141,7 +156,7 @@
                     android:layout_gravity="center_vertical"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/ic_date"/>
+                    android:src="@drawable/ic_date" />
 
                 <EditText
                     android:id="@+id/item_add_text_3"
@@ -151,7 +166,9 @@
                     android:layout_weight="1"
                     android:paddingLeft="36dp"
                     android:background="@color/transparent"
-                    android:hint="@string/add_date_hint"/>
+                    android:hint="@string/add_date_hint"
+                    android:textColor="@color/dark_grey"
+                    android:textColorHint="@color/grey"/>
 
                 <ImageView
                     android:id="@+id/item_add_clear_3"
@@ -179,7 +196,7 @@
                     android:layout_gravity="center_vertical"
                     android:scaleType="fitCenter"
                     android:background="@color/transparent"
-                    android:src="@drawable/ic_link"/>
+                    android:src="@drawable/ic_link" />
 
                 <EditText
                     android:id="@+id/item_add_text_4"
@@ -189,7 +206,9 @@
                     android:layout_weight="1"
                     android:paddingLeft="36dp"
                     android:background="@color/transparent"
-                    android:hint="@string/add_link_hint"/>
+                    android:hint="@string/add_link_hint"
+                    android:textColor="@color/dark_grey"
+                    android:textColorHint="@color/grey"/>
 
                 <ImageView
                     android:id="@+id/item_add_clear_4"

@@ -54,13 +54,16 @@ public class DatabaseHelper{
             customDialog.setClickListener(new CustomDialog.ClickListener() {
                 @Override
                 public void onConfirmClick() {
+                    MainActivity.mDeletedNotes.clear();
                     open("W");
                     mSQLiteDatabaseStack.peek().delete(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + mTempNoteItem.getLastModified(), new String[]{mTempNoteItem.getTitle(), mTempNoteItem.getItem()});
+                    MainActivity.mDeletedNotes.add(mTempNoteItem);
                     if(MainActivity.NOTE_MODE != MainActivity.NoteMode.ARCHIVE)
                         mSQLiteDatabaseStack.peek().insert(Database.ARCHIVE_TABLE, null, getContentVals(mTempNoteItem));
                     deleteSubItems(mTempNoteItem);
                     close();
                     MainActivity.loadNotes();
+                    MainActivity.mUndoFABFragment.create();
                 }
 
                 @Override
@@ -69,12 +72,15 @@ public class DatabaseHelper{
                 }
             });
         } else {
+            MainActivity.mDeletedNotes.clear();
             open("W");
             mSQLiteDatabaseStack.peek().delete(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING ? Database.NOTE_TABLE : Database.ARCHIVE_TABLE, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + _noteItem.getLastModified(), new String[]{_noteItem.getTitle(), _noteItem.getItem()});
+            MainActivity.mDeletedNotes.add(_noteItem);
             if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
                 mSQLiteDatabaseStack.peek().insert(Database.ARCHIVE_TABLE, null, getContentVals(_noteItem));
             close();
             MainActivity.loadNotes();
+            MainActivity.mUndoFABFragment.create();
         }
     }
 
@@ -96,6 +102,7 @@ public class DatabaseHelper{
                 NoteItem noteItem = builder.build();
 
                 mSQLiteDatabaseStack.peek().delete(table, "TITLE=? AND ITEM=? AND LAST_MODIFIED=" + noteItem.getLastModified(), new String[]{noteItem.getTitle(), noteItem.getItem()});
+                MainActivity.mDeletedNotes.add(noteItem);
                 if(MainActivity.NOTE_MODE == MainActivity.NoteMode.EVERYTHING)
                     mSQLiteDatabaseStack.peek().insert(Database.ARCHIVE_TABLE, null, getContentVals(noteItem));
             } while(cursor.moveToNext());

@@ -8,12 +8,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
 import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 import uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment;
+import uk.me.lewisdeane.materialnotes.fragments.UndoFABFragment;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
@@ -27,6 +30,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static AddFragment mAddFragment;
     public static FABFragment mFABFragment;
     public static NavigationDrawerFragment mNavigationDrawerFragment;
+    public static UndoFABFragment mUndoFABFragment;
 
     // Layouts defined in activity_main.xml
     public static FrameLayout mContainer;
@@ -36,7 +40,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static Context mContext;
 
     // booleans storing state of elements.
-    public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false;
+    public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false, UNDO_FAB_HIDDEN = true;
 
     // Enums defining different modes available.
     public static enum AddMode {
@@ -54,6 +58,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     // Items storing current Note and Add Mode.
     public static AddMode ADD_MODE = AddMode.NONE;
     public static NoteMode NOTE_MODE = NoteMode.EVERYTHING;
+
+    public static ArrayList<NoteItem> mDeletedNotes = new ArrayList<NoteItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +84,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
         mAddFragment = (AddFragment) getFragmentManager().findFragmentById(R.id.fragment_add);
         mFABFragment = (FABFragment) getFragmentManager().findFragmentByTag("FAB");
+        mUndoFABFragment = (UndoFABFragment) getFragmentManager().findFragmentByTag("UNDO_FAB");
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 
         mContainer = (FrameLayout) findViewById(R.id.container);
@@ -139,6 +146,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             // If it's a note open it in the add fragment and animate views.
             ADD_MODE = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
             openAdd(_shouldEdit, _noteItem);
+            PATH = DatabaseHelper.getPrevPath(_noteItem.getPath());
         }
 
         mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);

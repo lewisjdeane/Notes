@@ -20,4 +20,17 @@
     <color name="pink_primary">#e91e63</color>
     <color name="pink_secondary">#c2185b</color>
 
+    <style name="TextAppearance.MaterialNotes.FloatLabelTitle" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@drawable/float_label_colors_title</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MaterialNotes.FloatLabelItem" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@drawable/float_label_colors_item</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

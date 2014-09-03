@@ -75,8 +75,12 @@ public class MainFragment extends Fragment {
                         if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(40)) {
                             if (MainActivity.FAB_HIDDEN && motionEvent.getY() > START_Y) {
                                 MainActivity.mFABFragment.show();
+                                if (MainActivity.mUndoFABFragment.mIsCurrentlyShowing)
+                                    MainActivity.mUndoFABFragment.show();
                             } else if (!MainActivity.FAB_HIDDEN && motionEvent.getY() < START_Y) {
                                 MainActivity.mFABFragment.hide();
+                                if (MainActivity.mUndoFABFragment.mIsCurrentlyShowing)
+                                    MainActivity.mUndoFABFragment.hide();
                             }
                         }
                 }

@@ -149,7 +149,7 @@ public class AddFragment extends Fragment {
                     String[] dateParts = mItemViews[2].getText().toString().split("/");
                     datePicker.init(Integer.parseInt(dateParts[2]), Integer.parseInt(dateParts[1])-1, Integer.parseInt(dateParts[0]), null);
                 }
-                CustomDialog.Builder builder = new CustomDialog.Builder(getActivity(), "Time", "Done");
+                CustomDialog.Builder builder = new CustomDialog.Builder(getActivity(), "Date", "Done");
                 builder.positiveColor("#4285F4");
                 builder.negativeText("Cancel");
                 CustomDialog customDialog = builder.build();

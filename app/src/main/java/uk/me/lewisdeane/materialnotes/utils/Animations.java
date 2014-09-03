@@ -41,6 +41,14 @@ public abstract class Animations {
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0, MOVE_TO_ADD_HIDE).setDuration(ANIMATION_DURATION).start();
     }
 
+    public static void animateUndoFABIn(View _view){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0, -MOVE_TO_ADD_HIDE).setDuration(ANIMATION_DURATION).start();
+    }
+
+    public static void animateUndoFABOut(View _view){
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, -MOVE_TO_ADD_HIDE, 0).setDuration(ANIMATION_DURATION).start();
+    }
+
     public static void animateScroll(View _view, boolean _shouldShow){
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, _shouldShow ? MOVE_TO_SCROLL : 0, _shouldShow ? 0 : MOVE_TO_SCROLL).setDuration(ANIMATION_DURATION).start();
     }

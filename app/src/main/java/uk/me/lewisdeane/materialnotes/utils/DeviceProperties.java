@@ -20,7 +20,7 @@ public abstract class DeviceProperties {
     }
 
     public static float getHeight(){
-        return getScreenHeight() - getStatusHeight() - convertToPx(56 + 80 + 56 + 16);
+        return getScreenHeight() - getStatusHeight() - convertToPx(56 + 70 + 56 + 16);
     }
 
     private static int getStatusHeight(){

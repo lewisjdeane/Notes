@@ -17,4 +17,13 @@
         <attr name="shadowDy" format="float" />
         <attr name="shadowColor" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="FloatLabelLayout">
+        <attr name="floatLabelTextAppearance" format="reference" />
+        <attr name="floatLabelTrigger" format="enum">
+            <enum name="text" value="0" />
+            <enum name="focus" value="1" />
+        </attr>
+        <attr name="floatLabelSidePadding" format="reference|dimension" />
+    </declare-styleable>
 </resources>

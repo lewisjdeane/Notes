@@ -69,6 +69,10 @@ public class FABFragment extends Fragment {
 
                     MainActivity.ADD_MODE = MainActivity.AddMode.ADD;
                     MainActivity.openAdd(true, null);
+                    if(!MainActivity.UNDO_FAB_HIDDEN)
+                        MainActivity.mUndoFABFragment.hide();
+
+                    MainActivity.mAddFragment.mTitle.clearFocus();
 
                 } else if(MainActivity.ADD_MODE == MainActivity.AddMode.ADD){
 
@@ -104,6 +108,8 @@ public class FABFragment extends Fragment {
                     MainActivity.ADD_MODE = MainActivity.AddMode.ADD;
                     Animations.animateFAB(false, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_done));
                     MainActivity.mAddFragment.setUp(true, MainActivity.mAddFragment.ORIGINAL_NOTE);
+                    if(!MainActivity.UNDO_FAB_HIDDEN)
+                        MainActivity.mUndoFABFragment.hide();
                 }
 
                 MainActivity.loadNotes();
@@ -112,12 +118,12 @@ public class FABFragment extends Fragment {
     }
 
     public void hide(){
-        Animations.animateFABOut(MainActivity.mFABFragment.mRootView);
+        Animations.animateFABOut(mRootView);
         MainActivity.FAB_HIDDEN = true;
     }
 
     public void show(){
-        Animations.animateFABIn(MainActivity.mFABFragment.mRootView);
+        Animations.animateFABIn(mRootView);
         MainActivity.FAB_HIDDEN = false;
     }
 }
