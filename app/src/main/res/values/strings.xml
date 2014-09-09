@@ -5,8 +5,8 @@
     <string name="action_settings">Settings</string>
 
 
-    <string name="dialog_delete_title">Confirm Delete</string>
-    <string name="dialog_delete_content">Along with this folder, all sub notes and sub folders will be deleted too.</string>
+    <string name="dialog_delete_title">Delete All</string>
+    <string name="dialog_delete_content">All archived notes and folders will be deleted, this cannot be undone.</string>
     <string name="dialog_delete_confirm">DELETE</string>
     <string name="dialog_delete_cancel">CANCEL</string>
 
@@ -26,6 +26,7 @@
     <string name="open">Open</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="restore">Restore</string>
 
     <string-array name="navigation_items">
         <item>Everything</item>

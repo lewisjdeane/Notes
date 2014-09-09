@@ -130,6 +130,7 @@ public class ActionBarFragment extends Fragment {
     }
 
     public void goBack(boolean _backKey){
+        MainActivity.mAddFragment.mTitle.clearFocus();
         mSearchBox.setText("");
         MainActivity.PATH = getNewPath(_backKey);
         MainActivity.loadNotes();

@@ -3,10 +3,13 @@ package uk.me.lewisdeane.materialnotes.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import com.williammora.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -16,7 +19,6 @@ import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
 import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 import uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment;
-import uk.me.lewisdeane.materialnotes.fragments.UndoFABFragment;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
@@ -30,7 +32,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static AddFragment mAddFragment;
     public static FABFragment mFABFragment;
     public static NavigationDrawerFragment mNavigationDrawerFragment;
-    public static UndoFABFragment mUndoFABFragment;
 
     // Layouts defined in activity_main.xml
     public static FrameLayout mContainer;
@@ -61,6 +62,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     public static ArrayList<NoteItem> mDeletedNotes = new ArrayList<NoteItem>();
 
+    public static boolean mIsCurrentlyShowing = false;
+    private CountDownTimer mTimer;
+    public static Snackbar mSnackbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +89,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mMainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment_main);
         mAddFragment = (AddFragment) getFragmentManager().findFragmentById(R.id.fragment_add);
         mFABFragment = (FABFragment) getFragmentManager().findFragmentByTag("FAB");
-        mUndoFABFragment = (UndoFABFragment) getFragmentManager().findFragmentByTag("UNDO_FAB");
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 
         mContainer = (FrameLayout) findViewById(R.id.container);
@@ -163,6 +167,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         _noteItem.deleteFromDatabase();
         mMainFragment.mNoteAdapter.remove(_noteItem);
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
+        Animations.animateFABAboveSnackbar(true);
     }
 
     public static NoteMode getNoteMode(int _position) {
@@ -185,6 +190,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         Animations.animateFAB(true, true, MainActivity.mContext.getResources().getDrawable(_shouldEdit ? R.drawable.ic_fab_done : R.drawable.ic_fab_edit));
         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
         mActionBarFragment.mSearch.setVisibility(View.GONE);
+        if(mIsCurrentlyShowing){
+            finishSnackbar();
+            mSnackbar.dismiss();
+        }
     }
 
     public static void closeAdd(){
@@ -192,6 +201,61 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         Animations.animateFAB(true, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_add));
         Animations.setListAnimation(false, MainActivity.mMainFragment.mList);
         mActionBarFragment.mSearch.setVisibility(View.VISIBLE);
+    }
+
+    public void createSnackbar(String _title){
+
+        mIsCurrentlyShowing = true;
+
+        mSnackbar = Snackbar.with(this) // context
+                .text("Deleted " + _title + "!") // text to display
+                .actionLabel("Undo") // action button label
+                .actionColor(getResources().getColor(R.color.blue_primary))
+                .customDuration(5000)
+                .actionListener(new Snackbar.ActionClickListener() {
+                    @Override
+                    public void onActionClicked() {
+                        restoreNotes();
+                    }
+                });
+        mSnackbar.show(this);
+
+
+
+        mTimer = new CountDownTimer(5000, 1000){
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                if(mIsCurrentlyShowing)
+                    finishSnackbar();
+            }
+        };
+        mTimer.start();
+    }
+
+    public static void finishSnackbar(){
+        MainActivity.mDeletedNotes.clear();
+        mIsCurrentlyShowing = false;
+        Animations.animateFABAboveSnackbar(false);
+    }
+
+    private void restoreNotes(){
+        for(int i = 0; i < MainActivity.mDeletedNotes.size(); i++){
+            NoteItem noteItem = MainActivity.mDeletedNotes.get(i);
+            new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(null, noteItem);
+        }
+        MainActivity.loadNotes();
+        mTimer.cancel();
+        finishSnackbar();
+    }
+
+    public static void restoreNote(NoteItem _noteItem){
+        _noteItem.addToDatabase();
+        loadNotes();
     }
 
     @Override

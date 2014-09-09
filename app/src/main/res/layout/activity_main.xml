@@ -68,15 +68,4 @@
         android:tag="FAB"
         tools:layout="@layout/fragment_fab" />
 
-    <fragment
-        android:id="@+id/fragment_undo"
-        android:name="uk.me.lewisdeane.materialnotes.fragments.UndoFABFragment"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="-84dp"
-        android:layout_gravity="bottom|left"
-        android:tag="UNDO_FAB"
-        tools:layout="@layout/fragment_fab_undo"/>
-
 </FrameLayout>

@@ -14,11 +14,16 @@ import android.widget.PopupMenu;
 import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.deleteNote;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openNote;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote;
 
 public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
@@ -117,25 +122,45 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
                 PopupMenu popupMenu = new PopupMenu(themedContext, _anchor);
                 MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.popup, popupMenu.getMenu());
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.menu_popup_open:
-                                MainActivity.openNote(false, _noteItem);
-                                break;
-                            case R.id.menu_popup_edit:
-                                MainActivity.openNote(true, _noteItem);
-                                break;
-                            case R.id.menu_popup_delete:
-                                MainActivity.deleteNote(_noteItem);
-                                break;
+                if (NOTE_MODE != NoteMode.ARCHIVE) {
+                    inflater.inflate(R.menu.popup, popupMenu.getMenu());
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            switch (menuItem.getItemId()) {
+                                case R.id.menu_popup_open:
+                                    openNote(false, _noteItem);
+                                    break;
+                                case R.id.menu_popup_edit:
+                                    openNote(true, _noteItem);
+                                    break;
+                                case R.id.menu_popup_delete:
+                                    deleteNote(_noteItem);
+                                    break;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
+                    });
+                } else {
+                    inflater.inflate(R.menu.archive_popup, popupMenu.getMenu());
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            switch (menuItem.getItemId()) {
+                                case R.id.menu_archive_popup_restore:
+                                    restoreNote(_noteItem);
+                                    break;
+                                case R.id.menu_archive_popup_delete:
+                                    deleteNote(_noteItem);
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                }
 
                 popupMenu.show();
             }

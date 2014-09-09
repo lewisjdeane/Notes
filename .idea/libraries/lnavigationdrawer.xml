@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lnavigationdrawer">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/uk.me.lewisdeane.lnavigationdrawer/lnavigationdrawer/res" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/uk.me.lewisdeane.lnavigationdrawer/lnavigationdrawer/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

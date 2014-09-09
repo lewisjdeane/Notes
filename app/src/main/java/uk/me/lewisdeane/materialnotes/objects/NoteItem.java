@@ -6,6 +6,8 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
+
 /**
  * Created by Lewis on 05/08/2014.
  */
@@ -144,13 +146,17 @@ public class NoteItem {
     }
 
     public void addToDatabase(){
-        new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(null, this);
+        new DatabaseHelper(mContext).addNoteToDatabase(null, this);
     }
 
-    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(_oldItem, this); }
+    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(mContext).addNoteToDatabase(_oldItem, this); }
 
     public void deleteFromDatabase(){
-        new DatabaseHelper(MainActivity.mContext).deleteNoteFromDatabase(this);
+        if(!this.getIsFolder()){
+            new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
+        } else {
+            new DatabaseHelper(mContext).deleteFolderFromDatabase(this);
+        }
     }
 
     public static class Builder{

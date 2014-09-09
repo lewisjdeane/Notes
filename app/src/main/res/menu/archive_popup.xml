@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_archive_popup_restore"
+        android:title="@string/restore"
+        android:orderInCategory="1"></item>
+
+    <item
+        android:id="@+id/menu_archive_popup_delete"
+        android:title="@string/delete"
+        android:orderInCategory="2"></item>
+
+</menu>

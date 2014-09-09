@@ -15,11 +15,18 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.FAB_HIDDEN;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.deleteNote;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mFABFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openNote;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote;
 
 /**
  * Created by Lewis on 05/08/2014.
@@ -58,7 +65,10 @@ public class MainFragment extends Fragment {
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MainActivity.openNote(false, mNoteItems.get(i));
+                if(NOTE_MODE != NoteMode.ARCHIVE)
+                    openNote(false, mNoteItems.get(i));
+                else
+                    restoreNote(mNoteItems.get(i));
             }
         });
 
@@ -73,14 +83,10 @@ public class MainFragment extends Fragment {
                     case MotionEvent.ACTION_MOVE:
                         // Check to see if swiping item or scrolling
                         if (Math.abs((START_Y - motionEvent.getY()) / (START_X - motionEvent.getX())) > 3 && Math.abs(START_Y - motionEvent.getY()) > DeviceProperties.convertToPx(40)) {
-                            if (MainActivity.FAB_HIDDEN && motionEvent.getY() > START_Y) {
-                                MainActivity.mFABFragment.show();
-                                if (MainActivity.mUndoFABFragment.mIsCurrentlyShowing)
-                                    MainActivity.mUndoFABFragment.show();
-                            } else if (!MainActivity.FAB_HIDDEN && motionEvent.getY() < START_Y) {
-                                MainActivity.mFABFragment.hide();
-                                if (MainActivity.mUndoFABFragment.mIsCurrentlyShowing)
-                                    MainActivity.mUndoFABFragment.hide();
+                            if (FAB_HIDDEN && motionEvent.getY() > START_Y) {
+                                mFABFragment.show();
+                            } else if (!FAB_HIDDEN && motionEvent.getY() < START_Y) {
+                                mFABFragment.hide();
                             }
                         }
                 }
@@ -95,7 +101,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
-                            MainActivity.deleteNote(mNoteItems.get(position));
+                            deleteNote(mNoteItems.get(position));
                         }
                     }
                 }

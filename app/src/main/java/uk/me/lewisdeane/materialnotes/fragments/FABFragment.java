@@ -13,7 +13,21 @@ import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
+import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.Misc;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.ADD_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.closeAdd;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadNotes;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mActionBarFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mIsCurrentlyShowing;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openAdd;
 
 /**
  * Created by Lewis on 05/08/2014.
@@ -65,54 +79,61 @@ public class FABFragment extends Fragment {
                  */
 
 
-                if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE){
+                if(NOTE_MODE == NoteMode.ARCHIVE){
+                    new DatabaseHelper(mContext).deleteArchiveDatabase();
+                } else {
+                    if (ADD_MODE == AddMode.NONE) {
 
-                    MainActivity.ADD_MODE = MainActivity.AddMode.ADD;
-                    MainActivity.openAdd(true, null);
-                    if(!MainActivity.UNDO_FAB_HIDDEN)
-                        MainActivity.mUndoFABFragment.hide();
+                        ADD_MODE = AddMode.ADD;
+                        openAdd(true, null);
 
-                    MainActivity.mAddFragment.mTitle.clearFocus();
+                        if (mIsCurrentlyShowing) {
+                            MainActivity ma = (MainActivity) getActivity();
+                            ma.finishSnackbar();
+                            ma.mSnackbar.dismiss();
+                        }
 
-                } else if(MainActivity.ADD_MODE == MainActivity.AddMode.ADD){
+                    } else if (ADD_MODE == AddMode.ADD) {
 
-                    boolean isFolder = MainActivity.mAddFragment.mIsFolder;
-                    EditText titleView = MainActivity.mAddFragment.mTitle;
-                    EditText[] itemViews = MainActivity.mAddFragment.mItemViews;
+                        boolean isFolder = mAddFragment.mIsFolder;
+                        EditText titleView = mAddFragment.mTitle;
+                        EditText[] itemViews = mAddFragment.mItemViews;
 
-                    if(titleView.getText().toString().trim().length() > 0 && !titleView.getText().toString().contains("/")) {
-                        MainActivity.closeAdd();
+                        if (titleView.getText().toString().trim().length() > 0 && !titleView.getText().toString().contains("/")) {
+                            closeAdd();
 
-                        // Build a new NoteItem from the inputted data.
-                        NoteItem.Builder builder = new NoteItem.Builder(MainActivity.PATH + titleView.getText().toString().trim(), isFolder, titleView.getText().toString());
-                        builder.item(itemViews[0].getText().toString())
-                                .time(itemViews[1].getText().toString())
-                                .date(itemViews[2].getText().toString())
-                                .link(itemViews[3].getText().toString());
-                        NoteItem noteItem = builder.build();
+                            // Build a new NoteItem from the inputted data.
+                            NoteItem.Builder builder = new NoteItem.Builder(PATH + titleView.getText().toString().trim(), isFolder, titleView.getText().toString());
+                            builder.item(itemViews[0].getText().toString())
+                                    .time(itemViews[1].getText().toString())
+                                    .date(itemViews[2].getText().toString())
+                                    .link(itemViews[3].getText().toString());
+                            NoteItem noteItem = builder.build();
 
-                        if (MainActivity.mAddFragment.ORIGINAL_NOTE == null)
-                            noteItem.addToDatabase();
-                        else
-                            noteItem.editToDatabase(MainActivity.mAddFragment.ORIGINAL_NOTE);
+                            if (mAddFragment.ORIGINAL_NOTE == null)
+                                noteItem.addToDatabase();
+                            else
+                                noteItem.editToDatabase(mAddFragment.ORIGINAL_NOTE);
 
-                        MainActivity.mActionBarFragment.goBack(false);
-                        MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
-                    } else if(titleView.getText().toString().length() == 0){
-                        Misc.toast("Title required.");
-                    } else{
-                        Misc.toast("'/' is not an allowed character in the title");
+                            mActionBarFragment.goBack(false);
+                            ADD_MODE = MainActivity.AddMode.NONE;
+
+                            mAddFragment.mTitle.clearFocus();
+
+                        } else if (titleView.getText().toString().length() == 0) {
+                            Misc.toast("Title required.");
+                        } else {
+                            Misc.toast("'/' is not an allowed character in the title");
+                        }
+
+                    } else if (ADD_MODE == AddMode.VIEW) {
+                        ADD_MODE = MainActivity.AddMode.ADD;
+                        Animations.animateFAB(false, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_done));
+                        mAddFragment.setUp(true, MainActivity.mAddFragment.ORIGINAL_NOTE);
                     }
-
-                } else if(MainActivity.ADD_MODE == MainActivity.AddMode.VIEW){
-                    MainActivity.ADD_MODE = MainActivity.AddMode.ADD;
-                    Animations.animateFAB(false, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_done));
-                    MainActivity.mAddFragment.setUp(true, MainActivity.mAddFragment.ORIGINAL_NOTE);
-                    if(!MainActivity.UNDO_FAB_HIDDEN)
-                        MainActivity.mUndoFABFragment.hide();
                 }
 
-                MainActivity.loadNotes();
+                loadNotes();
             }
         });
     }

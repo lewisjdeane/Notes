@@ -15,7 +15,20 @@ import java.util.ArrayList;
 import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
 import uk.me.lewisdeane.lnavigationdrawer.NavigationListView;
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.activities.MainActivity;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.ADD_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.CURRENT_SELECTED_POSITION;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.getNoteMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadInfo;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadNotes;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadSettings;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mActionBarFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mFABFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mMainFragment;
 
 /**
  * Created by Lewis on 19/08/2014.
@@ -52,64 +65,76 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onNavigationItemSelected(String item, ArrayList<NavigationItem> navigationItems, int i) {
                 // Check if a different mode is selected, if so apply new properties.
-                MainActivity.NoteMode noteMode = MainActivity.getNoteMode(i);
+                NoteMode noteMode = getNoteMode(i);
 
-                if(MainActivity.NOTE_MODE != noteMode) {
+                if (NOTE_MODE != noteMode) {
 
-                    MainActivity.NOTE_MODE = noteMode;
-                    MainActivity.PATH = "/";
-                    MainActivity.CURRENT_SELECTED_POSITION = i;
-                    MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
+                    NOTE_MODE = noteMode;
+                    PATH = "/";
+                    CURRENT_SELECTED_POSITION = i;
+                    ADD_MODE = AddMode.NONE;
 
                     // When new item selected turn off search.
-                    MainActivity.mActionBarFragment.mSearchBox.setText("");
-                    MainActivity.mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
-                    MainActivity.mActionBarFragment.mActionBar2.setVisibility(View.GONE);
+                    mActionBarFragment.mSearchBox.setText("");
+                    mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
+                    mActionBarFragment.mActionBar2.setVisibility(View.GONE);
 
-                    if(i < navigationItems.size() - 2 ){
-                        navigationItems.get(MainActivity.CURRENT_SELECTED_POSITION).setIsSelected(true);
-                        MainActivity.loadNotes();
-                    } else if(i == navigationItems.size()-2){
-                        MainActivity.loadSettings();
-                    } else if(i == navigationItems.size()-1){
-                        MainActivity.loadInfo();
+                    if (i < navigationItems.size() - 2) {
+                        navigationItems.get(CURRENT_SELECTED_POSITION).setIsSelected(true);
+                        loadNotes();
+                        switch (i) {
+                            case 0:
+                                mFABFragment.mFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_fab_add));
+                                mFABFragment.mFAB.setVisibility(View.VISIBLE);
+                                break;
+                            case 1:
+                                mFABFragment.mFAB.setVisibility(View.GONE);
+                            case 2:
+                                mFABFragment.mFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_fab_clear));
+                                mFABFragment.mFAB.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                    } else if (i == navigationItems.size() - 2) {
+                        loadSettings();
+                    } else if (i == navigationItems.size() - 1) {
+                        loadInfo();
                     }
 
                     // Set items swipe able and highlight newly selected item.
-                    MainActivity.mMainFragment.applyListViewFeatures();
+                    mMainFragment.applyListViewFeatures();
                 }
 
                 // Close drawer and set up action bar.
-                MainActivity.mActionBarFragment.setUp(null);
+                mActionBarFragment.setUp(null);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
-                }
+            }
         });
     }
 
-    public void setUp(DrawerLayout _drawerLayout){
+    public void setUp(DrawerLayout _drawerLayout) {
         mDrawerLayout = _drawerLayout;
 
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.background_circle, R.string.open_drawer, R.string.close_drawer){
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.drawable.background_circle, R.string.open_drawer, R.string.close_drawer) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 mCallbacks.onDrawerClosed();
-                MainActivity.mFABFragment.mRootView.setClickable(true);
-                MainActivity.mActionBarFragment.mSearch.setClickable(true);
+                mFABFragment.mRootView.setClickable(true);
+                mActionBarFragment.mSearch.setClickable(true);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 mCallbacks.onDrawerOpened();
-                MainActivity.mFABFragment.mRootView.setClickable(false);
-                MainActivity.mActionBarFragment.mSearch.setClickable(false);
+                mFABFragment.mRootView.setClickable(false);
+                mActionBarFragment.mSearch.setClickable(false);
             }
 
             @Override
-            public void onDrawerSlide(View drawerView, float offSet){
+            public void onDrawerSlide(View drawerView, float offSet) {
                 // Fade the things out as drawer slides.
-                MainActivity.mFABFragment.mRootView.setAlpha(1-offSet);
+                mFABFragment.mRootView.setAlpha(1 - offSet);
             }
         };
 
@@ -132,9 +157,10 @@ public class NavigationDrawerFragment extends Fragment {
         }
     }
 
-    public interface NavigationDrawerCallbacks{
+    public interface NavigationDrawerCallbacks {
         // Called when drawer opened or closed.
         public void onDrawerOpened();
+
         public void onDrawerClosed();
     }
 }
