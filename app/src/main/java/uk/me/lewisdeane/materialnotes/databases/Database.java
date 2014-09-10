@@ -9,16 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
 
     public static final String NOTE_TABLE = "NoteTable";
-    public static final String ARCHIVE_TABLE = "ArchiveTable";
 
     private static final String NOTE_TABLE_CREATE = "create table " + NOTE_TABLE
-            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, LINK TEXT, LAST_MODIFIED LONG);";
-
-    private static final String ARCHIVE_TABLE_CREATE = "create table " + ARCHIVE_TABLE
-            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, LINK TEXT, LAST_MODIFIED LONG);";
+            + " (PATH TEXT, FOLDER TEXT, TITLE TEXT, ITEM TEXT, TIME TEXT, DATE TEXT, LINK TEXT, LAST_MODIFIED LONG, ARCHIVE TEXT);";
 
     public Database(Context context) {
         super(context, "Database", null, DATABASE_VERSION);
@@ -27,13 +23,12 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(NOTE_TABLE_CREATE);
-        db.execSQL(ARCHIVE_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + NOTE_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ARCHIVE_TABLE);
+
         this.onCreate(db);
     }
 

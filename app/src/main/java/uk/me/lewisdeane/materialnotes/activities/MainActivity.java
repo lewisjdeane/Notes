@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static Context mContext;
 
     // booleans storing state of elements.
-    public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false, UNDO_FAB_HIDDEN = true;
+    public static boolean DRAWER_OPEN = false, FAB_HIDDEN = false;
 
     // Enums defining different modes available.
     public static enum AddMode {
@@ -57,8 +57,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static int CURRENT_SELECTED_POSITION = 0;
 
     // Items storing current Note and Add Mode.
-    public static AddMode ADD_MODE = AddMode.NONE;
-    public static NoteMode NOTE_MODE = NoteMode.EVERYTHING;
+    public static AddMode mAddMode = AddMode.NONE;
+    public static NoteMode mNoteMode = NoteMode.EVERYTHING;
 
     public static ArrayList<NoteItem> mDeletedNotes = new ArrayList<NoteItem>();
 
@@ -115,13 +115,13 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static void loadNotes() {
         // Load notes from database based on current Note Mode.
         clearNoteList();
-        mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase(""));
+        mMainFragment.mNoteAdapter.addAll(new DatabaseHelper(mContext).getNotesFromDatabase());
         mMainFragment.applyListViewFeatures();
     }
 
     public static void loadSearchResults(String _search) {
         clearNoteList();
-        mMainFragment.mNoteAdapter.addAll(DatabaseHelper.getNotesFromDatabase(_search));
+        mMainFragment.mNoteAdapter.addAll(new DatabaseHelper(mContext).getNotesFromDatabase());
         mMainFragment.applyListViewFeatures();
     }
 
@@ -148,9 +148,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             PATH += _noteItem.getTitle().trim() + "/";
         } else {
             // If it's a note open it in the add fragment and animate views.
-            ADD_MODE = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
+            mAddMode = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
             openAdd(_shouldEdit, _noteItem);
-            PATH = DatabaseHelper.getPrevPath(_noteItem.getPath());
+            PATH = new DatabaseHelper(mContext).getPrevPath(_noteItem.getPath());
         }
 
         mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
@@ -191,7 +191,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
         mActionBarFragment.mSearch.setVisibility(View.GONE);
         if(mIsCurrentlyShowing){
-            finishSnackbar();
+            finishSnackbar(false);
             mSnackbar.dismiss();
         }
     }
@@ -231,26 +231,27 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             @Override
             public void onFinish() {
                 if(mIsCurrentlyShowing)
-                    finishSnackbar();
+                    finishSnackbar(true);
             }
         };
         mTimer.start();
     }
 
-    public static void finishSnackbar(){
+    public static void finishSnackbar(boolean _shouldAnimate){
         MainActivity.mDeletedNotes.clear();
         mIsCurrentlyShowing = false;
-        Animations.animateFABAboveSnackbar(false);
+        if(_shouldAnimate)
+            Animations.animateFABAboveSnackbar(false);
     }
 
     private void restoreNotes(){
         for(int i = 0; i < MainActivity.mDeletedNotes.size(); i++){
             NoteItem noteItem = MainActivity.mDeletedNotes.get(i);
-            new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(null, noteItem);
+            new DatabaseHelper(mContext).addNoteToDatabase(false, noteItem);
         }
         MainActivity.loadNotes();
         mTimer.cancel();
-        finishSnackbar();
+        finishSnackbar(true);
     }
 
     public static void restoreNote(NoteItem _noteItem){

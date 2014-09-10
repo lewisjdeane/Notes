@@ -9,6 +9,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.FAB_HIDDEN;
+
 /**
  * Created by Lewis on 15/08/2014.
  */
@@ -25,9 +27,15 @@ public abstract class Animations {
 
     private static final String TRANSLATE_Y = "translationY", TRANSLATE_X = "translationX";
 
+    private static float mCurrentYOffset = 0;
+
     public static ObjectAnimator setAddAnimation(boolean _up, View _view){
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(_view, TRANSLATE_Y, !_up ? MOVE_TO_ADD : 0, !_up ? 0 : MOVE_TO_ADD).setDuration(ANIMATION_DURATION);
+        float start = mCurrentYOffset;
+        float end = _up ? MOVE_TO_ADD : 0;
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(_view, TRANSLATE_Y, start, end).setDuration(ANIMATION_DURATION);
         objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        mCurrentYOffset += (end - start);
+        FAB_HIDDEN = false;
         return objectAnimator;
     }
 
@@ -35,12 +43,11 @@ public abstract class Animations {
         ObjectAnimator.ofFloat(_view, TRANSLATE_Y, !_up ? MOVE_TO_LIST : 0, !_up ? 0 : MOVE_TO_LIST).setDuration(ANIMATION_DURATION).start();
     }
 
-    public static void animateFABIn(View _view){
-        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, MOVE_TO_ADD_HIDE, 0).setDuration(FAB_HIDE_ANIMATION_DURATION).start();
-    }
-
-    public static void animateFABOut(View _view){
-        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, 0, MOVE_TO_ADD_HIDE).setDuration(FAB_HIDE_ANIMATION_DURATION).start();
+    public static void animateFABInOut(boolean _in, View _view){
+        float start = mCurrentYOffset;
+        float end = _in ? 0 : MOVE_TO_ADD_HIDE;
+        ObjectAnimator.ofFloat(_view, TRANSLATE_Y, start, end).setDuration(FAB_HIDE_ANIMATION_DURATION).start();
+        mCurrentYOffset += (end - start);
     }
 
     public static void animateScroll(View _view, boolean _shouldShow){
@@ -52,7 +59,10 @@ public abstract class Animations {
     }
 
     public static void animateFABAboveSnackbar(boolean _up){
-        ObjectAnimator.ofFloat(MainActivity.mFABFragment.mRootView, TRANSLATE_Y, _up ? 0 : MOVE_ABOVE_SNACKBAR, _up ? MOVE_ABOVE_SNACKBAR : 0).setDuration(ANIMATION_DURATION).start();
+        float start = mCurrentYOffset;
+        float end = _up ? MOVE_ABOVE_SNACKBAR : 0;
+        ObjectAnimator.ofFloat(MainActivity.mFABFragment.mRootView, TRANSLATE_Y, start, end).setDuration(ANIMATION_DURATION).start();
+        mCurrentYOffset += (end - start);
     }
 
     public static void animateFAB(boolean _shouldMove, boolean _up, final Drawable _newDrawable){

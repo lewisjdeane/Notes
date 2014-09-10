@@ -16,17 +16,17 @@ import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.Misc;
 
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.ADD_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.closeAdd;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadNotes;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mActionBarFragment;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mIsCurrentlyShowing;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mNoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openAdd;
 
 /**
@@ -79,21 +79,21 @@ public class FABFragment extends Fragment {
                  */
 
 
-                if(NOTE_MODE == NoteMode.ARCHIVE){
+                if(mNoteMode == NoteMode.ARCHIVE){
                     new DatabaseHelper(mContext).deleteArchiveDatabase();
                 } else {
-                    if (ADD_MODE == AddMode.NONE) {
+                    if (mAddMode == AddMode.NONE) {
 
-                        ADD_MODE = AddMode.ADD;
+                        mAddMode = AddMode.ADD;
                         openAdd(true, null);
 
                         if (mIsCurrentlyShowing) {
                             MainActivity ma = (MainActivity) getActivity();
-                            ma.finishSnackbar();
+                            ma.finishSnackbar(false);
                             ma.mSnackbar.dismiss();
                         }
 
-                    } else if (ADD_MODE == AddMode.ADD) {
+                    } else if (mAddMode == AddMode.ADD) {
 
                         boolean isFolder = mAddFragment.mIsFolder;
                         EditText titleView = mAddFragment.mTitle;
@@ -116,7 +116,7 @@ public class FABFragment extends Fragment {
                                 noteItem.editToDatabase(mAddFragment.ORIGINAL_NOTE);
 
                             mActionBarFragment.goBack(false);
-                            ADD_MODE = MainActivity.AddMode.NONE;
+                            mAddMode = MainActivity.AddMode.NONE;
 
                             mAddFragment.mTitle.clearFocus();
 
@@ -126,8 +126,8 @@ public class FABFragment extends Fragment {
                             Misc.toast("'/' is not an allowed character in the title");
                         }
 
-                    } else if (ADD_MODE == AddMode.VIEW) {
-                        ADD_MODE = MainActivity.AddMode.ADD;
+                    } else if (mAddMode == AddMode.VIEW) {
+                        mAddMode = MainActivity.AddMode.ADD;
                         Animations.animateFAB(false, false, MainActivity.mContext.getResources().getDrawable(R.drawable.ic_fab_done));
                         mAddFragment.setUp(true, MainActivity.mAddFragment.ORIGINAL_NOTE);
                     }
@@ -139,12 +139,12 @@ public class FABFragment extends Fragment {
     }
 
     public void hide(){
-        Animations.animateFABOut(mRootView);
+        Animations.animateFABInOut(false, mRootView);
         MainActivity.FAB_HIDDEN = true;
     }
 
     public void show(){
-        Animations.animateFABIn(mRootView);
+        Animations.animateFABInOut(true, mRootView);
         MainActivity.FAB_HIDDEN = false;
     }
 }

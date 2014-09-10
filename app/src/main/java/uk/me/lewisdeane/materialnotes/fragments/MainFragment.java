@@ -21,10 +21,10 @@ import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.FAB_HIDDEN;
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.deleteNote;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mFABFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mNoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openNote;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote;
 
@@ -52,7 +52,7 @@ public class MainFragment extends Fragment {
     private void init() {
         mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
-        mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase("");
+        mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
 
         mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
 
@@ -65,7 +65,7 @@ public class MainFragment extends Fragment {
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(NOTE_MODE != NoteMode.ARCHIVE)
+                if(mNoteMode != NoteMode.ARCHIVE)
                     openNote(false, mNoteItems.get(i));
                 else
                     restoreNote(mNoteItems.get(i));

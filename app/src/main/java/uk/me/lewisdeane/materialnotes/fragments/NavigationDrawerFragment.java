@@ -16,10 +16,8 @@ import uk.me.lewisdeane.lnavigationdrawer.NavigationItem;
 import uk.me.lewisdeane.lnavigationdrawer.NavigationListView;
 import uk.me.lewisdeane.materialnotes.R;
 
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.ADD_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.CURRENT_SELECTED_POSITION;
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.getNoteMode;
@@ -27,8 +25,10 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadInfo;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadNotes;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadSettings;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mActionBarFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mFABFragment;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mMainFragment;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mNoteMode;
 
 /**
  * Created by Lewis on 19/08/2014.
@@ -67,12 +67,12 @@ public class NavigationDrawerFragment extends Fragment {
                 // Check if a different mode is selected, if so apply new properties.
                 NoteMode noteMode = getNoteMode(i);
 
-                if (NOTE_MODE != noteMode) {
+                if (mNoteMode != noteMode) {
 
-                    NOTE_MODE = noteMode;
+                    mNoteMode = noteMode;
                     PATH = "/";
                     CURRENT_SELECTED_POSITION = i;
-                    ADD_MODE = AddMode.NONE;
+                    mAddMode = AddMode.NONE;
 
                     // When new item selected turn off search.
                     mActionBarFragment.mSearchBox.setText("");

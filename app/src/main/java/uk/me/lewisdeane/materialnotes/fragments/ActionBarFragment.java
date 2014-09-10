@@ -26,6 +26,11 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 import uk.me.lewisdeane.materialnotes.customviews.CustomTextView;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.closeAdd;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddMode;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
+
 /**
  * Created by Lewis on 05/08/2014.
  */
@@ -140,17 +145,17 @@ public class ActionBarFragment extends Fragment {
     public String getNewPath(boolean _backKey){
         // If we are viewing the note or folder go back to the directory containing it.
 
-        if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.length() > 1){
-            return DatabaseHelper.getPrevPath(MainActivity.PATH);
-        } else if(MainActivity.ADD_MODE == MainActivity.AddMode.NONE && MainActivity.PATH.equals("/")){
+        if(MainActivity.mAddMode == MainActivity.AddMode.NONE && MainActivity.PATH.length() > 1){
+            return new DatabaseHelper(mContext).getPrevPath(MainActivity.PATH);
+        } else if(MainActivity.mAddMode == MainActivity.AddMode.NONE && MainActivity.PATH.equals("/")){
             if(_backKey && MainActivity.DRAWER_OPEN)
                 getActivity().finish();
             else
                 MainActivity.mNavigationDrawerFragment.mDrawerLayout.openDrawer(Gravity.LEFT);
         } else {
-            MainActivity.closeAdd();
-            MainActivity.ADD_MODE = MainActivity.AddMode.NONE;
-            return DatabaseHelper.getPrevPath(MainActivity.PATH+"/");
+            closeAdd();
+            mAddMode = AddMode.NONE;
+            return new DatabaseHelper(mContext).getPrevPath(MainActivity.PATH + "/");
         }
         return MainActivity.PATH;
     }
@@ -159,10 +164,10 @@ public class ActionBarFragment extends Fragment {
         String[] split = MainActivity.PATH.split("/");
         mHeader.setText(MainActivity.PATH.equals("/") ? getSelectedItem() : split[split.length-1]);
 
-        mMenu.setImageDrawable(getActivity().getResources().getDrawable(MainActivity.PATH.equals("/") && MainActivity.ADD_MODE == MainActivity.AddMode.NONE ? R.drawable.ic_action_menu_white : R.drawable.ic_action_arrow_back_white));
+        mMenu.setImageDrawable(getActivity().getResources().getDrawable(MainActivity.PATH.equals("/") && MainActivity.mAddMode == MainActivity.AddMode.NONE ? R.drawable.ic_action_menu_white : R.drawable.ic_action_arrow_back_white));
 
         if(_text != null)
-            mHeader.setText(MainActivity.ADD_MODE == MainActivity.AddMode.NONE ? _text : "");
+            mHeader.setText(MainActivity.mAddMode == MainActivity.AddMode.NONE ? _text : "");
     }
 
     private String getSelectedItem(){

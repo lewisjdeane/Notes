@@ -19,9 +19,9 @@ import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Colours;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NOTE_MODE;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.deleteNote;
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mNoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.openNote;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote;
 
@@ -123,7 +123,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                 PopupMenu popupMenu = new PopupMenu(themedContext, _anchor);
                 MenuInflater inflater = popupMenu.getMenuInflater();
 
-                if (NOTE_MODE != NoteMode.ARCHIVE) {
+                if (mNoteMode != NoteMode.ARCHIVE) {
                     inflater.inflate(R.menu.popup, popupMenu.getMenu());
 
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

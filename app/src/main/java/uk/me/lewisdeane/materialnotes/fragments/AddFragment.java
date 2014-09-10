@@ -177,7 +177,7 @@ public class AddFragment extends Fragment {
         mFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.ADD_MODE == MainActivity.AddMode.ADD) {
+                if (MainActivity.mAddMode == MainActivity.AddMode.ADD) {
                     Animations.animateScroll(mScrollView, mIsFolder);
                     mIsFolder = !mIsFolder;
                     mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
@@ -193,7 +193,7 @@ public class AddFragment extends Fragment {
         mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
         mTitle.setText("");
-        ;
+        mTitle.clearFocus();
         mTitle.setClickable(_shouldEdit);
         mTitle.setFocusable(_shouldEdit);
         mTitle.setFocusableInTouchMode(_shouldEdit);
@@ -209,6 +209,7 @@ public class AddFragment extends Fragment {
             mItems[3] = _noteItem.getLink();
 
             mTitle.setText(_noteItem.getTitle());
+            mTitle.clearFocus();
             mFolder.setVisibility(View.GONE);
 
             mScrollView.setVisibility(_noteItem.getIsFolder() ? View.GONE : View.VISIBLE);

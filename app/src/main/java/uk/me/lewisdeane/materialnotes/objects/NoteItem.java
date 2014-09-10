@@ -146,14 +146,15 @@ public class NoteItem {
     }
 
     public void addToDatabase(){
-        new DatabaseHelper(mContext).addNoteToDatabase(null, this);
+        new DatabaseHelper(mContext).addNoteToDatabase(false, this);
     }
 
-    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(mContext).addNoteToDatabase(_oldItem, this); }
+    public void editToDatabase(NoteItem _oldItem){ new DatabaseHelper(mContext).editNoteToDatabase(_oldItem, this); }
 
     public void deleteFromDatabase(){
         if(!this.getIsFolder()){
             new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
+
         } else {
             new DatabaseHelper(mContext).deleteFolderFromDatabase(this);
         }
