@@ -210,7 +210,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mSnackbar = Snackbar.with(this) // context
                 .text("Deleted " + _title + "!") // text to display
                 .actionLabel("Undo") // action button label
-                .actionColor(getResources().getColor(R.color.blue_primary))
+                .actionColor(mContext.getResources().getColor(R.color.blue_primary))
                 .customDuration(5000)
                 .actionListener(new Snackbar.ActionClickListener() {
                     @Override
