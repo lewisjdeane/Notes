@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
-import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.objects.Note;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
@@ -36,7 +36,7 @@ public class MainFragment extends Fragment {
     private static View mRootView;
     public static DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
-    public static ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
+    public static ArrayList<Note> mNotes = new ArrayList<Note>();
 
     private float START_Y, START_X;
 
@@ -52,9 +52,9 @@ public class MainFragment extends Fragment {
     private void init() {
         mList = (DynamicListView) mRootView.findViewById(R.id.main_list);
 
-        mNoteItems = new DatabaseHelper(getActivity()).getNotesFromDatabase();
+        mNotes = new DatabaseHelper(getActivity()).getNotesFromDatabase();
 
-        mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNoteItems);
+        mNoteAdapter = new NoteAdapter(getActivity(), R.layout.item_note, mNotes);
 
         applyListViewFeatures();
 
@@ -66,9 +66,9 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(mNoteMode != NoteMode.ARCHIVE)
-                    openNote(false, mNoteItems.get(i));
+                    openNote(false, mNotes.get(i));
                 else
-                    restoreNote(mNoteItems.get(i));
+                    restoreNote(mNotes.get(i));
             }
         });
 
@@ -101,7 +101,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onDismiss(@NonNull final ViewGroup listView, @NonNull final int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
-                            deleteNote(mNoteItems.get(position));
+                            deleteNote(mNotes.get(position));
                         }
                     }
                 }

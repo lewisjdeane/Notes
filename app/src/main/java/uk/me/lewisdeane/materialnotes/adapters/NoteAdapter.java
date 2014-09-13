@@ -27,15 +27,15 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote
 
 public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
-    private ArrayList<NoteItem> mNoteItems = new ArrayList<NoteItem>();
+    private ArrayList<NoteItem> mNotes = new ArrayList<NoteItem>();
     private Context mContext;
 
     public NoteAdapter(Context context, int resource,
-                       ArrayList<NoteItem> _noteItems) {
+                       ArrayList<NoteItem> _notes) {
 
-        super(context, resource, _noteItems);
+        super(context, resource, _notes);
         this.mContext = context;
-        this.mNoteItems = _noteItems;
+        this.mNotes = _notes;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         View v = convertView;
 
         // Get the current NoteItem.
-        NoteItem noteItem = mNoteItems.get(position);
+        NoteItem note = mNotes.get(position);
 
         // Inflate layout.
         if (v == null) {
@@ -53,11 +53,11 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         LinearLayout folderContainer = (LinearLayout) v.findViewById(R.id.item_folder_container);
         LinearLayout noteContainer = (LinearLayout) v.findViewById(R.id.item_note_container);
 
-        folderContainer.setVisibility(noteItem.getIsFolder() ? View.VISIBLE : View.GONE);
-        noteContainer.setVisibility(noteItem.getIsFolder() ? View.GONE : View.VISIBLE);
+        folderContainer.setVisibility(note.getIsFolder() ? View.VISIBLE : View.GONE);
+        noteContainer.setVisibility(note.getIsFolder() ? View.GONE : View.VISIBLE);
 
 
-        if (noteItem.getIsFolder()) {
+        if (note.getIsFolder()) {
             CustomTextView title = (CustomTextView) v.findViewById(R.id.item_folder_title);
             CustomTextView subItems = (CustomTextView) v.findViewById(R.id.item_folder_subitems);
 
@@ -66,13 +66,13 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_folder_overflow_info);
 
-            title.setText(noteItem.getTitle());
-            subItems.setText(new DatabaseHelper(mContext).getSubItems(noteItem));
-            lastModified.setText(noteItem.getLastModifiedFormatted());
+            title.setText(note.getTitle());
+            subItems.setText(new DatabaseHelper(mContext).getSubItems(note));
+            lastModified.setText(note.getLastModifiedFormatted());
 
             title.setTextColor(Colours.getPrimaryColour());
 
-            setOverflowListener(overflowContainer, noteItem, overflow);
+            setOverflowListener(overflowContainer, note, overflow);
         } else {
             // Initialise views.
             CustomTextView title = (CustomTextView) v.findViewById(R.id.item_note_title);
@@ -90,12 +90,12 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             LinearLayout overflowContainer = (LinearLayout) v.findViewById(R.id.item_note_overflow_info);
 
             // Apply data from NoteItems.
-            title.setText(noteItem.getTitle());
-            item.setText(noteItem.getItem());
-            time.setText(noteItem.getTime());
-            date.setText(noteItem.getDate());
-            link.setText(noteItem.getLink());
-            lastModified.setText(noteItem.getLastModifiedFormatted());
+            title.setText(note.getTitle());
+            item.setText(note.getItem());
+            time.setText(note.getTime());
+            date.setText(note.getDate());
+            link.setText(note.getLink());
+            lastModified.setText(note.getLastModifiedFormatted());
 
             itemContainer.setVisibility(item.getText().length() > 0 ? View.VISIBLE : View.GONE);
             timeContainer.setVisibility(time.getText().length() > 0 ? View.VISIBLE : View.GONE);
@@ -106,13 +106,13 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
             title.setTextColor(Colours.getPrimaryColour());
             link.setLinkTextColor(Colours.getPrimaryColour());
 
-            setOverflowListener(overflowContainer, noteItem, overflow);
+            setOverflowListener(overflowContainer, note, overflow);
         }
 
         return v;
     }
 
-    private void setOverflowListener(LinearLayout _overflowContainer, final NoteItem _noteItem, final View _anchor) {
+    private void setOverflowListener(LinearLayout _overflowContainer, final NoteItem _note, final View _anchor) {
         // Set listener so popup menu shows on overflow click.
         _overflowContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,13 +131,13 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             switch (menuItem.getItemId()) {
                                 case R.id.menu_popup_open:
-                                    openNote(false, _noteItem);
+                                    openNote(false, _note);
                                     break;
                                 case R.id.menu_popup_edit:
-                                    openNote(true, _noteItem);
+                                    openNote(true, _note);
                                     break;
                                 case R.id.menu_popup_delete:
-                                    deleteNote(_noteItem);
+                                    deleteNote(_note);
                                     break;
                             }
                             return false;
@@ -151,10 +151,10 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             switch (menuItem.getItemId()) {
                                 case R.id.menu_archive_popup_restore:
-                                    restoreNote(_noteItem);
+                                    restoreNote(_note);
                                     break;
                                 case R.id.menu_archive_popup_delete:
-                                    deleteNote(_noteItem);
+                                    deleteNote(_note);
                                     break;
                             }
                             return false;

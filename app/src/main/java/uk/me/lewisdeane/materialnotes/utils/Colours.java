@@ -5,12 +5,42 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 
 import uk.me.lewisdeane.materialnotes.R;
-import uk.me.lewisdeane.materialnotes.activities.MainActivity;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
 
 /**
  * Created by Lewis on 23/08/2014.
  */
-public abstract class Colours {
+public class Colours {
+
+    public static enum ColourTheme {
+        BLUE(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
+        PURPLE(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
+        RED(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
+        GREEN(getColour(R.color.blue_primary), getColour(R.color.blue_primary));
+
+        private final int mPrimaryColour, mSecondaryColour;
+
+        private ColourTheme(int _primaryColour, int _secondaryColour){
+            this.mPrimaryColour = _primaryColour;
+            this.mSecondaryColour = _secondaryColour;
+        }
+
+        @Override
+        public String toString(){
+            return this.name().substring(0, 1) + this.name().substring(1).toLowerCase();
+        }
+    }
+
+    public static ColourTheme mColourTheme = ColourTheme.BLUE;
+
+
+    /*
+    Suppress the constructor to prevent instantiation.
+     */
+    private Colours(){
+
+    }
 
     public static Drawable getColouredDrawable(Drawable _drawable, int _color){
         int iColor = _color;
@@ -28,14 +58,19 @@ public abstract class Colours {
 
         _drawable.setColorFilter(colorFilter);
 
+
         return _drawable;
     }
 
     public static int getPrimaryColour(){
-        return MainActivity.mContext.getResources().getColor(R.color.blue_primary);
+        return mColourTheme.mPrimaryColour;
     }
 
-    public static int getDarkColour(){
-        return MainActivity.mContext.getResources().getColor(R.color.dark_grey);
+    public static int getSecondaryColour(){
+        return mColourTheme.mSecondaryColour;
+    }
+
+    private static int getColour(int _res){
+        return mContext.getResources().getColor(_res);
     }
 }

@@ -134,23 +134,23 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     public static void clearNoteList() {
-        mMainFragment.mNoteItems.clear();
+        mMainFragment.mNotes.clear();
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
     }
 
-    public static void openNote(boolean _shouldEdit, NoteItem _noteItem) {
+    public static void openNote(boolean _shouldEdit, NoteItem _note) {
         // Called whenever open or edit clicked on a note/folder.
 
-        if (_noteItem.getIsFolder() && !_shouldEdit) {
+        if (_note.getIsFolder() && !_shouldEdit) {
             // Append current path so that sub items of folder will be shown.
             if(MainActivity.FAB_HIDDEN)
                 MainActivity.mFABFragment.show();
-            PATH += _noteItem.getTitle().trim() + "/";
+            PATH += _note.getTitle().trim() + "/";
         } else {
             // If it's a note open it in the add fragment and animate views.
             mAddMode = _shouldEdit ? AddMode.ADD : AddMode.VIEW;
-            openAdd(_shouldEdit, _noteItem);
-            PATH = new DatabaseHelper(mContext).getPrevPath(_noteItem.getPath());
+            openAdd(_shouldEdit, _note);
+            PATH = new DatabaseHelper(mContext).getPrevPath(_note.getPath());
         }
 
         mActionBarFragment.mActionBar1.setVisibility(View.VISIBLE);
@@ -158,14 +158,14 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         mActionBarFragment.mSearchBox.setText("");
 
         // Set up action bar and load notes.
-        mActionBarFragment.setUp(_noteItem.getTitle());
+        mActionBarFragment.setUp(_note.getTitle());
         loadNotes();
     }
 
-    public static void deleteNote(NoteItem _noteItem) {
+    public static void deleteNote(NoteItem _note) {
         // Delete the note from the database and sub items if applicable.
-        _noteItem.deleteFromDatabase();
-        mMainFragment.mNoteAdapter.remove(_noteItem);
+        _note.deleteFromDatabase();
+        mMainFragment.mNoteAdapter.remove(_note);
         mMainFragment.mNoteAdapter.notifyDataSetChanged();
         Animations.animateFABAboveSnackbar(true);
     }
@@ -184,9 +184,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         }
     }
 
-    public static void openAdd(boolean _shouldEdit, NoteItem _noteItem){
+    public static void openAdd(boolean _shouldEdit, NoteItem _note){
         mActionBarFragment.setUp("");
-        mAddFragment.setUp(_shouldEdit, _noteItem);
+        mAddFragment.setUp(_shouldEdit, _note);
         Animations.animateFAB(true, true, MainActivity.mContext.getResources().getDrawable(_shouldEdit ? R.drawable.ic_fab_done : R.drawable.ic_fab_edit));
         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
         mActionBarFragment.mSearch.setVisibility(View.GONE);
@@ -246,16 +246,16 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     private void restoreNotes(){
         for(int i = 0; i < MainActivity.mDeletedNotes.size(); i++){
-            NoteItem noteItem = MainActivity.mDeletedNotes.get(i);
-            new DatabaseHelper(mContext).addNoteToDatabase(false, noteItem);
+            NoteItem note = MainActivity.mDeletedNotes.get(i);
+            new DatabaseHelper(mContext).addNoteToDatabase(false, note);
         }
         MainActivity.loadNotes();
         mTimer.cancel();
         finishSnackbar(true);
     }
 
-    public static void restoreNote(NoteItem _noteItem){
-        _noteItem.addToDatabase();
+    public static void restoreNote(NoteItem _note){
+        _note.addToDatabase();
         loadNotes();
     }
 

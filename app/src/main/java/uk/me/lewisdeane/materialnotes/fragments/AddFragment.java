@@ -31,7 +31,6 @@ public class AddFragment extends Fragment {
     public static LinearLayout mContainer, mPrimaryContainer;
     public static EditText mTitle;
     public static ImageButton mFolder;
-    public static boolean mIsFolder;
 
     public static String[] mItems = new String[4];
 
@@ -43,6 +42,7 @@ public class AddFragment extends Fragment {
     private LinearLayout[] mContainerViews = new LinearLayout[4];
     private ImageView[] mImageViews = new ImageView[4], mClearViews = new ImageView[4];
     public static ScrollView mScrollView;
+    public static boolean mIsFolder = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -186,11 +186,12 @@ public class AddFragment extends Fragment {
         });
     }
 
-    public void setUp(boolean _shouldEdit, NoteItem _noteItem) {
+    public void setUp(boolean _shouldEdit, NoteItem _note) {
         Animations.putScrollBack(mScrollView);
-        ORIGINAL_NOTE = _noteItem;
+        ORIGINAL_NOTE = _note;
+        mFolder.setVisibility(_shouldEdit ? View.VISIBLE : View.GONE);
+
         mIsFolder = false;
-        mFolder.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_folder_white_not_selected));
 
         mTitle.setText("");
         mTitle.clearFocus();
@@ -201,22 +202,24 @@ public class AddFragment extends Fragment {
         for (int i = 0; i < mItems.length; i++)
             mItems[i] = "";
 
-        if (_noteItem != null) {
-            ORIGINAL_NOTE = _noteItem;
-            mItems[0] = _noteItem.getItem();
-            mItems[1] = _noteItem.getTime();
-            mItems[2] = _noteItem.getDate();
-            mItems[3] = _noteItem.getLink();
+        if (_note != null) {
+            ORIGINAL_NOTE = _note;
+            mItems[0] = _note.getItem();
+            mItems[1] = _note.getTime();
+            mItems[2] = _note.getDate();
+            mItems[3] = _note.getLink();
 
-            mTitle.setText(_noteItem.getTitle());
+            mTitle.setText(_note.getTitle());
             mTitle.clearFocus();
             mFolder.setVisibility(View.GONE);
+            mIsFolder = _note.getIsFolder();
 
-            mScrollView.setVisibility(_noteItem.getIsFolder() ? View.GONE : View.VISIBLE);
+            mScrollView.setVisibility(_note.getIsFolder() ? View.GONE : View.VISIBLE);
         } else {
             mFolder.setVisibility(View.VISIBLE);
             mScrollView.setVisibility(View.VISIBLE);
         }
+        mFolder.setImageDrawable(getActivity().getResources().getDrawable(mIsFolder ? R.drawable.ic_action_folder_white_selected : R.drawable.ic_action_folder_white_not_selected));
         updateViews(_shouldEdit);
     }
 
