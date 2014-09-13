@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.adapters.NoteAdapter;
-import uk.me.lewisdeane.materialnotes.objects.Note;
+import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.DeviceProperties;
 
@@ -34,9 +34,10 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote
 public class MainFragment extends Fragment {
 
     private static View mRootView;
+
     public static DynamicListView mList;
     public static NoteAdapter mNoteAdapter;
-    public static ArrayList<Note> mNotes = new ArrayList<Note>();
+    public static ArrayList<NoteItem> mNotes = new ArrayList<NoteItem>();
 
     private float START_Y, START_X;
 
