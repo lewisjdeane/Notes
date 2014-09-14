@@ -66,7 +66,7 @@ public class MainFragment extends Fragment {
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mNoteMode != NoteMode.ARCHIVE)
+                if (mNoteMode != NoteMode.ARCHIVE)
                     openNote(false, mNotes.get(i));
                 else
                     restoreNote(mNotes.get(i));

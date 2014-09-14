@@ -31,10 +31,10 @@ public class DatabaseHelper {
     private Context mContext;
 
     // Create a database reference that we use to create readable and writeable databases from.
-    private Stack<Database> mDatabases;
+    private Stack<Database> mDatabases = new Stack<Database>();
 
     // Create a read able and write able database reference
-    private Stack<SQLiteDatabase> mReadableDatabases, mWriteableDatabases;
+    private Stack<SQLiteDatabase> mReadableDatabases = new Stack<SQLiteDatabase>(), mWriteableDatabases = new Stack<SQLiteDatabase>();
 
     // Create an enum associating the database columns with the title
     private enum Columns {
@@ -99,6 +99,18 @@ public class DatabaseHelper {
 
 
     /*
+    Edits a note to the database.
+
+    @param - The old note to replace, the new note to replace it.
+    @return - null
+     */
+    public void editFolderToDatabase(NoteItem _oldNoteItem, NoteItem _newNoteItem) {
+        editNoteToDatabase(_oldNoteItem, _newNoteItem);
+        editSubItems(_oldNoteItem, _newNoteItem);
+    }
+
+
+    /*
     Fetches a list of notes to show.
 
     @param - null
@@ -117,10 +129,19 @@ public class DatabaseHelper {
         if (cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0) {
             cursor.moveToFirst();
             do {
-                // If the note doesn't have time or date when in upcoming mode, do not add it to our arraylist.
                 NoteItem noteItem = getNoteItem(cursor);
-                if(!(noteItem.getTime().length() == 0 && noteItem.getDate().length() == 0 && mNoteMode == NoteMode.UPCOMING))
-                    noteItems.add(getNoteItem(cursor));
+                if(mNoteMode == NoteMode.EVERYTHING){
+                    if(cursor.getString(getColumnPos("ARCHIVE")).equals("false") && PATH.equals(getPrevPath(noteItem.getPath())))
+                        noteItems.add(noteItem);
+                }
+                else if(mNoteMode == NoteMode.UPCOMING){
+                    if(cursor.getString(getColumnPos("ARCHIVE")).equals("false") && (noteItem.getTime().length() > 0 || noteItem.getDate().length() > 0))
+                        noteItems.add(noteItem); // Sort the upcoming into chronological order after all added.
+                }
+                else {
+                    if(cursor.getString(getColumnPos("ARCHIVE")).equals("true"))
+                        noteItems.add(noteItem);
+                }
             }
             while (cursor.moveToNext());
         }
@@ -181,6 +202,11 @@ public class DatabaseHelper {
     }
 
 
+    private void editSubItems(NoteItem _oldNoteItem, NoteItem _newNoteItem){
+
+    }
+
+
     /*
     Deletes sub items of the passed in note from the database.
 
@@ -204,7 +230,7 @@ public class DatabaseHelper {
                 NoteItem noteItem = getNoteItem(cursor);
 
                 // Delete it based on note type.
-                if (noteItem.getIsFolder())
+                if (noteItem.getNoteType() == NoteItem.NoteType.FOLDER)
                     deleteFolderFromDatabase(noteItem);
                 else
                     deleteNoteFromDatabase(noteItem);
@@ -243,6 +269,8 @@ public class DatabaseHelper {
 
                 // Delete all notes where archive field contains true.
                 getTopWriteable().delete(Database.NOTE_TABLE, "ARCHIVE=?", new String[]{"true"});
+
+                // Add all deleted notes to the deleted notes list.
 
                 // Reload notes from database.
                 loadNotes();
@@ -298,7 +326,7 @@ public class DatabaseHelper {
 
         // Set appropriate fields.
         contentValues.put("PATH", path);
-        contentValues.put("FOLDER", _noteItem.getIsFolder() ? "true" : "false");
+        contentValues.put("FOLDER", _noteItem.getNoteType().toString());
         contentValues.put("TITLE", _noteItem.getTitle());
         contentValues.put("ITEM", _noteItem.getItem());
         contentValues.put("TIME", _noteItem.getTime());
@@ -320,7 +348,7 @@ public class DatabaseHelper {
      */
     private void open(Database... _databases) {
         // If param is null create and add a new database to the stack, otherwise reference database from parameter
-        if (_databases == null)
+        if (_databases.length == 0)
             mDatabases.add(new Database(this.mContext));
         else
             mDatabases.add(_databases[0]);
@@ -474,7 +502,7 @@ public class DatabaseHelper {
      */
     private NoteItem getNoteItem(Cursor _cursor) {
         // Build a note from the cursors values.
-        NoteItem.Builder builder = new NoteItem.Builder(_cursor.getString(getColumnPos("PATH")), _cursor.getString(getColumnPos("FOLDER")).equals("true"), _cursor.getString(getColumnPos("TITLE")));
+        NoteItem.Builder builder = new NoteItem.Builder(_cursor.getString(getColumnPos("PATH")), _cursor.getString(getColumnPos("FOLDER")).equals("FOLDER") ? NoteItem.NoteType.FOLDER : NoteItem.NoteType.NOTE, _cursor.getString(getColumnPos("TITLE")));
         builder.item(_cursor.getString(getColumnPos("ITEM")))
                 .time(_cursor.getString(getColumnPos("TIME")))
                 .date(_cursor.getString(getColumnPos("DATE")))

@@ -14,9 +14,9 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
 public class Colours {
 
     public static enum ColourTheme {
-        BLUE(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
-        PURPLE(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
-        RED(getColour(R.color.blue_primary), getColour(R.color.blue_primary)),
+        BLUE(getColour(R.color.blue_primary), getColour(R.color.blue_secondary)),
+        PINK(getColour(R.color.pink_primary), getColour(R.color.pink_secondary)),
+        RED(getColour(R.color.aqua_primary), getColour(R.color.aqua_secondary)),
         GREEN(getColour(R.color.blue_primary), getColour(R.color.blue_primary));
 
         private final int mPrimaryColour, mSecondaryColour;
@@ -32,8 +32,12 @@ public class Colours {
         }
     }
 
-    public static ColourTheme mColourTheme = ColourTheme.BLUE;
+    public static enum Theme {
+        LIGHT, DARK;
+    }
 
+    public static ColourTheme mColourTheme = ColourTheme.BLUE;
+    public static Theme mTheme = Theme.LIGHT;
 
     /*
     Suppress the constructor to prevent instantiation.

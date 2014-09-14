@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
-import uk.me.lewisdeane.materialnotes.objects.Note;
+import uk.me.lewisdeane.materialnotes.objects.NoteItem;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.Misc;
@@ -103,12 +103,12 @@ public class FABFragment extends Fragment {
                             closeAdd();
 
                             // Build a new NoteItem from the inputted data.
-                            Note.Builder builder = new Note.Builder(PATH + titleView.getText().toString().trim(), isFolder, titleView.getText().toString());
+                            NoteItem.Builder builder = new NoteItem.Builder(PATH + titleView.getText().toString().trim(), !isFolder ? NoteItem.NoteType.NOTE : NoteItem.NoteType.FOLDER, titleView.getText().toString());
                             builder.item(itemViews[0].getText().toString())
                                     .time(itemViews[1].getText().toString())
                                     .date(itemViews[2].getText().toString())
                                     .link(itemViews[3].getText().toString());
-                            Note note = builder.build();
+                            NoteItem note = builder.build();
 
                             if (mAddFragment.ORIGINAL_NOTE == null)
                                 note.addToDatabase();

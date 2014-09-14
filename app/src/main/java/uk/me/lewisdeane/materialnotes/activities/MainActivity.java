@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static void openNote(boolean _shouldEdit, NoteItem _note) {
         // Called whenever open or edit clicked on a note/folder.
 
-        if (_note.getIsFolder() && !_shouldEdit) {
+        if (_note.getNoteType() == NoteItem.NoteType.FOLDER && !_shouldEdit) {
             // Append current path so that sub items of folder will be shown.
             if(MainActivity.FAB_HIDDEN)
                 MainActivity.mFABFragment.show();

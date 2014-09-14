@@ -1,10 +1,16 @@
 package uk.me.lewisdeane.materialnotes.objects;
 
+import android.content.ContentValues;
+import android.content.Context;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.activities.MainActivity;
+import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
+
+import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
 
 /**
  * Created by Lewis on 13/09/2014.
@@ -20,27 +26,11 @@ public class Folder {
         NOTE, FOLDER;
     }
 
-    Folder(Builder _builder){
+    Folder(Builder _builder) {
         this.mPath = _builder.mPath;
         this.mTitle = _builder.mTitle;
         this.mItem = _builder.mItem;
         this.mLastModified = _builder.mLastModified;
-    }
-
-    private final void setPath(String _path) {
-
-    }
-
-    private final void setTitle(String _title) {
-
-    }
-
-    private final void setItem(String _item) {
-
-    }
-
-    private final void setLastModified(long... _lastModified) {
-
     }
 
     public final long getLastModified() {
@@ -55,11 +45,11 @@ public class Folder {
         return this.mTitle;
     }
 
-    public final String getItem(){
+    public final String getItem() {
         return this.mItem;
     }
 
-    public NoteType getNoteType(){
+    public NoteType getNoteType() {
         return NoteType.FOLDER;
     }
 
@@ -96,16 +86,15 @@ public class Folder {
             return MainActivity.mContext.getString(R.string.time_now);
     }
 
-    public void addToDatabase(){
-        // new DatabaseHelper(MainActivity.mContext).addNoteToDatabase(false, this);
+    public void addToDatabase() {
     }
 
-    public void editToDatabase(Folder _folder){
-
+    public void editToDatabase(Folder _folder) {
+        new FolderDatabaseHelper(MainActivity.mContext).editFolderToDatabase(this, this);
     }
 
-    public void deleteFromDatabase(){
-
+    public void deleteFromDatabase() {
+        new FolderDatabaseHelper(MainActivity.mContext).deleteFolderFromDatabase(this);
     }
 
     public static class Builder {
@@ -129,6 +118,54 @@ public class Folder {
 
         public Folder build() {
             return new Folder(this);
+        }
+    }
+
+
+    private class FolderDatabaseHelper extends DatabaseHelper {
+
+        private final Context mContext;
+
+        private FolderDatabaseHelper(Context _context) {
+            super(_context);
+            this.mContext = _context;
+        }
+
+
+        private final void editFolderToDatabase(Folder _oldFolder, Folder _newFolder) {
+
+        }
+
+        private final void deleteFolderFromDatabase(Folder _folder) {
+
+        }
+
+        /*
+    Gets the content values from the passed in note.
+
+    @param - boolean containing whether or not to put in archive, note to be added.
+    @return - Content values of the note.
+     */
+        private ContentValues getContentVals(boolean _shouldArchive, Folder _folder) {
+            // Creates a new ContentValues from the NoteItem.
+            ContentValues contentValues = new ContentValues();
+
+            // Get the path of the note to be added.
+            String path = _folder.getPath() != null ? _folder.getPath() : PATH + _folder.getTitle();
+
+            // Set appropriate fields.
+            contentValues.put("PATH", path);
+            contentValues.put("FOLDER", "true");
+            contentValues.put("TITLE", _folder.getTitle());
+            contentValues.put("ITEM", _folder.getItem());
+            contentValues.put("TIME", "");
+            contentValues.put("DATE", "");
+            contentValues.put("LINK", "");
+            contentValues.put("LAST_MODIFIED", _folder.getLastModified());
+            contentValues.put("ARCHIVE", _shouldArchive + "");
+
+            // Return the content values.
+            return contentValues;
         }
     }
 }

@@ -53,11 +53,13 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         LinearLayout folderContainer = (LinearLayout) v.findViewById(R.id.item_folder_container);
         LinearLayout noteContainer = (LinearLayout) v.findViewById(R.id.item_note_container);
 
-        folderContainer.setVisibility(note.getIsFolder() ? View.VISIBLE : View.GONE);
-        noteContainer.setVisibility(note.getIsFolder() ? View.GONE : View.VISIBLE);
+        boolean isFolder = note.getNoteType() == NoteItem.NoteType.FOLDER ? true : false;
+
+        folderContainer.setVisibility(isFolder ? View.VISIBLE : View.GONE);
+        noteContainer.setVisibility(isFolder ? View.GONE : View.VISIBLE);
 
 
-        if (note.getIsFolder()) {
+        if (isFolder) {
             CustomTextView title = (CustomTextView) v.findViewById(R.id.item_folder_title);
             CustomTextView subItems = (CustomTextView) v.findViewById(R.id.item_folder_subitems);
 

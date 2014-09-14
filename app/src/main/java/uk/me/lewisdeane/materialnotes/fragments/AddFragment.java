@@ -212,9 +212,9 @@ public class AddFragment extends Fragment {
             mTitle.setText(_note.getTitle());
             mTitle.clearFocus();
             mFolder.setVisibility(View.GONE);
-            mIsFolder = _note.getIsFolder();
+            mIsFolder = _note.getNoteType() == NoteItem.NoteType.NOTE ? false : true;
 
-            mScrollView.setVisibility(_note.getIsFolder() ? View.GONE : View.VISIBLE);
+            mScrollView.setVisibility(mIsFolder ? View.GONE : View.VISIBLE);
         } else {
             mFolder.setVisibility(View.VISIBLE);
             mScrollView.setVisibility(View.VISIBLE);

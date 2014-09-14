@@ -13,7 +13,9 @@ import uk.me.lewisdeane.materialnotes.activities.MainActivity;
 /**
  * Created by Lewis on 23/08/2014.
  */
-public abstract class Misc {
+public class Misc {
+
+    private Misc(){}
 
     public static void toast(String _text){
         Toast.makeText(MainActivity.mContext, _text, Toast.LENGTH_SHORT).show();
