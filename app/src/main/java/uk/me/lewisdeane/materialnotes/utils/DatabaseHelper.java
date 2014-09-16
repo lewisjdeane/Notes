@@ -256,6 +256,7 @@ public class DatabaseHelper {
         builder.content(this.mContext.getString(R.string.dialog_delete_content));
         builder.negativeText(this.mContext.getString(R.string.dialog_delete_cancel));
         builder.positiveColor("#4285F4");
+        builder.rightToLeft(true);
 
         // Apply properties to created dialog.
         CustomDialog customDialog = builder.build();
