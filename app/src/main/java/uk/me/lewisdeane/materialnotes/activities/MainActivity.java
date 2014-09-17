@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.williammora.snackbar.Snackbar;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
@@ -60,11 +60,15 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static AddMode mAddMode = AddMode.NONE;
     public static NoteMode mNoteMode = NoteMode.EVERYTHING;
 
-    public static ArrayList<NoteItem> mDeletedNotes = new ArrayList<NoteItem>();
+    public static Stack<NoteItem> mDeletedNoteStack = new Stack<NoteItem>();
 
     public static boolean mIsCurrentlyShowing = false;
     private CountDownTimer mTimer;
     public static Snackbar mSnackbar;
+
+    /*
+    REWRITE ALL THE CODE HANDLING ADDING, REMOVING, RESTORING AND DISMISSING OF NOTES AND SNACKBAR.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +195,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         Animations.setListAnimation(true, MainActivity.mMainFragment.mList);
         mActionBarFragment.mSearch.setVisibility(View.GONE);
         if(mIsCurrentlyShowing){
-            finishSnackbar(false);
+            finishSnackbar();
             mSnackbar.dismiss();
         }
     }
@@ -204,6 +208,11 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     public void createSnackbar(String _title){
+
+        if(mIsCurrentlyShowing) {
+            finishSnackbar();
+            mTimer.cancel();
+        }
 
         mIsCurrentlyShowing = true;
 
@@ -231,27 +240,27 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             @Override
             public void onFinish() {
                 if(mIsCurrentlyShowing)
-                    finishSnackbar(true);
+                    finishSnackbar();
             }
         };
         mTimer.start();
     }
 
-    public static void finishSnackbar(boolean _shouldAnimate){
-        MainActivity.mDeletedNotes.clear();
+    public static void finishSnackbar(){
+        mDeletedNoteStack.pop();
         mIsCurrentlyShowing = false;
-        if(_shouldAnimate)
+        if(mDeletedNoteStack.size() == 0)
             Animations.animateFABAboveSnackbar(false);
     }
 
     private void restoreNotes(){
-        for(int i = 0; i < MainActivity.mDeletedNotes.size(); i++){
-            NoteItem note = MainActivity.mDeletedNotes.get(i);
+        for(int i = 0; i < MainActivity.mDeletedNoteStack.size(); i++){
+            NoteItem note = MainActivity.mDeletedNoteStack.get(i);
             new DatabaseHelper(mContext).addNoteToDatabase(false, note);
         }
         MainActivity.loadNotes();
         mTimer.cancel();
-        finishSnackbar(true);
+        finishSnackbar();
     }
 
     public static void restoreNote(NoteItem _note){

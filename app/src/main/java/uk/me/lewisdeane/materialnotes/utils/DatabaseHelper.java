@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.ColorDrawable;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -202,8 +203,40 @@ public class DatabaseHelper {
     }
 
 
-    private void editSubItems(NoteItem _oldNoteItem, NoteItem _newNoteItem){
+    /*
+    Edits sub items of the passed in folder note.
 
+    @param - The old note to update.
+    @param - The new note whose values are to replace the old ones.
+    @return - null.
+     */
+    private void editSubItems(NoteItem _oldNoteItem, NoteItem _newNoteItem){
+        // Create strings containing old and new paths that we will swap.
+        String oldPath = _oldNoteItem.getPath() + "/", newPath = _newNoteItem.getPath() + "/";
+
+        // Open database stuff.
+        open();
+
+        // Query the database to search for sub items.
+        Cursor cursor = getTopReadable().rawQuery("SELECT * FROM " + Database.NOTE_TABLE + " WHERE PATH LIKE '" + oldPath + "%'", null);
+
+        if (cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0) {
+            // Move to first record.
+            cursor.moveToFirst();
+            do{
+                // Build the new note path from the other pieces.
+                String notePath = newPath + cursor.getString(getColumnPos("PATH")).substring(oldPath.length());
+
+                // Get a note from the cursor
+                NoteItem noteItem = getNoteItem(cursor);
+
+                // Update the database with this record.
+                getTopWriteable().update(Database.NOTE_TABLE, getContentVals(false, noteItem, notePath), "PATH=? AND TITLE=? AND ITEM=? AND LAST_MODIFIED=" + noteItem.getLastModified(), new String[]{noteItem.getPath(), noteItem.getTitle(), noteItem.getItem()});
+            } while (cursor.moveToNext());
+        }
+
+        // Close database stuff.
+        close(cursor);
     }
 
 
@@ -255,8 +288,8 @@ public class DatabaseHelper {
         CustomDialog.Builder builder = new CustomDialog.Builder(this.mContext, this.mContext.getString(R.string.dialog_delete_title), this.mContext.getString(R.string.dialog_delete_confirm));
         builder.content(this.mContext.getString(R.string.dialog_delete_content));
         builder.negativeText(this.mContext.getString(R.string.dialog_delete_cancel));
-        builder.positiveColor("#4285F4");
-        builder.rightToLeft(true);
+        builder.positiveColor("#FFFFFF");
+        builder.positiveBackground(new ColorDrawable(mContext.getResources().getColor(R.color.blue_primary)));
 
         // Apply properties to created dialog.
         CustomDialog customDialog = builder.build();
@@ -315,10 +348,10 @@ public class DatabaseHelper {
     /*
     Gets the content values from the passed in note.
 
-    @param - boolean containing whether or not to put in archive, note to be added.
+    @param - boolean containing whether or not to put in archive, note to be added, custom path used in editing.
     @return - Content values of the note.
      */
-    private ContentValues getContentVals(boolean _shouldArchive, NoteItem _noteItem) {
+    private ContentValues getContentVals(boolean _shouldArchive, NoteItem _noteItem, String... _customPath) {
         // Creates a new ContentValues from the NoteItem.
         ContentValues contentValues = new ContentValues();
 
@@ -326,7 +359,7 @@ public class DatabaseHelper {
         String path = _noteItem.getPath() != null ? _noteItem.getPath() : PATH + _noteItem.getTitle();
 
         // Set appropriate fields.
-        contentValues.put("PATH", path);
+        contentValues.put("PATH", _customPath.length == 0 ? path : _customPath[0]);
         contentValues.put("FOLDER", _noteItem.getNoteType().toString());
         contentValues.put("TITLE", _noteItem.getTitle());
         contentValues.put("ITEM", _noteItem.getItem());
