@@ -11,8 +11,6 @@ import android.widget.RelativeLayout;
 
 import com.williammora.snackbar.Snackbar;
 
-import java.util.Stack;
-
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
@@ -20,6 +18,7 @@ import uk.me.lewisdeane.materialnotes.fragments.FABFragment;
 import uk.me.lewisdeane.materialnotes.fragments.MainFragment;
 import uk.me.lewisdeane.materialnotes.fragments.NavigationDrawerFragment;
 import uk.me.lewisdeane.materialnotes.objects.NoteItem;
+import uk.me.lewisdeane.materialnotes.objects.Pipe;
 import uk.me.lewisdeane.materialnotes.utils.Animations;
 import uk.me.lewisdeane.materialnotes.utils.DatabaseHelper;
 import uk.me.lewisdeane.materialnotes.utils.Misc;
@@ -60,7 +59,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     public static AddMode mAddMode = AddMode.NONE;
     public static NoteMode mNoteMode = NoteMode.EVERYTHING;
 
-    public static Stack<NoteItem> mDeletedNoteStack = new Stack<NoteItem>();
+    public static Pipe<NoteItem> mDeletedNotes = new Pipe<NoteItem>();
 
     public static boolean mIsCurrentlyShowing = false;
     private CountDownTimer mTimer;
@@ -226,6 +225,12 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                     public void onActionClicked() {
                         restoreNotes();
                     }
+                })
+                .dismissListener(new Snackbar.DismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        finishSnackbar();
+                    }
                 });
         mSnackbar.show(this);
 
@@ -247,20 +252,17 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     public static void finishSnackbar(){
-        mDeletedNoteStack.pop();
         mIsCurrentlyShowing = false;
-        if(mDeletedNoteStack.size() == 0)
-            Animations.animateFABAboveSnackbar(false);
+        //mDeletedNotes.pop();
+        Animations.animateFABAboveSnackbar(false);
     }
 
     private void restoreNotes(){
-        for(int i = 0; i < MainActivity.mDeletedNoteStack.size(); i++){
-            NoteItem note = MainActivity.mDeletedNoteStack.get(i);
-            new DatabaseHelper(mContext).addNoteToDatabase(false, note);
-        }
+        for(NoteItem noteItem : mDeletedNotes)
+            new DatabaseHelper(mContext).addNoteToDatabase(false, noteItem);
+
         MainActivity.loadNotes();
         mTimer.cancel();
-        finishSnackbar();
     }
 
     public static void restoreNote(NoteItem _note){

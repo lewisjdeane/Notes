@@ -13,7 +13,7 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mContext;
  */
 public final class NoteItem {
 
-    public enum NoteType {
+    public static enum NoteType {
         NOTE, FOLDER;
     }
 
@@ -108,19 +108,11 @@ public final class NoteItem {
     }
 
     public void editToDatabase(NoteItem _oldItem) {
-        if (this.mNoteType == NoteType.NOTE) {
-            new DatabaseHelper(mContext).editNoteToDatabase(_oldItem, this);
-        } else {
-            new DatabaseHelper(mContext).editFolderToDatabase(_oldItem, this);
-        }
+        new DatabaseHelper(mContext).editFolderToDatabase(_oldItem, this);
     }
 
     public void deleteFromDatabase() {
-        if (this.mNoteType == NoteType.NOTE) {
-            new DatabaseHelper(mContext).deleteNoteFromDatabase(this);
-        } else {
-            new DatabaseHelper(mContext).deleteFolderFromDatabase(this);
-        }
+        new DatabaseHelper(mContext).deleteFolderFromDatabase(this);
     }
 
     public final static class Builder {

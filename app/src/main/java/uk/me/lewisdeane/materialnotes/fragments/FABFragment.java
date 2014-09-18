@@ -19,7 +19,6 @@ import uk.me.lewisdeane.materialnotes.utils.Misc;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.AddMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.NoteMode;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.PATH;
-import static uk.me.lewisdeane.materialnotes.activities.MainActivity.closeAdd;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.loadNotes;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mActionBarFragment;
 import static uk.me.lewisdeane.materialnotes.activities.MainActivity.mAddFragment;
@@ -89,7 +88,7 @@ public class FABFragment extends Fragment {
 
                         if (mIsCurrentlyShowing) {
                             MainActivity ma = (MainActivity) getActivity();
-                            ma.finishSnackbar(false);
+                            ma.finishSnackbar();
                             ma.mSnackbar.dismiss();
                         }
 
@@ -100,7 +99,6 @@ public class FABFragment extends Fragment {
                         EditText[] itemViews = mAddFragment.mItemViews;
 
                         if (titleView.getText().toString().trim().length() > 0 && !titleView.getText().toString().contains("/")) {
-                            closeAdd();
 
                             // Build a new NoteItem from the inputted data.
                             NoteItem.Builder builder = new NoteItem.Builder(PATH + titleView.getText().toString().trim(), !isFolder ? NoteItem.NoteType.NOTE : NoteItem.NoteType.FOLDER, titleView.getText().toString());

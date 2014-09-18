@@ -28,7 +28,7 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.restoreNote
 public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
     private ArrayList<NoteItem> mNotes = new ArrayList<NoteItem>();
-    private Context mContext;
+    private final Context mContext;
 
     public NoteAdapter(Context context, int resource,
                        ArrayList<NoteItem> _notes) {
@@ -43,12 +43,11 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
         View v = convertView;
 
         // Get the current NoteItem.
-        NoteItem note = mNotes.get(position);
+        final NoteItem note = mNotes.get(position);
 
         // Inflate layout.
-        if (v == null) {
+        if (v == null)
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_note, null);
-        }
 
         LinearLayout folderContainer = (LinearLayout) v.findViewById(R.id.item_folder_container);
         LinearLayout noteContainer = (LinearLayout) v.findViewById(R.id.item_note_container);
@@ -57,7 +56,6 @@ public class NoteAdapter extends ArrayAdapter<NoteItem> {
 
         folderContainer.setVisibility(isFolder ? View.VISIBLE : View.GONE);
         noteContainer.setVisibility(isFolder ? View.GONE : View.VISIBLE);
-
 
         if (isFolder) {
             CustomTextView title = (CustomTextView) v.findViewById(R.id.item_folder_title);

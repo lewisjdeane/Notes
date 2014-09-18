@@ -50,7 +50,7 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
     Constructor required.
       */
     public DatabaseHelper(Context _context) {
@@ -61,7 +61,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Adds notes to the database with attributes from NoteItem object.
 
     @param - Check whether these notes are to be archived or not, array of note items to add.
@@ -81,7 +81,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Edits a note to the database.
 
     @param - The old note to replace, the new note to replace it.
@@ -99,7 +99,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Edits a note to the database.
 
     @param - The old note to replace, the new note to replace it.
@@ -111,7 +111,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Fetches a list of notes to show.
 
     @param - null
@@ -155,15 +155,13 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Deletes the NoteItem passed in from the database.
 
     @param - The note to be deleted.
     @return - null
      */
     public void deleteNoteFromDatabase(NoteItem _noteItem) {
-        // Clear the list of previously deleted notes.
-        mDeletedNotes.clear();
 
         // Add note to deleted note list which is used when undoing delete.
         mDeletedNotes.add(_noteItem);
@@ -188,13 +186,16 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Deletes a folder item from the database, separate method used as sub items may need to be deleted.
 
     @param - Folder to be deleted.
     @return - null
      */
     public void deleteFolderFromDatabase(NoteItem _noteItem) {
+        // Clear the list of previously deleted notes.
+        mDeletedNotes.clear();
+
         // Deletes the folder note from the database
         deleteNoteFromDatabase(_noteItem);
 
@@ -203,7 +204,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Edits sub items of the passed in folder note.
 
     @param - The old note to update.
@@ -240,7 +241,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Deletes sub items of the passed in note from the database.
 
     @param - Note whose sub items should be deleted.
@@ -256,17 +257,14 @@ public class DatabaseHelper {
         // If there exists rows in the database that match criteria delete them/update them.
         if (cursor != null && cursor.moveToFirst() && cursor.getColumnCount() > 0) {
 
-            // Move to first row of records/
+            // Move to first row of records.
             cursor.moveToFirst();
             do {
                 // Build a note item from the data provided in the cursor.
                 NoteItem noteItem = getNoteItem(cursor);
 
-                // Delete it based on note type.
-                if (noteItem.getNoteType() == NoteItem.NoteType.FOLDER)
-                    deleteFolderFromDatabase(noteItem);
-                else
-                    deleteNoteFromDatabase(noteItem);
+                // Delete this note.
+                deleteFolderFromDatabase(noteItem);
 
             } while (cursor.moveToNext());
         }
@@ -276,7 +274,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Creates a dialog asking whether all archived notes should be deleted, called when FAB clicked in archive mode.
 
     @param - null.
@@ -324,7 +322,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Method that checks whether the specified note exists in the database.
 
     @param - boolean containing which mode to search for note in, Note to check if exists.
@@ -345,7 +343,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Gets the content values from the passed in note.
 
     @param - boolean containing whether or not to put in archive, note to be added, custom path used in editing.
@@ -374,7 +372,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Opens a new database and subsequent readable and writeable references.
 
     @param - Database can be passed in to reference database object from.
@@ -392,7 +390,7 @@ public class DatabaseHelper {
         mWriteableDatabases.add(getTopDatabase().getWritableDatabase());
     }
 
-    /*
+    /**
     Closes everything to do with the database and can close any cursors if needed.
 
     @param - can be left empty or pass in any cursors to close.
@@ -411,7 +409,7 @@ public class DatabaseHelper {
     }
 
 
-    /*
+    /**
     Gets all sub items from the passed in note.
 
     @param - Note to find sub items of.
@@ -445,7 +443,7 @@ public class DatabaseHelper {
         return subItems.length() == 0 ? this.mContext.getString(R.string.no_subitems) : subItems.substring(0, subItems.length() - 2);
     }
 
-    /*
+    /**
     Returns the corrected path by putting in special characters where needed as otherwise it messes up the query.
 
     @param - NoteItem to correct query of.
@@ -467,7 +465,7 @@ public class DatabaseHelper {
         return temp;
     }
 
-    /*
+    /**
     Gets the previous path from a specified path, chops off the end of string effectively to produce the correct one.
 
     @param - Old path to chop down.
@@ -483,7 +481,7 @@ public class DatabaseHelper {
         return "/";
     }
 
-    /*
+    /**
     Returns the query for searching for notes.
 
     @param - null
@@ -512,7 +510,7 @@ public class DatabaseHelper {
         return builder.toString();
     }
 
-    /*
+    /**
     Gets the column position associated with the column title.
 
     @param - title to get column position of.
@@ -528,7 +526,7 @@ public class DatabaseHelper {
         return 0;
     }
 
-    /*
+    /**
     Creates a note from the cursor row provided.
 
     @param - cursor storing current row to obtain values from.
@@ -547,7 +545,7 @@ public class DatabaseHelper {
         return builder.build();
     }
 
-    /*
+    /**
     Gets the most recently added readable database from the stack.
 
     @param - null
@@ -557,7 +555,7 @@ public class DatabaseHelper {
         return mReadableDatabases.peek();
     }
 
-    /*
+    /**
     Gets the most recently added writeable database from the stack.
 
     @param - null
@@ -567,7 +565,7 @@ public class DatabaseHelper {
         return mWriteableDatabases.peek();
     }
 
-    /*
+    /**
     Gets the most recently added database from the stack.
 
     @param - null

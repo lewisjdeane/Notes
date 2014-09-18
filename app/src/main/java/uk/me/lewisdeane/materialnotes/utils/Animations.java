@@ -16,18 +16,24 @@ import static uk.me.lewisdeane.materialnotes.activities.MainActivity.FAB_HIDDEN;
  */
 public abstract class Animations {
 
+    // SWITCH TO ENUM INSTEAD OF BOOLEAN FOR UP AND DOWN
+
     private static float MOVE_TO_ADD = -(int)(DeviceProperties.getHeight());
     private static float MOVE_TO_ADD_HIDE = (int)DeviceProperties.convertToPx(100);
     private static float MOVE_TO_LIST = (int)(DeviceProperties.getScreenHeightWithoutPadding());
-    private static float MOVE_TO_SCROLL = (MainActivity.mAddFragment.mScrollView.getHeight());
+    private static float MOVE_TO_SCROLL = MainActivity.mAddFragment.mScrollView.getHeight();
     private static float MOVE_ABOVE_SNACKBAR = -(int)DeviceProperties.convertToPx(56);
 
     private static final int ANIMATION_DURATION = 400;
-    private static final int FAB_HIDE_ANIMATION_DURATION = 200;
+    private static final int FAB_HIDE_ANIMATION_DURATION = ANIMATION_DURATION/2;
 
     private static final String TRANSLATE_Y = "translationY", TRANSLATE_X = "translationX";
 
     private static float mCurrentYOffset = 0;
+
+    public static enum MoveMode {
+        UP, DOWN, NONE;
+    }
 
     public static ObjectAnimator setAddAnimation(boolean _up, View _view){
         float start = mCurrentYOffset;
@@ -36,6 +42,7 @@ public abstract class Animations {
         objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         mCurrentYOffset += (end - start);
         FAB_HIDDEN = false;
+
         return objectAnimator;
     }
 
