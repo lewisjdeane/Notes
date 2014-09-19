@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 
 import com.williammora.snackbar.Snackbar;
 
+import java.util.Set;
+
 import uk.me.lewisdeane.materialnotes.R;
 import uk.me.lewisdeane.materialnotes.fragments.ActionBarFragment;
 import uk.me.lewisdeane.materialnotes.fragments.AddFragment;
@@ -55,11 +57,17 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     // Selected item in navigation drawer.
     public static int CURRENT_SELECTED_POSITION = 0;
 
+    // Duration of the snsckbar
+    private static final int SNACKBAR_DURATION = 5000;
+
+    // Duration between timer checks.
+    private static final int SNACKBAR_WAIT = 1000;
+
     // Items storing current Note and Add Mode.
     public static AddMode mAddMode = AddMode.NONE;
     public static NoteMode mNoteMode = NoteMode.EVERYTHING;
 
-    public static Pipe<NoteItem> mDeletedNotes = new Pipe<NoteItem>();
+    public static Pipe<Set<NoteItem>> mDeletedNotes = Pipe.newInstance();
 
     public static boolean mIsCurrentlyShowing = false;
     private CountDownTimer mTimer;
@@ -117,12 +125,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     public static void loadNotes() {
         // Load notes from database based on current Note Mode.
-        clearNoteList();
-        mMainFragment.mNoteAdapter.addAll(new DatabaseHelper(mContext).getNotesFromDatabase());
-        mMainFragment.applyListViewFeatures();
-    }
-
-    public static void loadSearchResults(String _search) {
         clearNoteList();
         mMainFragment.mNoteAdapter.addAll(new DatabaseHelper(mContext).getNotesFromDatabase());
         mMainFragment.applyListViewFeatures();
@@ -219,7 +221,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                 .text("Deleted " + _title + "!") // text to display
                 .actionLabel("Undo") // action button label
                 .actionColor(mContext.getResources().getColor(R.color.blue_primary))
-                .customDuration(5000)
+                .customDuration(SNACKBAR_DURATION)
                 .actionListener(new Snackbar.ActionClickListener() {
                     @Override
                     public void onActionClicked() {
@@ -236,7 +238,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
 
 
-        mTimer = new CountDownTimer(5000, 1000){
+        mTimer = new CountDownTimer(SNACKBAR_DURATION, SNACKBAR_WAIT){
             @Override
             public void onTick(long l) {
 
@@ -244,6 +246,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
             @Override
             public void onFinish() {
+                // Check if obsolete
                 if(mIsCurrentlyShowing)
                     finishSnackbar();
             }
@@ -253,16 +256,17 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     public static void finishSnackbar(){
         mIsCurrentlyShowing = false;
-        //mDeletedNotes.pop();
+        mDeletedNotes.pop();
         Animations.animateFABAboveSnackbar(false);
     }
 
     private void restoreNotes(){
-        for(NoteItem noteItem : mDeletedNotes)
+        for(NoteItem noteItem : mDeletedNotes.peek())
             new DatabaseHelper(mContext).addNoteToDatabase(false, noteItem);
 
         MainActivity.loadNotes();
         mTimer.cancel();
+        finishSnackbar();
     }
 
     public static void restoreNote(NoteItem _note){

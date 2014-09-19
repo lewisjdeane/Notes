@@ -25,7 +25,10 @@ public class Pipe<E> extends ArrayList<E> {
         }
 
         return finalTerm;
+    }
 
+    public static <E> Pipe<E> newInstance(){
+        return new Pipe<E>();
     }
 
 }

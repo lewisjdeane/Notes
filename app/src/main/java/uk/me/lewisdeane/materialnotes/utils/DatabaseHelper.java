@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import uk.me.lewisdeane.ldialogs.CustomDialog;
@@ -164,7 +166,10 @@ public class DatabaseHelper {
     public void deleteNoteFromDatabase(NoteItem _noteItem) {
 
         // Add note to deleted note list which is used when undoing delete.
-        mDeletedNotes.add(_noteItem);
+        Set<NoteItem> set = new HashSet<NoteItem>();
+        set.add(_noteItem);
+
+        mDeletedNotes.add(set);
 
         // Initialise reference to database things.
         open();
